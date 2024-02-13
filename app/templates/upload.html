@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subir Archivo para Detección de Emociones</title>
+</head>
+<body>
+    <h1>Detector de Emociones</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="file">Elige una imagen:</label>
+        <input type="file" id="file" name="file" onchange="previewFile()"><br><br>
+        <input type="submit" value="Subir y Analizar">
+    </form>
+    <br>
+    <img id="preview" src="" height="200" alt="Vista previa...">
+    <script>
+    function previewFile() {
+        const preview = document.getElementById('preview');
+        const file = document.getElementById('file').files[0];
+        const reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            // Convertir la imagen a base64 y mostrarla
+            preview.src = reader.result;
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+    </script>
+</body>
+</html>
