@@ -5,27 +5,42 @@
     <title>Register</title>
 </head>
 <body>
-    <form method="POST">
+    <form method="POST" action="{{ url_for('register') }}">
         {{ form.hidden_tag() }}
         <p>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
+            {% for error in form.username.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
         </p>
         <p>
             {{ form.name.label }}<br>
             {{ form.name(size=32) }}<br>
+            {% for error in form.name.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
         </p>
         <p>
             {{ form.surname.label }}<br>
             {{ form.surname(size=32) }}<br>
+            {% for error in form.surname.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
         </p>
         <p>
             {{ form.password.label }}<br>
             {{ form.password(size=32) }}<br>
+            {% for error in form.password.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
         </p>
         <p>
             {{ form.confirm_password.label }}<br>
             {{ form.confirm_password(size=32) }}<br>
+            {% for error in form.confirm_password.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
         </p>
         <p>
             {{ form.submit() }}

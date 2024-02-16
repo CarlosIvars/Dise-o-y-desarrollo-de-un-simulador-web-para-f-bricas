@@ -56,6 +56,19 @@ class UserModel(UserMixin):
             app.logger.error(f'Error al cargar usuarios: {ex}')
             return []
     
+    def register_user(user):
+        try:
+            cursor = get_db_connection().cursor()
+            sql = "INSERT INTO usuarios (nombre, apellidos, username, password) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (user.name, user.surname, user.id, user.password))
+            conexion.connection.commit()
+            return user
+        except Exception as ex:
+            print(f"Error al insertar en la base de datos: {ex}")
+            return None
+
+        
+
     def save_to_file(self):
         users = UserModel.load_users()
         users[self.id] = {

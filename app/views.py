@@ -40,41 +40,32 @@ def mostrar_usuario(usuario):
         return jsonify({'user': user, 'mensaje': "Usuario Mostrado"})
     else:
         return jsonify({'mensaje' : "Usuario no encontrado"})
-@app.route('/sign', methods = ['GET', 'POST'])
+
+@app.route('/register', methods = ['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    if True:#form.validate_on_submit():
-
-        user = UserModel(
-            username=form.username.data,
-            name=form.name.data,
-            surname=form.surname.data,
-            password=form.password.data
-        )
-        cursor = conexion.connection.cursor()
-        sql = "SELECT username FROM usuarios"
-        cursor.execute(sql)
-        datos = cursor.fetchall()
-        if datos == None:
+    if form.validate_on_submit():
+        username = form.username.data
+        existing_user = UserModel.get(username)
+        if existing_user:
             print('Username already exists!')
             return render_template('register.html', form=form)
-        existing_users = UserModel.load_users()
-        if form.username.data in existing_users:
-            print('Username already exists!')
-            return render_template('register.html', form=form)
-        
-        user.save_to_file()
-        
-         # Leer el archivo JSON para mostrar el usuario registrado
-        with open('users.json', 'r') as file:
-            registered_users = json.load(file)
-        
-        print('Registration successful!')
-        # Pasar el contenido JSON a la plantilla para mostrarlo
-        return render_template('register_success.html', users=registered_users)
-    
-    return render_template('register.html', form=form)
-
+        else: 
+            user = UserModel(
+                    username=form.username.data,
+                    name=form.name.data,
+                    surname=form.surname.data,
+                    password=form.password.data
+                )  
+            print(user)     
+            reg = UserModel.register_user(user)
+            if reg != None:
+                # Pasar el contenido JSON a la plantilla para mostrarlo
+                return jsonify({'mensaje' : "Registration successful!"})
+            else:
+                return jsonify({'mensaje' : "Usuario no se pudo registrar correctamente"})
+    else:
+        return render_template('register.html', form=form)
 @app.route('/login', methods=['GET','POST'])
 def login():
     return UserModel.get('carlos')
