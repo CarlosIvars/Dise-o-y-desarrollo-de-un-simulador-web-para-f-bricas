@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fábricas de {{ usuario.username }}</title>
+</head>
+<body>
+    <h1>Fábricas de {{ usuario.username }}</h1>
+    <form method="POST" action="{{ url_for('gestionar_fabricas', usuario=usuario.username) }}">
+        <input type="text" name="nombre_fabrica" placeholder="Nombre de la nueva fábrica" required>
+        <input type="submit" value="Añadir Fábrica">
+    </form>
+
+    <h2>Listado de Fábricas:</h2>
+    <ul>
+        {% for fabrica in fabricas %}
+        <li><a href="{{ url_for('ver_fabrica', usuario=usuario.username, fabrica=fabrica[0]) }}">{{ fabrica[0] }}</a>{{ fabrica[1], fabrica[2] }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

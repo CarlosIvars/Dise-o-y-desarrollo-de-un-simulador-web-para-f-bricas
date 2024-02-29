@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Página de Fábrica</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .button-container button {
+            margin-bottom: 10px; /* Espacio entre botones */
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <!-- Botones para abrir los modales -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAñadirTrabajador">Añadir Trabajador</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAñadirMaquina">Añadir Máquina</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAñadirTarea">Añadir Tarea</button>
+    </div>
+
+    <!-- Modal para Añadir Trabajador -->
+    <div class="modal fade" id="modalAñadirTrabajador" tabindex="-1" role="dialog" aria-labelledby="modalAñadirTrabajadorLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalAñadirTrabajadorLabel">Nuevo Trabajador</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Formulario Añadir Trabajador -->
+            <form id="formAñadirTrabajador" action="{{ url_for('añadir_trabajador', usuario=usuario.username, fabrica=fabrica) }}" method="post">
+               
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" id="submitFormTrabajador">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para Añadir Máquina -->
+    <div class="modal fade" id="modalAñadirMaquina" tabindex="-1" role="dialog" aria-labelledby="modalAñadirMaquinaLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalAñadirMaquinaLabel">Nueva Máquina</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Formulario Añadir Máquina -->
+            <form id="formAñadirMaquina" action="{{ url_for('añadir_maquina', usuario=usuario.username, fabrica=fabrica) }}" method="post">
+                <!-- Campos del formulario -->
+                <!-- Ejemplo: <input type="text" name="nombreMaquina"> -->
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" id="submitFormMaquina">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para Añadir Tarea -->
+    <div class="modal fade" id="modalAñadirTarea" tabindex="-1" role="dialog" aria-labelledby="modalAñadirTareaLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalAñadirTareaLabel">Nueva Tarea</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Formulario Añadir Tarea -->
+            <form id="formAñadirTarea" action="{{ url_for('añadir_tarea', usuario=usuario.username, fabrica=fabrica) }}" method="post">
+                <!-- Campos del formulario -->
+                <!-- Ejemplo: <input type="text" name="nombreTarea"> -->
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" id="submitFormTarea">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aquí va el resto del contenido de la página -->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+    $(document).ready(function(){
+      $("#submitFormTrabajador").click(function(){
+        $.ajax({
+          url: $('#formAñadirTrabajador').attr('action'),
+          type: 'post',
+          data: $("#formAñadirTrabajador").serialize(),
+          success: function(response){
+            $("#modalAñadirTrabajador").modal('hide');
+            alert("Trabajador añadido con éxito");
+          },
+          error: function(xhr){
+            alert("Ocurrió un error al añadir el trabajador");
+          }
+        });
+      });
+
+      $("#submitFormMaquina").click(function(){
+        $.ajax({
+          url: $('#formAñadirMaquina').attr('action'),
+          type: 'post',
+          data: $("#formAñadirMaquina").serialize(),
+          success: function(response){
+            $("#modalAñadirMaquina").modal('hide');
+            alert("Máquina añadida con éxito");
+          },
+          error: function(xhr){
+            alert("Ocurrió un error al añadir la máquina");
+          }
+        });
+      });
+
+      $("#submitFormTarea").click(function(){
+        $.ajax({
+          url: $('#formAñadirTarea').attr('action'),
+          type: 'post',
+          data: $("#formAñadirTarea").serialize(),
+          success: function(response){
+            $("#modalAñadirTarea").modal('hide');
+            alert("Tarea añadida con éxito");
+          },
+          error: function(xhr){
+            alert("Ocurrió un error al añadir la tarea");
+          }
+        });
+      });
+    });
+    </script>
+</body>
+</html>

@@ -7,9 +7,6 @@ class DevelopmentConfig():
     MYSQL_PASSWORD = '%@%JL6XYJvk9z6_'
     MYSQL_DB = 'midela_simulador_fabrica'
 
-
-
-
 config = {
     'development' : DevelopmentConfig
 }
