@@ -145,7 +145,7 @@ class TareaModel:
         url = "https://api.openai.com/v1/completions"
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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'
+            'Authorization': 'Bearer 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'# nueva clave necesaria
         }
         data = {
             "prompt": prompt,
