@@ -8,6 +8,7 @@ from flask_mysqldb import MySQL
 import cv2
 import numpy as np
 import json
+from config import config
 
 
 #'Bearer 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'
@@ -16,6 +17,7 @@ def init():
     soft_skills = TareaModel.get_soft_skills();
     print(soft_skills)
     return soft_skills
+
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -126,3 +128,14 @@ def añadir_tarea(usuario, fabrica):
     # Lógica para añadir tarea
         
     return render_template('añadir_tarea.html', usuario=usuario, fabrica=fabrica)
+
+@app.route('/<usuario>/<fabrica>/skill_matching')
+def obtener_habilidades(fabrica_id):
+    habilidades_maquinas = RecursosModel.obtener_habilidades_maquinas(fabrica_id)
+    habilidades_trabajadores = RecursosModel.obtener_habilidades_trabajadores(fabrica_id)
+    
+    # Combinar los diccionarios de habilidades de máquinas y trabajadores en uno solo
+    habilidades_totales = habilidades_maquinas.copy()
+    habilidades_totales.update(habilidades_trabajadores)
+    
+    return habilidades_totales
