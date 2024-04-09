@@ -66,6 +66,14 @@ def init():
     dependencias = {
         'Tarea11' : 'Tarea10',
     }
+    '''
+    skills_matching = 
+    fatigas = RecursosModel.fatiga_recursos(fabrica_id)
+    costes = RecursosModel.coste_recursos(fabrica_id)
+    beneficios = TareaModel.beneficio_subtasks(fabrica_id)
+    dependencias = TareaModel.dependencias_subtasks(skills_matching)
+
+    '''
     k= 50
 
     # Parámetros para el algoritmo genético

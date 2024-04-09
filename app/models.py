@@ -374,6 +374,7 @@ class RecursosModel:
         except Exception as ex:
             print(f"Error al obtener habilidades de trabajadores: {ex}")
             return {}
+        
     @staticmethod
     def obtener_habilidades_recursos(fabrica_id):
         h_t = RecursosModel.obtener_habilidades_trabajadores(fabrica_id)
@@ -384,10 +385,7 @@ class RecursosModel:
     def calcular_fatiga_total(asignacion):
         try:
             cursor = get_db_connection().cursor()
-
-            # Calcular la fatiga total de la asignación de tareas
-            fatiga_total = 0
-
+            
             for tarea, identificador in asignacion:
                 # Determinar si el identificador pertenece a un trabajador o a una máquina
                 tipo = identificador[0]  # Primer carácter indica el tipo (H para trabajador, M para máquina)
@@ -406,6 +404,61 @@ class RecursosModel:
             return fatiga_total
         except Exception as ex:
             print(f"Error al calcular la fatiga total: {ex}")
+            return None
+        
+    @staticmethod
+    def fatiga_recursos(fabrica_id):
+        try:
+            cursor = get_db_connection().cursor()
+            fatigas = {}
+
+            # Procesar primero los trabajadores
+            sql_trabajadores = "SELECT codigo, fatiga FROM Trabajadores WHERE fabrica_id = %s"
+            cursor.execute(sql_trabajadores, (fabrica_id,))
+            resultados_trabajadores = cursor.fetchall()
+
+            for codigo, fatiga in resultados_trabajadores:
+                fatigas[codigo] = fatiga
+
+            # Procesar luego las máquinas
+            sql_maquinas = "SELECT codigo, fatiga FROM Maquinas WHERE fabrica_id = %s"
+            cursor.execute(sql_maquinas, (fabrica_id,))
+            resultados_maquinas = cursor.fetchall()
+
+            for codigo, fatiga in resultados_maquinas:
+                fatigas[codigo] = fatiga
+
+            return fatigas
+        except Exception as ex:
+            print(f"Error al calcular la fatiga por recurso: {ex}")
+            return None
+
+
+    @staticmethod
+    def coste_recursos(fabrica_id):
+        try:
+            cursor = get_db_connection().cursor()
+            costes = {}
+
+            # Procesar primero los trabajadores
+            sql_trabajadores = "SELECT codigo, coste_h FROM Trabajadores WHERE fabrica_id = %s"
+            cursor.execute(sql_trabajadores, (fabrica_id,))
+            resultados_trabajadores = cursor.fetchall()
+
+            for codigo, coste in resultados_trabajadores:
+                costes[codigo] = coste
+
+            # Procesar luego las máquinas
+            sql_maquinas = "SELECT codigo, coste_h FROM Maquinas WHERE fabrica_id = %s"
+            cursor.execute(sql_maquinas, (fabrica_id,))
+            resultados_maquinas = cursor.fetchall()
+
+            for codigo, coste in resultados_maquinas:
+                costes[codigo] = coste
+
+            return costes
+        except Exception as ex:
+            print(f"Error al calcular el coste por recurso: {ex}")
             return None
 
     @staticmethod
@@ -583,29 +636,40 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             print(f"Error al actualizar información de la subtask: {ex}")
     
     @staticmethod
-    def calcular_beneficio_total(asignacion):
+    def beneficio_subtasks(fabrica_id):
         try:
             cursor = get_db_connection().cursor()
 
-            # Calcular el coste total de la asignación de tareas
-            beneficio_total = 0
-
-            for tarea, identificador in asignacion:
-
-                # Consultar el coste del trabajador o máquina en la base de datos
-                sql = f"SELECT beneficio FROM Subtasks WHERE codigo = %s"
-                cursor.execute(sql, (tarea))
-                resultado = cursor.fetchone()
-
-                if resultado:
-                    beneficio_total += resultado[0]
-
-            return beneficio_total
+            # Consultar el coste del trabajador o máquina en la base de datos
+            sql = "SELECT id, beneficio FROM Subtasks WHERE fabrica_id = %s"
+            cursor.execute(sql, (fabrica_id,))
+            resultado = cursor.fetchall()
+            beneficios = {id: beneficio for id, beneficio in resultado}
+            return beneficios
         except Exception as ex:
-            print(f"Error al calcular el coste total: {ex}")
+            print(f"Error al obtener los beneficios: {ex}")
             return None
 
+    @staticmethod
+    def dependencias_subtasks(skills_matching):
+        try: 
+            cursor = get_db_connection().cursor()
+            tarea_ids = tuple(skills_matching.keys())
 
+            if len(tarea_ids) == 1:
+                tarea_ids = (tarea_ids[0],)
+            
+            sql = "SELECT dependiente, dependencia FROM relaciones_subtasks WHERE dependiente IN %s"
+            cursor.execute(sql, (tarea_ids,))
+            resultado = cursor.fetchall()
+
+            relaciones = {dependiente: dependencia for dependiente, dependencia in resultado}
+            return relaciones
+        
+        except Exception as ex:
+            print(f"Error al obtener las dependencias: {ex}")
+            return None
+        
     @staticmethod
     def skills_matching(fabrica_id):
         acciones = TareaModel.obtener_habilidades_subtareas(fabrica_id)
