@@ -1,22 +1,13 @@
-# genetic_algorithm.py
 """
 Implementación del algoritmo genético utilizando la librería DEAP.
-Define la configuración del algoritmo, la función de aptitud, los operadores genéticos, etc.
 """
-from deap import base, creator, tools, algorithms
-import problem_definition
+from .problem_definition import *
 
-def evaluate_population(population):
+def evaluate_population(population, beneficios, costes, fatigas, dependencias):
     """
-    Evalúa la aptitud de toda la población.
-
-    Args:
-    - population (list): Lista de individuos en la población.
-
-    Returns:
-    - aptitudes (list): Lista de aptitudes correspondientes a cada individuo en la población.
+    Evalúa la aptitud de toda la población(lista de individuos) devuelve una lista con la aptitud de cada individuo
     """
-    return [problem_definition.evaluate_individual(individual) for individual in population]
+    return [evaluate_individual(individual,beneficios, costes, fatigas, dependencias) for individual in population]
 
 def selection_operator(population, aptitudes, k):
     """
@@ -34,32 +25,31 @@ def selection_operator(population, aptitudes, k):
     return [population[i] for i in selected_indices]
 
 
-def run_genetic_algorithm(tareas, num_generations, num_individuals):
+def run_genetic_algorithm(skills_matching,dependencias, num_generations, num_individuals,k,beneficios, costes, fatigas):
     # Inicializar la población
-    population = problem_definition.initialize_population(tareas, num_individuals)
-    
+    population = initialize_population(skills_matching, num_individuals,dependencias)
+
     # Evaluar la población inicial
-    evaluate_population(population)
+    aptitudes = evaluate_population(population, beneficios, costes, fatigas, dependencias)
     
     # Ciclo de evolución
     for generation in range(num_generations):
         # Seleccionar individuos para reproducción
-        selected = selection_operator(population)
+        selected = selection_operator(population, aptitudes, k)
         
         # Aplicar operadores genéticos (cruce y mutación)
         offspring = []
         for i in range(0, len(selected), 2):
-            child1, child2 = problem_definition.crossover_operator(selected[i], selected[i+1])
-            child1 = problem_definition.mutation_operator(child1, tareas)
-            child2 = problem_definition.mutation_operator(child2, tareas)
+            child1, child2 = crossover_operator(selected[i], selected[i+1])
+            child1 = mutation_operator(child1, skills_matching,dependencias)
+            child2 = mutation_operator(child2, skills_matching,dependencias)
             offspring.extend([child1, child2])
         
-        # Evaluar la descendencia
-        evaluate_population(offspring)
-        
-        # Reemplazar la población anterior con la descendencia
         population[:] = offspring
-    
+
+        # Evaluar la nueva población
+        aptitudes = evaluate_population(population, beneficios, costes, fatigas, dependencias)
+        
     # Devolver el mejor individuo de la población final
     best_individual = max(population, key=lambda ind: ind.fitness.values)
     return best_individual
