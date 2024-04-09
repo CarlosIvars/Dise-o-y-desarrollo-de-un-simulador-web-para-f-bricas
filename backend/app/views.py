@@ -1,14 +1,13 @@
 # Vistas de Flask para manejar las rutas
 from app import app
 from werkzeug.security import check_password_hash
-from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash
+from flask import *
 from .forms import *
 from .models import *
-from flask_mysqldb import MySQL
+from ml_models import *
 import cv2
 import numpy as np
 import json
-from ml_models import *
 from config import config
 #from ml_models.AG.genetic_algorithm import run_genetic_algorithm
 from ml_models.AG.genetic_algorithm import *
@@ -78,7 +77,7 @@ def init():
 
     # Parámetros para el algoritmo genético
     num_generations = 2000
-    num_individuals = 500
+    num_individuals = 50
 
     # Ejecutar el algoritmo genético
     mejor_individuo = run_genetic_algorithm(skills_matching,dependencias, num_generations, num_individuals,k,beneficios, costes, fatigas)
@@ -146,13 +145,16 @@ def login():
         if user and check_password_hash(user.password, form.password.data):
             # Inicia sesión del usuario
             login_user(user)
+            
+            session['usuario'] = user
             return redirect(url_for('index'))  # Redirige al index o donde sea necesario
         else:
             return 'Datos de inicio de sesión incorrectos.'
     return render_template('login.html', form=form)
 
-@app.route('/<usuario>', methods=['GET', 'POST'])
-def gestionar_fabricas(usuario):
+@app.route('/pagina_principal', methods=['GET', 'POST'])
+def gestionar_fabricas():
+    usuario = session.get('usuario')
     user = UserModel.get(usuario)
     if not user:
         flash('Usuario no encontrado', 'error')
