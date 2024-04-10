@@ -1,0 +1,31 @@
+.maquina-card {
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.maquina-card .img {
+    padding: 10px;
+}
+
+.maquina-card .info .nombre {
+    font-size: 16px;
+}
+.maquina-card .info .puesto {
+    font-size: 12px;
+}
+
+.maquina-card .editar {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+.maquina-card:hover .editar {
+    display: block;
+}

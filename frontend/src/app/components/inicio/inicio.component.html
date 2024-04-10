@@ -1,0 +1,22 @@
+<div id="fakeHeader">
+    <div id="cabeceraIzq">
+        Fábricas
+    </div>
+    <div id="cabeceraDer">
+        <div>Iniciar sesión</div>
+        <div>Registrarse</div>
+    </div>
+</div>
+<div id="content">
+    <div id="principal">
+        <div id="tituloPrincipal">Simulador de fábricas</div>
+        <div id="texto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+        <div id="botonera">
+            <div (click)="iniciarSesion()">Iniciar sesión</div>
+            <div>Registrarse</div>
+        </div>
+    </div>
+    <div id="logo-img"></div>
+    <div (click)="login()">Prueba api</div>
+</div>
+<app-login-form *ngIf="mostarlogin" (loginClosed)="onLoginClosed($event)"></app-login-form>

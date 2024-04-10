@@ -1,0 +1,23 @@
+.tareaInicial {
+    border: 1px solid lightgray;
+    background-color: white;
+    width: 150px;
+    border-radius: 5px;
+    padding: 5px;
+    position: relative;
+    height: 50px;
+    margin: 5px;
+}
+
+.tareaInicial .precio {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.tareaInicial .cantidad{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-weight: bold;
+}

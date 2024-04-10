@@ -1,0 +1,33 @@
+.tarea {
+    border: 1px solid lightgray;
+    width: 200px;
+    height: 70px;
+    background-color: white;
+    border-radius: 7px;
+    padding: 5px;
+    margin: 5px;
+    position: relative;
+}
+
+.tarea .tiempo{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.tarea .asignado{
+    width: 30px;
+    height: 40px;
+    border: 1px solid lightgray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+}
+
+.tarea .cantidad{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-weight: bold;
+}

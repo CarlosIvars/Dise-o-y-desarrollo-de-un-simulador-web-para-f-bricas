@@ -5,7 +5,6 @@ from flask import *
 from .forms import *
 from .models import *
 from ml_models import *
-import cv2
 import numpy as np
 import json
 from config import config
