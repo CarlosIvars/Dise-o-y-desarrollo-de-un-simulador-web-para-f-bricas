@@ -66,7 +66,7 @@ def init():
         'Tarea11' : 'Tarea10',
     }
     '''
-    skills_matching = 
+    skills_matching = TareaModel.skills_matching(fabrica_id)
     fatigas = RecursosModel.fatiga_recursos(fabrica_id)
     costes = RecursosModel.coste_recursos(fabrica_id)
     beneficios = TareaModel.beneficio_subtasks(fabrica_id)
@@ -81,7 +81,7 @@ def init():
 
     # Ejecutar el algoritmo genético
     mejor_individuo = run_genetic_algorithm(skills_matching,dependencias, num_generations, num_individuals,k,beneficios, costes, fatigas)
-   # print("valores mejor individuo:",evaluate_individual(mejor_individuo))
+    print("valores mejor individuo:",evaluate_individual(mejor_individuo,beneficios,costes, fatigas,dependencias))
     print("El mejor individuo encontrado es:", mejor_individuo)
 
     #soft_skills = TareaModel.get_soft_skills();
@@ -183,7 +183,132 @@ def añadir_fabrica():
         return jsonify({'mensaje': 'Fábrica añadida correctamente'}), 201
     else:
         return jsonify({'error': 'No se pudo añadir la fábrica'}), 500
+    
+@app.route('/select_fabrica', methods=['POST'])
+def seleccionar_fabrica():
+    usuario = session.get('usuario')
+    if not usuario:
+        return jsonify({'error': 'Usuario no autenticado'}), 401
+    
+    data = request.json
+    if not data or 'fabrica_id' not in data:
+        return jsonify({'error': 'No se proporcionó fabrica_id'}), 400
+    
+    user = UserModel.get(usuario)
+    fabrica_id = data.get('fabrica_id')
+    fabrica = FabricaModel.get_fabrica_by_id(user['id'], fabrica_id)
+    
+    if not fabrica:
+        return jsonify({'mensaje': 'Fábrica no encontrada correctamente'}), 404
 
+
+    session['fabrica'] = fabrica_id
+
+    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica_id}), 200
+
+
+
+############################################################################################
+# Simulador
+############################################################################################
+@app.route('/add_trabajador', methods = ['POST'])
+def add_trabajador():
+    fabrica_id = session.get('fabrica')
+    data = request.json
+    if not fabrica_id:
+        return jsonify({'error': 'Fabrica no encontrada'}), 404
+    if not data or not all(key in data for key in ['nombre', 'apellidos', 'fecha_nacimiento', 'fatiga', 'coste_h', 'preferencias', 'skills']):
+        return jsonify({'error': 'Datos incompletos'}), 400
+    nombre = data.get('nombre')
+    apellidos = data.get('apellidos')
+    fecha_nacimiento = data.get('fecha_nacimiento')
+    fatiga = data.get('fatiga')
+    coste_h = data.get('coste_h')
+    preferencias = data.get('preferencias')
+    skills = data.get('skills')
+    trabajador_id = RecursosModel.add_trabajador(fabrica_id, nombre, apellidos, fecha_nacimiento, fatiga, coste_h, preferencias, skills)
+    if trabajador_id:
+        return jsonify({'mensaje': 'Trabajador añadido con exitoso'}), 201
+    else:
+        return jsonify({'mensaje': 'El trabajador no se pudo añadir correctamente'}), 500
+    
+@app.route('/add_maquina', methods = ['POST'])
+def add_maquina():
+    fabrica_id = session.get('fabrica')
+    data = request.json
+    if not fabrica_id:
+        return jsonify({'error': 'Fabrica no encontrada'}), 404
+    if not data or not all(key in data for key in ['nombre', 'fatiga', 'coste_h', 'skills']):
+        return jsonify({'error': 'Datos incompletos'}), 400
+    nombre = data.get('nombre')
+    fatiga = data.get('fatiga')
+    coste_h = data.get('coste_h')
+    skills = data.get('skills')
+    print(nombre, fatiga, coste_h, skills)
+    maquina_id = RecursosModel.add_maquina(fabrica_id, nombre, fatiga, coste_h, skills)
+    if maquina_id:
+        return jsonify({'mensaje': 'Maquina añadida con exitoso'}), 201
+    else:
+        return jsonify({'mensaje': 'La maquina no se pudo añadir correctamente'}), 500
+
+
+@app.route('/add_subtask', methods = ['POST'])
+def add_subtask():
+    fabrica_id = session.get('fabrica')
+    data = request.json
+    if not fabrica_id:
+        return jsonify({'error': 'Fabrica no encontrada'}), 404
+    if not data or not all(key in data for key in ['nombre','duracion', 'beneficio', 'descripcion','sector']):
+        return jsonify({'error': 'Datos incompletos'}), 400
+    sector = data.get('sector')
+    nombre = data.get('nombre')
+    duracion = data.get('duracion')
+    beneficio = data.get('beneficio')
+    descripcion = data.get('descripcion')
+    subtask_id = TareaModel.add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector)
+    if subtask_id:
+        return jsonify({'mensaje': 'Subtask añadida con exitoso'}), 201
+    else:
+        return jsonify({'mensaje': 'Subtask no se pudo añadir correctamente'}), 500
+
+
+@app.route('/alg_genetico', methods = ['GET'])
+def algoritmo_genetico():
+    fabrica_id = session.get('fabrica')
+    if not fabrica_id:
+        return jsonify({'error': 'Fabrica no encontrada'}), 404
+    
+    skills_matching = TareaModel.skills_matching(fabrica_id)
+    fatigas = RecursosModel.fatiga_recursos(fabrica_id)
+    costes = RecursosModel.coste_recursos(fabrica_id)
+    beneficios = TareaModel.beneficio_subtasks(fabrica_id)
+    dependencias = TareaModel.dependencias_subtasks(skills_matching)
+    
+    # Parámetros para el algoritmo genético
+    num_individuos_seleccion= 50
+    num_generations = 2000
+    num_individuals = 50
+
+    # Ejecutar el algoritmo genético
+    mejor_individuo = run_genetic_algorithm(skills_matching,dependencias, num_generations, 
+                                            num_individuals,num_individuos_seleccion,beneficios, costes, fatigas)
+    puntuacion = evaluate_individual(mejor_individuo,beneficios,costes, fatigas,dependencias)
+
+    print("valores mejor individuo:",puntuacion)
+    print("El mejor individuo encontrado es:", mejor_individuo)
+
+    asignaciones = {subtask: recurso for subtask, recurso in mejor_individuo}
+
+    resultado = {
+        "puntuacion": puntuacion,
+        "mejor_individuo": asignaciones
+    }
+ 
+    return jsonify(resultado), 200
+
+############################################################################################
+# En proceso
+############################################################################################
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
@@ -207,28 +332,9 @@ def ver_fabrica(usuario, fabrica):
     # Aquí va la lógica para manejar la solicitud para una fábrica específica
     return render_template('pagina_fabrica.html', usuario=usuario, fabrica=fabrica)
 
-@app.route('/<usuario>/<fabrica>/añadir_trabajador')
-def añadir_trabajador():
-    form = TrabajadorRegistrationForm()
-    if form.validate_on_submit():
-        # Lógica para procesar el formulario
-        ...
-        return redirect(url_for('/'))  # Redirigir tras el procesamiento exitoso
-    else:
-        # Si no es POST o el formulario no es válido, se pasa el formulario a la plantilla
-        return render_template('pagina_fabrica.html', form=form)
 
 
-@app.route('/<usuario>/<fabrica>/añadir_maquina')
-def añadir_maquina(usuario, fabrica):
-    # Lógica para añadir máquina
-    return render_template('añadir_maquina.html', usuario=usuario, fabrica=fabrica)
 
-@app.route('/<usuario>/<fabrica>/añadir_tarea')
-def añadir_tarea(usuario, fabrica):
-    # Lógica para añadir tarea
-        
-    return render_template('añadir_tarea.html', usuario=usuario, fabrica=fabrica)
 
 @app.route('/<usuario>/<fabrica>/skill_matching')
 def obtener_habilidades(fabrica_id):

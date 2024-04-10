@@ -113,12 +113,23 @@ class FabricaModel:
     def get_fabrica(id_usuario):
         try:
             cursor = get_db_connection().cursor()
-            sql =  "SELECT nombre, costes, beneficios FROM Fabrica WHERE usuario_id = %s"
+            sql =  "SELECT id, nombre, costes, beneficios FROM Fabrica WHERE usuario_id = %s"
             cursor.execute(sql, (id_usuario,))
             return cursor.fetchall()
         except Exception as ex:
             print(f"Error al obtener fábricas: {ex}")
             return []
+    
+    @staticmethod
+    def get_fabrica_by_id(id_usuario, id_fabrica):
+        try:
+            cursor = get_db_connection().cursor()
+            sql =  "SELECT nombre, costes, beneficios FROM Fabrica WHERE usuario_id = %s AND id = %s"
+            cursor.execute(sql, (id_usuario,id_fabrica))
+            return cursor.fetchone()
+        except Exception as ex:
+            print(f"Error al obtener fábricas: {ex}")
+            return None
     
     @staticmethod
     def get_costes_beneficios(id_fabrica):
@@ -578,7 +589,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
         return habilidades
     
     @staticmethod
-    def add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id):
+    def add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector):
         # guardar los datos en la base de datos
         # se debe rellenar la tabla de skills_subtaks, tiendo en cuenta la tarea a la que estamos 
         # haciendo referencia y además buscar las habilidades que tocan en la tabla de skills
