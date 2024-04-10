@@ -44,12 +44,12 @@ class UserModel(UserMixin):
     def get_user(username):
         try:
             cursor = get_db_connection().cursor()
-            sql = "SELECT id, nombre, apellidos, username FROM usuarios WHERE username = '{0}'".format(username)
+            sql = "SELECT id, nombre, apellidos, username, password FROM usuarios WHERE username = '{0}'".format(username)
             cursor.execute(sql)
             datos = cursor.fetchone()
             
             if datos != None:
-                user = {'id': datos[0], 'nombre': datos[1], 'apellidos': datos[2], 'username': datos[3]}                
+                user = {'id': datos[0], 'nombre': datos[1], 'apellidos': datos[2], 'username': datos[3], 'password' : datos[4]}                
                 return user
             else:
                 return None
@@ -377,8 +377,8 @@ class RecursosModel:
         
     @staticmethod
     def obtener_habilidades_recursos(fabrica_id):
-        h_t = RecursosModel.obtener_habilidades_trabajadores(fabrica_id)
-        h_m = RecursosModel.obtener_habilidades_maquinas(fabrica_id)
+        h_t = RecursosModel.get_habilidades_trabajadores(fabrica_id)
+        h_m = RecursosModel.get_habilidades_maquinas(fabrica_id)
         h_t.update(h_m)
 
     @staticmethod
@@ -672,7 +672,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
         
     @staticmethod
     def skills_matching(fabrica_id):
-        acciones = TareaModel.obtener_habilidades_subtareas(fabrica_id)
+        acciones = TareaModel.get_habilidades_subtareas(fabrica_id)
         recursos = RecursosModel.obtener_habilidades_recursos(fabrica_id)
         matching_skills = {}
         for accion_id, habilidades_accion in acciones.items():

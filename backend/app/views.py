@@ -88,6 +88,101 @@ def init():
     #print(soft_skills)
     return mejor_individuo
 
+############################################################################################
+# Pagina inicio sesion
+############################################################################################
+@app.route('/register', methods = ['POST'])
+def register():
+    data = request.json
+
+    if not data:
+        return jsonify({'error': 'No se proporcionaron datos'}), 400
+
+    username = data.get('username')
+    name = data.get('name')
+    surname = data.get('surname')
+    password = data.get('password')
+
+    if not all([username, name, surname, password]):
+        return jsonify({'error': 'Faltan datos necesarios para el registro'}), 400
+
+    existing_user = UserModel.get(username)
+    if existing_user:
+        return jsonify({'error': 'El nombre de usuario ya existe'}), 409
+
+    user = UserModel(
+        username=username,
+        name=name,
+        surname=surname,
+        password=password  
+    )
+
+    reg = UserModel.register_user(user)
+    if reg:
+       return jsonify({'mensaje': 'Registro exitoso'}), 201
+    else:
+        return jsonify({'mensaje': 'El usuario no se pudo registrar correctamente'}), 500
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json  
+    if data:
+        username = data.get('username')
+        password = data.get('password')
+
+        if not username or not password:
+            return jsonify({'error': 'Faltan datos de usuario o contraseña'}), 400        
+        user = UserModel.get(username)
+        if user and check_password_hash(user.password, password):      
+            session['usuario'] = user.username  # Guarda el username en el session
+            return jsonify({'message': 'Inicio de sesión exitoso', 'user': username}), 200
+        else:
+            return jsonify({'error': 'Datos de inicio de sesión incorrectos'}), 401   
+    else:
+        return jsonify({'error': 'Solicitud incorrecta, datos no proporcionados'}), 400
+    
+@app.route('/usuarios')
+def listar_usuarios():
+    users = UserModel.load_users()
+    return jsonify({'users': users, 'mensaje': "Usuarios Listados"}), 200
+
+############################################################################################
+# Pagina principal
+############################################################################################
+@app.route('/fabricas', methods=['GET'])
+def obtener_fabricas():
+    usuario = session.get('usuario')
+    if not usuario:
+        return jsonify({'error': 'Usuario no autenticado'}), 401
+    
+    user = UserModel.get(usuario)
+    if not user:
+        return jsonify({'error': 'Usuario no encontrado'}), 404
+
+    fabricas_data = FabricaModel.get_fabricas_by_user(user['id'])
+    fabricas = [{
+        'nombre': fabrica[0],
+        'costes': fabrica[1],
+        'beneficios': fabrica[2]
+    } for fabrica in fabricas_data]
+
+    return jsonify(fabricas), 200
+
+#Se crea la fabrica, los costes y beneficios se calculan a posteriori, estos estan por default a 0
+@app.route('/fabricas', methods=['POST'])
+def añadir_fabrica():
+    usuario = session.get('usuario')
+    if not usuario:
+        return jsonify({'error': 'Usuario no autenticado'}), 401
+
+    data = request.json
+    nombre_fabrica = data.get('nombre_fabrica')
+    user = UserModel.get(usuario)
+    resultado = FabricaModel.add_fabrica(nombre_fabrica, user['id'])
+    if resultado:
+        return jsonify({'mensaje': 'Fábrica añadida correctamente'}), 201
+    else:
+        return jsonify({'error': 'No se pudo añadir la fábrica'}), 500
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -105,73 +200,6 @@ def upload_file():
             return 'File uploaded successfully'
     return render_template('upload.html')
 
-@app.route('/usuarios')
-def listar_usuarios():
-    users = UserModel.load_users()
-    return jsonify({'users': users, 'mensaje': "Usuarios Listados"})
-
-@app.route('/register', methods = ['GET', 'POST'])
-def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        existing_user = UserModel.get(username)
-        if existing_user:
-            print('Username already exists!')
-            return render_template('register.html', form=form)
-        else: 
-            user = UserModel(
-                    username=form.username.data,
-                    name=form.name.data,
-                    surname=form.surname.data,
-                    password=form.password.data
-                )  
-            print(user)     
-            reg = UserModel.register_user(user)
-            if reg != None:
-                # Pasar el contenido JSON a la plantilla para mostrarlo
-                return jsonify({'mensaje' : "Registration successful!"})
-            else:
-                return jsonify({'mensaje' : "Usuario no se pudo registrar correctamente"})
-    else:
-        return render_template('register.html', form=form)
-
-@app.route('/login', methods=['GET','POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        # Verifica que el usuario exista y que la contraseña sea correcta
-        user = UserModel.get(form.username.data)
-        if user and check_password_hash(user.password, form.password.data):
-            # Inicia sesión del usuario
-            login_user(user)
-            
-            session['usuario'] = user
-            return redirect(url_for('index'))  # Redirige al index o donde sea necesario
-        else:
-            return 'Datos de inicio de sesión incorrectos.'
-    return render_template('login.html', form=form)
-
-@app.route('/pagina_principal', methods=['GET', 'POST'])
-def gestionar_fabricas():
-    usuario = session.get('usuario')
-    user = UserModel.get(usuario)
-    if not user:
-        flash('Usuario no encontrado', 'error')
-        return redirect(url_for('register'))
-
-    if request.method == 'POST':
-        nombre_fabrica = request.form['nombre_fabrica']
-        resultado = FabricaModel.add_fabrica(nombre_fabrica, user['id'])
-        if resultado:
-            flash('Fábrica añadida correctamente', 'success')
-        else:
-            flash('No se pudo añadir la fábrica', 'error')
-
-        return redirect(url_for('gestionar_fabricas', usuario=usuario))
-
-    fabricas = FabricaModel.get_fabricas_by_user(user['id'])
-    return render_template('fabricas.html', fabricas=fabricas, usuario=user)
 
 @app.route('/<usuario>/<fabrica>',)
 def ver_fabrica(usuario, fabrica):
