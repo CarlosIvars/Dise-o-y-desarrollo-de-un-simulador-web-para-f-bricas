@@ -1,0 +1,45 @@
+#fakeHeader {
+    display: none;
+}
+
+#content {
+    height: 100%;
+    padding: 6%;
+    display: flex;
+}
+#content > div {
+    flex: 0 0 50%;
+}
+
+#content #principal {
+    display: flex;
+    padding-right: 6%;
+    flex-direction: column;
+    justify-content: center;
+    gap: 50px;
+}
+
+#content #principal #tituloPrincipal {
+    font-size: 50px;
+}
+#content #principal #texto {
+    font-size: 30px;
+    color: gray;
+    margin-bottom: 50px;
+}
+#content #principal #botonera {
+    display: flex;
+    gap: 30px;
+}
+#content #principal #botonera div{
+    font-size: 20px;
+    border: 1px solid gray;
+    border-radius: 6px;
+    width: 200px;
+    text-align: center;
+    padding: 10px;
+}
+
+#content #logo-img {
+    border: 1px solid black;
+}

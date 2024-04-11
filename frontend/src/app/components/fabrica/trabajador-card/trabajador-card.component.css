@@ -1,0 +1,35 @@
+.trabajador-card {
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+.trabajador-card.inactivo {
+    background-color: gray;
+}
+
+.trabajador-card .img {
+    padding: 10px;
+}
+
+.trabajador-card .info .nombre {
+    font-size: 16px;
+}
+.trabajador-card .info .puesto {
+    font-size: 12px;
+}
+
+.trabajador-card .editar {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+.trabajador-card:hover .editar {
+    display: block;
+}

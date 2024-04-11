@@ -1,0 +1,11 @@
+.tareaFinal {
+    border: 1px solid lightgray;
+    background-color: white;
+    border-radius: 5px;
+    margin: 5px;
+    width: 100px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

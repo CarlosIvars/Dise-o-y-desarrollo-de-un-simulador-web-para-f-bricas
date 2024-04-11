@@ -1,0 +1,22 @@
+<div class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-title">Inicar sesion</div>
+            <div class="header-close-icon" (click)="cerrarModal()">X</div>
+        </div>
+        <div class="modal-body">
+            <form>
+                <input type="text" placeholder="Correo">
+                <input type="password" placeholder="Contraseña">
+            </form>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div>¿No tienes cuenta?</div>
+                <a href="">Registrate</a>
+            </div> 
+        </div>
+        <div class="modal-footer">
+            <button (click)="iniciarSesion()">Inicar sesión</button>
+            <button (click)="cerrarModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
