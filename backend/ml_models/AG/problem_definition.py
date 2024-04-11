@@ -19,8 +19,8 @@ from deap import creator, base
 
 
 # Define el tipo de aptitud y el tipo de individuo
-creator.create("FitnessMin", base.Fitness, weights=(-1.0,))  # Queremos minimizar la función de aptitud
-creator.create("Individual", list, fitness=creator.FitnessMin)
+creator.create("FitnessMax", base.Fitness, weights=(1.0,))  # Queremos maximizar la función de aptitud
+creator.create("Individual", list, fitness=creator.FitnessMax)
 
 def evaluate_individual(individual, beneficios, costes, fatigas, dependencias):
        
