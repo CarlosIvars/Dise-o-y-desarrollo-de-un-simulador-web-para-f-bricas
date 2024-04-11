@@ -332,10 +332,6 @@ def ver_fabrica(usuario, fabrica):
     # Aquí va la lógica para manejar la solicitud para una fábrica específica
     return render_template('pagina_fabrica.html', usuario=usuario, fabrica=fabrica)
 
-
-
-
-
 @app.route('/<usuario>/<fabrica>/skill_matching')
 def obtener_habilidades(fabrica_id):
     habilidades_maquinas = RecursosModel.obtener_habilidades_maquinas(fabrica_id)
