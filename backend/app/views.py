@@ -139,7 +139,26 @@ def login():
             return jsonify({'error': 'Datos de inicio de sesión incorrectos'}), 401   
     else:
         return jsonify({'error': 'Solicitud incorrecta, datos no proporcionados'}), 400
-    
+
+@app.route('/delete_user', methods=['DELETE'])
+def delete_user():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No se proporcionó usuario'}), 400
+        
+        username = data.get('username')
+        existing_user = UserModel.get_user(username)
+        if not existing_user:
+            return jsonify({'error': 'El usuario no existe'}), 404
+
+        UserModel.delete_user(username)
+        return jsonify({'mensaje': f'Usuario {username} eliminado exitosamente'}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al eliminar el usuario: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
+
 @app.route('/usuarios')
 def listar_usuarios():
     users = UserModel.load_users()
@@ -205,6 +224,27 @@ def seleccionar_fabrica():
 
     return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica_id}), 200
 
+@app.route('/delete_farbica', methods=['DELETE'])
+def delete_fabrica():
+    try:
+        usuario = session.get('usuario')
+        if not usuario:
+            return jsonify({'error': 'Usuario no autenticado'}), 401
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No se proporcionó fabrica'}), 400
+        
+        fabrica_id = data.get('fabrica')
+        fabrica = FabricaModel.get_fabrica_by_id(usuario,fabrica_id)
+        if not fabrica:
+            return jsonify({'error': 'La fabrica no existe'}), 404
+
+        FabricaModel.delete_fabrica(fabrica_id)
+        return jsonify({'mensaje': f'Fabrica {fabrica.get('nombre')} eliminado exitosamente'}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al eliminar el fabrica: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
 
 
 ############################################################################################
@@ -250,6 +290,48 @@ def add_maquina():
     else:
         return jsonify({'mensaje': 'La maquina no se pudo añadir correctamente'}), 500
 
+@app.route('/delete_trabajador', methods=['DELETE'])
+def delete_trabajador():
+    try:
+        fabrica_id = session.get('fabrica')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 401
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No se proporcionó trabajador'}), 400
+        
+        codigo_trabajador = data.get('trabajador')
+        trabajador = RecursosModel.get_trabajador(codigo_trabajador)
+        if not trabajador:
+            return jsonify({'error': 'El trabajador no existe'}), 404
+
+        RecursosModel.delete_trabajador(codigo_trabajador,fabrica_id)
+        return jsonify({'mensaje': f'Trabajador {trabajador.get('nombre')} eliminado exitosamente'}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al eliminar el trabajador: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+    
+@app.route('/delete_maquina', methods=['DELETE'])
+def delete_maquina():
+    try:
+        fabrica_id = session.get('fabrica')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 401
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No se proporcionó maquina'}), 400
+        
+        codigo_maquina = data.get('maquina')
+        maquina = RecursosModel.get_trabajador(codigo_maquina)
+        if not maquina:
+            return jsonify({'error': 'La maquina no existe'}), 404
+
+        RecursosModel.delete_maquina(codigo_maquina, fabrica_id)
+        return jsonify({'mensaje': f'Trabajador {maquina.get('nombre')} eliminado exitosamente'}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al eliminar la maquina: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
 
 @app.route('/add_subtask', methods = ['POST'])
 def add_subtask():
@@ -270,6 +352,26 @@ def add_subtask():
     else:
         return jsonify({'mensaje': 'Subtask no se pudo añadir correctamente'}), 500
 
+@app.route('/delete_subtask', methods=['DELETE'])
+def delete_subtask():
+    try:
+        fabrica_id = session.get('fabrica')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 401
+        data = request.json
+        if not data:
+            return jsonify({'error': 'No se proporcionó subtask'}), 400
+        
+        subtask_id = data.get('subtask')
+        subtask = TareaModel.get_subtask(subtask_id, fabrica_id)
+        if not subtask:
+            return jsonify({'error': 'La subtask no existe'}), 404
+
+        TareaModel.delete_subtask(subtask_id, fabrica_id)
+        return jsonify({'mensaje': f'Subtask {subtask.get('nombre')} eliminada exitosamente'}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al eliminar la subtask: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
 
 @app.route('/alg_genetico', methods = ['GET'])
 def algoritmo_genetico():

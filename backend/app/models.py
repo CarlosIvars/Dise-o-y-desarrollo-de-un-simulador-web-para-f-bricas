@@ -1,15 +1,54 @@
 # Modelos de base de datos
+"""
+Resumen de Funciones y Clases:
+Clase UserModel:
+- __init__(username, name=None, surname=None, password=None)
+- get_user(username)
+- load_users()
+- register_user(user)
+- delete_user(username)
+- check_password(password)
 
-##########################################################################################
-#Funciones UserModel: get_user, load_users, register_user, check_password, delete_user
-#Funciones FabricaModel: add_fabrica, get_fabrica, get_costes_beneficios,
-#Funciones RecursosModel: get_humanos_fabrica, get_maquinas_fabrica, get_habilidades_maquina
-#                         get_habilidades_trabajadores, obtener_habilidades_recursos, add_maquina
-#                         add_trabajador
-#Funciones TareaModel: get_soft_skills, get_hard_skills, get_habilidades_subtareas, 
-#                      obtener_skills_chatGPT, add_subtask, skills_matching???
-#
-##########################################################################################
+Clase FabricaModel:
+- add_fabrica(nombre, id_usuario)
+- get_fabrica(id_usuario)
+- get_fabrica_by_id(id_usuario, id_fabrica)
+- get_costes_beneficios(id_fabrica)
+- delete_fabrica(id_fabrica)
+- update_fabrica(fabrica_id, nombre=None, nuevos_costes=None, nuevos_beneficios=None)
+
+Clase RecursosModel:
+- get_humanos_fabrica(id_fabrica)
+- get_maquinas_farbica(id_fabrica)
+- get_trabajador(codigo)
+- get_maquina(codigo)
+- add_maquina(id_fabrica, nombre, fatiga, coste_uso, habilidades)
+- add_trabajador(id_fabrica, nombre, apellidos, fecha_n, fatiga, coste_uso, preferencia, habilidades)
+- delete_trabajador(codigo_trabajador, id_fabrica)
+- update_trabajador(trabajador_id, nombre=None, apellidos=None, fecha_nacimiento=None, trabajos_apto=None, fatiga=None, coste_h=None, preferencias_trabajo=None, nuevas_habilidades=None)
+- delete_maquina(codigo_maquina, id_fabrica)
+- update_maquina(maquina_id, nombre=None, fatiga=None, coste_h=None, habilidades=None)
+- get_habilidades_maquinas(id_fabrica)
+- get_habilidades_trabajadores(fabrica_id)
+- obtener_habilidades_recursos(fabrica_id)
+- calcular_fatiga_total(asignacion)
+- fatiga_recursos(fabrica_id)
+- coste_recursos(fabrica_id)
+- calcular_coste_total(asignacion)
+
+Clase TareaModel:
+- get_soft_skills()
+- get_hard_skills(sector)
+- get_habilidades_subtareas(fabrica_id)
+- obtener_skills_chatGPT(sector,descripcion)
+- add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector)
+- delete_subtask(id_subtask)
+- update_subtask(fabrica_id, subtask_id, nombre=None, duracion=None, beneficio=None, descripcion=None,  nuevas_habilidades=None)
+- beneficio_subtasks(fabrica_id)
+- dependencias_subtasks(skills_matching)
+- skills_matching(fabrica_id)
+"""
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from flask_mysqldb import MySQL
@@ -202,6 +241,28 @@ class RecursosModel:
         except Exception as ex:
             print(f"Error al obtener los IDs de las máquinas: {ex}")
             return []
+
+    @staticmethod
+    def get_trabajador(codigo):
+        try:
+            cursor = get_db_connection().cursor()
+            sql = "SELECT id, nombre, fatiga, trabajo_id  FROM Trabajadores WHERE codigo = %s"
+            cursor.execute(sql, (codigo,))
+            return cursor.fetchone()
+        except Exception as ex:
+            print(f"Error al obtener el trabajador: {ex}")
+            return None
+        
+    @staticmethod
+    def get_maquina(codigo):
+        try:
+            cursor = get_db_connection().cursor()
+            sql = "SELECT id, nombre, fatiga, trabajo_id  FROM Maquinas WHERE codigo = %s"
+            cursor.execute(sql, (codigo,))
+            return cursor.fetchone()
+        except Exception as ex:
+            print(f"Error al obtener la maquina: {ex}")
+            return None
 
     @staticmethod
     def add_maquina(id_fabrica, nombre, fatiga, coste_uso, habilidades):
@@ -589,6 +650,17 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
         return habilidades
     
     @staticmethod
+    def get_subtask(subtask_id,fabrica_id):
+        try:
+            cursor = get_db_connection().cursor()
+            sql =  "SELECT nombre, duracion, beneficio,descripcion FROM Subtasks WHERE id = %s AND fabrica_id= %s"
+            cursor.execute(sql, (subtask_id,fabrica_id))
+            return cursor.fetchone()
+        except Exception as ex:
+            print(f"Error al obtener fábricas: {ex}")
+            return None
+        
+    @staticmethod
     def add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector):
         # guardar los datos en la base de datos
         # se debe rellenar la tabla de skills_subtaks, tiendo en cuenta la tarea a la que estamos 
@@ -612,6 +684,20 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             print(f"Error al insertar subtarea en la base de datos: {ex}")
             return {}
     
+    @staticmethod
+    def delete_subtask(id, fabrica_id):
+        try:
+            cursor = get_db_connection().cursor()
+
+            # Luego, eliminar la subtarea de la tabla de subtasks
+            sql_subtask = "DELETE FROM Subtasks WHERE codigo = %s AND fabrica_id = %s"
+            cursor.execute(sql_subtask, (id,fabrica_id,))
+
+            conexion.connection.commit()
+        except Exception as ex:
+            print(f"Error al eliminar subtarea de la base de datos: {ex}")
+
+
     @staticmethod
     def update_subtask(fabrica_id, subtask_id, nombre=None, duracion=None, beneficio=None, descripcion=None,  nuevas_habilidades=None):
         try:
