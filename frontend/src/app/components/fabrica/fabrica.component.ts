@@ -3,6 +3,9 @@ import { Component } from '@angular/core';
 import { Fabrica, Trabajador, Maquina, TareaInicial, Tarea, TareaFinal } from '../../interfaces/interfaces';
 import { FabricaService } from '../../services/fabrica.service';
 import { Subscription } from 'rxjs';
+import { TareasService } from '../../services/tareas.service';
+import { TrabajadoresService } from '../../services/trabajadores.service';
+import { TimerService } from '../../services/timer.service';
 
 @Component({
   selector: 'app-fabrica',
@@ -27,14 +30,14 @@ export class FabricaComponent {
   tareasFinales: TareaFinal[] = [];
   private tareasFinalesSub?: Subscription;
 
-  constructor(private fabricaService: FabricaService) {}
+  constructor(private fabricaService: FabricaService, private trabajadoresService: TrabajadoresService, private tareasService: TareasService, private timerService: TimerService) {}
 
   ngOnInit(): void {
     this.fabricaSub = this.fabricaService.fabrica$.subscribe(fabrica => {
       this.fabrica = fabrica;
     });
 
-    this.trabajadoresSub = this.fabricaService.trabajadores$.subscribe(trabajadores => {
+    this.trabajadoresSub = this.trabajadoresService.trabajadores$.subscribe(trabajadores => {
       this.trabajadores = trabajadores;
     });
 
@@ -42,7 +45,7 @@ export class FabricaComponent {
       this.tareasIniciales = tareasIniciales;
     });
 
-    this.tareasSub = this.fabricaService.tareas$.subscribe(tareas => {
+    this.tareasSub = this.tareasService.tareas$.subscribe(tareas => {
       this.tareas = tareas;
     });
 
@@ -79,10 +82,10 @@ export class FabricaComponent {
   toggleFabricaEjecucion() {
     if (this.fabrica?.activa == true) {
       this.fabrica.activa = false;
-      this.fabricaService.pararEjecucion();
+      this.timerService.pararEjecucion();
     } else if (this.fabrica?.activa == false) {
       this.fabrica.activa = true;
-      this.fabricaService.iniciarEjecucion();
+      this.timerService.iniciarEjecucion();
     }
   }
 

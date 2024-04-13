@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ApiService } from '../../services/api-service.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-inicio',
