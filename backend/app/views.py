@@ -14,6 +14,8 @@ from ml_models.AG.genetic_algorithm import *
 #'Bearer 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'
 @app.route('/')
 def init():
+    data = UserModel.load_users()
+    print(data)
     skills_matching = {
     'Tarea1': ['Humano1', 'Humano2', 'Humano3', 'Humano4'],
     'Tarea2': ['Humano1', 'Humano4', 'Humano5', 'Humano6'],
