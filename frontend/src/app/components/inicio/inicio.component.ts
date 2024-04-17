@@ -8,23 +8,36 @@ import { ApiService } from '../../services/api.service';
 })
 
 export class InicioComponent {
-  mostarlogin = false;
+  mostrarlogin = false;
   mostrarRegistro = false;
   
   constructor(private apiService: ApiService ) {}
 
-  iniciarSesion() {
-    this.mostarlogin = true;
+  //Iniciar sesion
+  abrirIncioSesion() {
+    this.mostrarRegistro = false;
+    this.mostrarlogin = true;
   }
   
-  onLoginClosed(abrir: boolean) {
-    this.mostarlogin = false;
+  cerrarIncioSesion() {
+    this.mostrarlogin = false;
+  }
+
+  //Registrarse
+  abrirRegistroUsuario() {
+    this.mostrarlogin = false;
+    this.mostrarRegistro = true;
+  }
+
+  cerrarRegistroUsuario() {
+    this.mostrarRegistro = false;
   }
 
   login() {
-    this.apiService.login().subscribe({
+    console.log("Click login");
+    this.apiService.login("Prueba", "1").subscribe({
       next: (response) => console.log("Respuesta: ", response),
-      error: (error) => alert("Error: " + error)
+      error: (error) => {alert("Error: " + error);}
     });
   }
 }

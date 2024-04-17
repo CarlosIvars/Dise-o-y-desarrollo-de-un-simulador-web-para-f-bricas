@@ -15,6 +15,12 @@ import { TareaFinalCardComponent } from './components/fabrica/tarea-final-card/t
 import { LoginFormComponent } from './components/inicio/login-form/login-form.component';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { errorHandlerInterceptor } from './interceptors/error-handler.interceptor';
+import { RegisterFormComponent } from './components/inicio/register-form/register-form.component';
+import { FormsModule } from '@angular/forms';
+import { CrearFabricaFormComponent } from './components/zona-personal/new-fabrica-form/crear-fabrica-form.component';
+import { TrabajadoresFormComponent } from './components/fabrica/trabajadores-form/trabajadores-form.component';
+import { MaquinasFormComponent } from './components/fabrica/maquinas-form/maquinas-form.component';
+import { TareasFormComponent } from './components/fabrica/tareas-form/tareas-form.component';
 
 @NgModule({
   declarations: [
@@ -27,11 +33,17 @@ import { errorHandlerInterceptor } from './interceptors/error-handler.intercepto
     TareaCardComponent,
     TareaInicialCardComponent,
     TareaFinalCardComponent,
-    LoginFormComponent
+    LoginFormComponent,
+    RegisterFormComponent,
+    CrearFabricaFormComponent,
+    TrabajadoresFormComponent,
+    MaquinasFormComponent,
+    TareasFormComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [provideHttpClient(withInterceptors([errorHandlerInterceptor]))],
   bootstrap: [AppComponent]

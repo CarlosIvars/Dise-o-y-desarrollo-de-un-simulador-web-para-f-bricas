@@ -23,9 +23,7 @@ export class FabricaService {
   private tareasFinalesSubject = new BehaviorSubject<TareaFinal[]>([]);
   tareasFinales$ = this.tareasFinalesSubject.asObservable();
 
-  constructor() {
-    this.actualizarFabrica(new FabricaImpl(1, "Fabrica por defecto", 1, 7, 41, 5000, 300));
-  }
+  constructor() { }
 
   // Metodos para la Fabrica
   actualizarFabrica(fabrica: Fabrica) {
@@ -42,13 +40,9 @@ export class FabricaService {
     this.tareasFinalesSubject.next(tareasFinales);
   }
 
-  //Otros...
-  inicializarFabricaDefault(): { maquinas: Maquina[] } {
+  // Otros...
+  inicializarFabricaDefault(): void {
     //Inicializamos una fábrica default
-    const maquinas: Maquina[] = [];
-    maquinas.push(new MaquinaImpl(1, "Picadora industrial", "Prueba", 800, "#FF0000"));
-    maquinas.push(new MaquinaImpl(2, "Ensamblaje", "Prueba2", 600, "#0023FF"));
-
     const tareasIniciales: TareaInicial[] = [];
     tareasIniciales.push(new TareaInicialImpl(1, "Tornillos", 20, 5));
     this.actualizarTareasIniciales(tareasIniciales);
@@ -57,7 +51,5 @@ export class FabricaService {
     tareasFinales.push(new TareaFinalImpl(1, 100));
     //tareasFinales[0].addDependencias(tareas[0]);
     this.actualizarTareasFinales(tareasFinales);
-    
-    return { maquinas };
   }
 }

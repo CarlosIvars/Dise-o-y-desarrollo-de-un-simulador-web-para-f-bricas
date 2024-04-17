@@ -11,7 +11,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 const routes: Routes = [
     { path: '', component: InicioComponent },
     { path: 'zona-personal', component: ZonaPersonalComponent},
-    { path: 'fabrica', component: FabricaComponent},
+    { path: 'fabrica/:id', component: FabricaComponent},
     { path: '**', component: PageNotFoundComponent}
 ];
 

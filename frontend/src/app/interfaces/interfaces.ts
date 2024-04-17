@@ -64,3 +64,11 @@ export interface TareaDependencia {
     id: number,
     cantidad: number
 }
+
+export interface User {
+    id: number,
+    nombre: string,
+    apellidos: string,
+    password: string,
+    username: string
+}

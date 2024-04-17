@@ -12,11 +12,12 @@
         <div id="tituloPrincipal">Simulador de fábricas</div>
         <div id="texto">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
         <div id="botonera">
-            <div (click)="iniciarSesion()">Iniciar sesión</div>
-            <div>Registrarse</div>
+            <div (click)="abrirIncioSesion()">Iniciar sesión</div>
+            <div (click)="abrirRegistroUsuario()">Registrarse</div>
         </div>
     </div>
     <div id="logo-img"></div>
     <div (click)="login()">Prueba api</div>
 </div>
-<app-login-form *ngIf="mostarlogin" (loginClosed)="onLoginClosed($event)"></app-login-form>
+<app-login-form *ngIf="mostrarlogin" (close)="cerrarIncioSesion()" (registroUsuario)="abrirRegistroUsuario()"></app-login-form>
+<app-register-form *ngIf="mostrarRegistro" (close)="cerrarRegistroUsuario()" (inicioSesion)="abrirIncioSesion()"></app-register-form>

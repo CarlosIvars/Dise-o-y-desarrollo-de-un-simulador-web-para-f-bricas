@@ -27,3 +27,62 @@ header{
     border: 1px solid black;
     border-radius: 30px;
 }
+
+/* Ventanas modales */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 9998;
+    backdrop-filter: blur(5px);
+}
+
+.modal-container {
+    width: 400px;
+    height: 400px;
+    background-color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header{
+    flex-grow: 0;
+    display: flex;
+    align-items: center;
+    height: 30px;
+    border-bottom: 1px solid lightgray;
+    padding: 20px;
+    padding-top: 23px;
+}
+
+.modal-header .modal-title {
+    font-size: 20px;
+    font-weight: bold;
+    flex-grow: 1;
+}
+
+.modal-header .modal-close-icon {
+    flex-grow: 0;
+}
+
+.modal-body {
+    flex-grow: 1;
+    padding: 20px 20px;
+}
+
+.modal-footer {
+    flex-grow: 0;
+    padding: 15px;
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+}

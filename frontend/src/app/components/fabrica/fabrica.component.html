@@ -11,23 +11,30 @@
         Alberto
     </div>
 </header>
-<div id="content">
+<div *ngIf="cargando">Cargando la fabrica...</div>
+<div *ngIf="!cargando" id="content">
     <div class="barra-lateral" id="bl-izquierda">
         <div class="seccion" id="sc-trabajadores">
-            <div class="titulo">Trabajadores</div>
+            <div class="sc-header">
+                <div>Trabajadores</div>
+                <button (click)="abrirTrabajadoresForm()">Añadir</button>
+            </div>
             <div class="lista-card">
                 <app-trabajador-card *ngFor="let trabajador of trabajadores" [trabajador]="trabajador"></app-trabajador-card>
             </div>
         </div>
         <div class="seccion" id="sc-maquinas">
-            <div class="titulo">Máquinas</div>
+            <div class="sc-header">
+                <div>Máquinas</div>
+                <button (click)="abrirMaquinasForm()">Añadir</button>
+            </div>
             <div class="lista-card">
                 <app-maquina-card *ngFor="let maquina of maquinas" [maquina]="maquina"></app-maquina-card>
             </div>
         </div>
     </div>
     <div id="seccion-principal">
-        <p>Sección principal de la fabrica.</p>
+        <button (click)="abrirTareasForm()" style="margin: 5px; float: right;" >Añadir tarea</button>
         <app-tarea-inicial-card *ngFor="let tareaInicial of tareasIniciales" [tareaInciial]="tareaInicial"></app-tarea-inicial-card>
         <app-tarea-card *ngFor="let tarea of tareas" [tarea]="tarea"></app-tarea-card>
         <app-tarea-final-card *ngFor="let tareaFinal of tareasFinales" [tareaFinal]="tareaFinal"></app-tarea-final-card>
@@ -36,3 +43,6 @@
         <p>Barra lateral derecha.</p>
     </div>
 </div>
+<app-trabajadores-form *ngIf="trabajadoresForm" (close)="cerrarTrabajadoresForm()"></app-trabajadores-form>
+<app-maquinas-form *ngIf="maquinasForm" (close)="cerrarMaquinasForm()"></app-maquinas-form>
+<app-tareas-form *ngIf="tareasForm" (close)="cerrarTareasForm()"></app-tareas-form>

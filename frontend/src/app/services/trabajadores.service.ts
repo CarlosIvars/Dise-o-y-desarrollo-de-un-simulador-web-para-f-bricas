@@ -11,14 +11,7 @@ export class TrabajadoresService {
   private trabajadoresSubsject = new BehaviorSubject<Trabajador[]>([]);
   trabajadores$ = this.trabajadoresSubsject.asObservable();
 
-  constructor() { 
-
-    const trabajadores: Trabajador[] = [];
-    trabajadores.push(new TrabajadorImpl(1, "Carlos", "Ingeniero", 1800, "#FF0000", false));
-    trabajadores.push(new TrabajadorImpl(2, "Javi", "Programador", 1600, "#0023FF", false));
-    this.actualizarTrabajadores(trabajadores);
-
-  }
+  constructor() { }
 
   actualizarTrabajadores(trabajadores: Trabajador[]) {
     this.trabajadoresSubsject.next(trabajadores);
@@ -31,6 +24,12 @@ export class TrabajadoresService {
       trabajadores[index] = trabajador;
       this.actualizarTrabajadores(trabajadores);
     }
+  }
+
+  anyadirTrabajador(trabajador: Trabajador) {
+    const trabajadores = this.trabajadoresSubsject.getValue();
+    trabajadores.push(trabajador);
+    this.actualizarTrabajadores(trabajadores);
   }
 
 }

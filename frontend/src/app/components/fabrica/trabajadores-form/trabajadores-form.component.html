@@ -1,0 +1,23 @@
+<div class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-title">Nuevo trabajador</div>
+            <div class="header-close-icon" (click)="cerrarModal()">X</div>
+        </div>
+        <div class="modal-body">
+            <form>
+                <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
+                <input type="text" [(ngModel)]="apellidos" name="apellidos" placeholder="Apellidos">
+                <input type="text" [(ngModel)]="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento">
+                <input type="text" [(ngModel)]="fatiga" name="fatiga" placeholder="Fatiga">
+                <input type="text" [(ngModel)]="coste_h" name="coste_h" placeholder="Coste por horas">
+                <input type="text" [(ngModel)]="preferencias" name="preferencias" placeholder="Preferencias">
+                <input type="text" [(ngModel)]="skills" name="skills" placeholder="Skills">
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button (click)="crearTrabajador()" [disabled]="cargando">Crear trabajador</button>
+            <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
+        </div>
+    </div>
+</div>

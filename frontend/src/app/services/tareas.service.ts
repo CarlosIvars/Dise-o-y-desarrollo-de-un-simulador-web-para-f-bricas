@@ -12,16 +12,7 @@ export class TareasService {
   private tareasSubject = new BehaviorSubject<Tarea[]>([]);
   tareas$ = this.tareasSubject.asObservable();
 
-  constructor(private trabajadoresService: TrabajadoresService) { 
-
-    const tareas: Tarea[] = [];
-    tareas.push(new TareaImpl(1, "Preparar", 10, 5, 0));
-    tareas.push(new TareaImpl(2, "Procesar", 0, 15, 0));
-    tareas.push(new TareaImpl(3, "Embalar", 0, 7, 0));
-    //tareas[0].addDependencias(tareasIniciales[0]);
-    this.actualizarTareas(tareas);
-
-  }
+  constructor(private trabajadoresService: TrabajadoresService) { }
 
   actualizarTareas(tareas: Tarea[]) {
     this.tareasSubject.next(tareas);
@@ -34,6 +25,12 @@ export class TareasService {
       tareas[index] = tarea;
       this.actualizarTareas(tareas);
     }
+  }
+
+  anyadirTarea(tarea: Tarea) {
+    const tareas = this.tareasSubject.getValue();
+    tareas.push(tarea);
+    this.actualizarTareas(tareas);
   }
 
   asignarTrabajadorATarea(tarea: Tarea, trabajador: Trabajador) {
