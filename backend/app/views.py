@@ -14,6 +14,7 @@ from ml_models.AG.genetic_algorithm import *
 def init():
     data = UserModel.load_users()
     print(data)
+    print(app.config)
     skills_matching = {
     'Tarea1': ['Humano1', 'Humano2', 'Humano3', 'Humano4'],
     'Tarea2': ['Humano1', 'Humano4', 'Humano5', 'Humano6'],
@@ -131,10 +132,8 @@ def login():
         if not username or not password:
             return jsonify({'error': 'Faltan datos de usuario o contraseña'}), 400        
         user = UserModel.get_user(username)
-        print(user)
         if user and check_password_hash(user.get('password'), password):      
             session['usuario'] = user.get('username') # Guarda el username en el session
-            print(session)
             return jsonify({'message': 'Inicio de sesión exitoso', 'user': username}), 200
         else:
             return jsonify({'error': 'Datos de inicio de sesión incorrectos'}), 401   
@@ -170,7 +169,6 @@ def listar_usuarios():
 ############################################################################################
 @app.route('/fabricas', methods=['GET'])
 def obtener_fabricas():
-    print(session)
     usuario = session.get('usuario')
     if not usuario:
         return jsonify({'error': 'Usuario no autenticado'}), 401
