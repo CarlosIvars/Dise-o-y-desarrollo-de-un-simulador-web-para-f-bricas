@@ -244,7 +244,27 @@ def delete_fabrica():
         app.logger.error(f'Error al eliminar el fabrica: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
 
+@app.route('/update_fabrica', methods =['PUT'])
+def update_farbica():
+    try:
+        usuario = session.get('usuario')
+        if not usuario:
+            return jsonify({'error': 'Usuario no autenticado'}), 401
+        
+        data=request.json
+        if not data:
+            return jsonify({'error': 'No se proporcionó fabrica'}), 400
+        
+        fabrica_id = data.get('id')
+        nombre = data.get('nombre')
+        nuevos_costes = data.get('costes')
+        nuevos_beneficios = data.get('beneficios')
 
+        FabricaModel.update_fabrica(fabrica_id, nombre, nuevos_costes, nuevos_beneficios)
+        return jsonify({'mensaje': 'fabrica actualizada'}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al actualizar el fabrica: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
 
 ############################################################################################
 # Simulador
@@ -329,6 +349,56 @@ def delete_maquina():
         return jsonify({'mensaje': f"Maquina {maquina.get('nombre')} eliminado exitosamente"}), 200
     except Exception as ex:
         app.logger.error(f'Error al eliminar la maquina: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
+@app.route('/update_trabajador', methods =['PUT'])
+def update_trabajador():
+    try:
+        fabrica_id = session.get('fabrica')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 401
+        
+        data=request.json
+        if not data:
+            return jsonify({'error': 'No se proporcionó trabajador'}), 400
+        
+        trabajador_id = data.get('id')
+        nombre = data.get('nombre')
+        apellidos = data.get('apellidos')
+        fecha_nacimiento = data.get('fecha_nacimiento')
+        coste_h = data.get('coste_h')
+        fatiga = data.get('fatiga')
+        preferencias_trabajo = data.get('preferencia_trabajo')
+        trabajos_apto = data.get('trabajos_apto')
+        nuevas_habilidades = data.get('nuevas_habilidades')
+
+        RecursosModel.update_trabajador(trabajador_id, nombre, apellidos, fecha_nacimiento, trabajos_apto, fatiga, coste_h, preferencias_trabajo, nuevas_habilidades)
+        return jsonify({'mensaje': 'Trabajador actualizado'}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al actualizar el trabajador: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
+@app.route('/update_maquina', methods =['PUT'])
+def update_maquina():
+    try:
+        fabrica_id = session.get('fabrica')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 401
+        
+        data=request.json
+        if not data:
+            return jsonify({'error': 'No se proporcionó trabajador'}), 400
+        
+        maquina_id = data.get('id')
+        nombre = data.get('nombre')
+        coste_h = data.get('coste_h')
+        fatiga = data.get('fatiga')
+        nuevas_habilidades = data.get('nuevas_habilidades')
+
+        RecursosModel.update_maquina(maquina_id, nombre, fatiga, coste_h, nuevas_habilidades)
+        return jsonify({'mensaje': 'Trabajador actualizado'}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al actualizar el trabajador: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
 
 
