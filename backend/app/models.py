@@ -83,12 +83,13 @@ class UserModel(UserMixin):
     def get_user(username):
         try:
             cursor = get_db_connection().cursor()
+           
             sql = "SELECT id, nombre, apellidos, username, password FROM usuarios WHERE username = '{0}'".format(username)
             cursor.execute(sql)
             datos = cursor.fetchone()
             
             if datos != None:
-                user = {'id': datos[0], 'nombre': datos[1], 'apellidos': datos[2], 'username': datos[3], 'password' : datos[4]}                
+                user = {'id': datos[0], 'nombre': datos[1], 'apellidos': datos[2], 'username': datos[3], 'password' : datos[4]}            
                 return user
             else:
                 return None
@@ -143,7 +144,7 @@ class FabricaModel:
             sql =  "INSERT INTO Fabrica (nombre, usuario_id) VALUES (%s, %s)"
             cursor.execute(sql, (nombre, id_usuario))
             conexion.connection.commit()
-            return nombre  # Retorna el ID de la nueva fábrica
+            return nombre  
         except Exception as ex:
             print(f"Error al añadir fábrica: {ex}")
             return None

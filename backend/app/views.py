@@ -8,9 +8,7 @@ from ml_models import *
 import numpy as np
 import json
 from config import config
-#from ml_models.AG.genetic_algorithm import run_genetic_algorithm
 from ml_models.AG.genetic_algorithm import *
-#from ml_models.AG.problem_definition import evaluate_individual
 #'Bearer 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'
 @app.route('/')
 def init():
@@ -107,7 +105,7 @@ def register():
     if not all([username, name, surname, password]):
         return jsonify({'error': 'Faltan datos necesarios para el registro'}), 400
 
-    existing_user = UserModel.get(username)
+    existing_user = UserModel.get_user(username)
     if existing_user:
         return jsonify({'error': 'El nombre de usuario ya existe'}), 409
 
@@ -130,12 +128,13 @@ def login():
     if data:
         username = data.get('username')
         password = data.get('password')
-
         if not username or not password:
             return jsonify({'error': 'Faltan datos de usuario o contraseña'}), 400        
-        user = UserModel.get(username)
-        if user and check_password_hash(user.password, password):      
-            session['usuario'] = user.username  # Guarda el username en el session
+        user = UserModel.get_user(username)
+        print(user)
+        if user and check_password_hash(user.get('password'), password):      
+            session['usuario'] = user.get('username') # Guarda el username en el session
+            print(session)
             return jsonify({'message': 'Inicio de sesión exitoso', 'user': username}), 200
         else:
             return jsonify({'error': 'Datos de inicio de sesión incorrectos'}), 401   
@@ -171,15 +170,15 @@ def listar_usuarios():
 ############################################################################################
 @app.route('/fabricas', methods=['GET'])
 def obtener_fabricas():
+    print(session)
     usuario = session.get('usuario')
     if not usuario:
         return jsonify({'error': 'Usuario no autenticado'}), 401
     
-    user = UserModel.get(usuario)
+    user = UserModel.get_user(usuario)
     if not user:
         return jsonify({'error': 'Usuario no encontrado'}), 404
-
-    fabricas_data = FabricaModel.get_fabricas_by_user(user['id'])
+    fabricas_data = FabricaModel.get_fabrica(user['id'])
     fabricas = [{
         'nombre': fabrica[0],
         'costes': fabrica[1],
@@ -197,7 +196,7 @@ def añadir_fabrica():
 
     data = request.json
     nombre_fabrica = data.get('nombre_fabrica')
-    user = UserModel.get(usuario)
+    user = UserModel.get_user(usuario)
     resultado = FabricaModel.add_fabrica(nombre_fabrica, user['id'])
     if resultado:
         return jsonify({'mensaje': 'Fábrica añadida correctamente'}), 201
@@ -214,12 +213,12 @@ def seleccionar_fabrica():
     if not data or 'fabrica_id' not in data:
         return jsonify({'error': 'No se proporcionó fabrica_id'}), 400
     
-    user = UserModel.get(usuario)
+    user = UserModel.get_user(usuario)
     fabrica_id = data.get('fabrica_id')
     fabrica = FabricaModel.get_fabrica_by_id(user['id'], fabrica_id)
     
     if not fabrica:
-        return jsonify({'mensaje': 'Fábrica no encontrada correctamente'}), 404
+        return jsonify({'mensaje': "Fábrica no encontrada correctamente"}), 404
 
 
     session['fabrica'] = fabrica_id
@@ -242,7 +241,7 @@ def delete_fabrica():
             return jsonify({'error': 'La fabrica no existe'}), 404
 
         FabricaModel.delete_fabrica(fabrica_id)
-        return jsonify({'mensaje': f'Fabrica {fabrica.get('nombre')} eliminado exitosamente'}), 200
+        return jsonify({'mensaje': f"Fabrica {fabrica.get('nombre')} eliminado exitosamente"}), 200
     except Exception as ex:
         app.logger.error(f'Error al eliminar el fabrica: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -308,7 +307,7 @@ def delete_trabajador():
             return jsonify({'error': 'El trabajador no existe'}), 404
 
         RecursosModel.delete_trabajador(codigo_trabajador,fabrica_id)
-        return jsonify({'mensaje': f'Trabajador {trabajador.get('nombre')} eliminado exitosamente'}), 200
+        return jsonify({'mensaje': f"Trabajador {trabajador.get('nombre')} eliminado exitosamente"}), 200
     except Exception as ex:
         app.logger.error(f'Error al eliminar el trabajador: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -329,7 +328,7 @@ def delete_maquina():
             return jsonify({'error': 'La maquina no existe'}), 404
 
         RecursosModel.delete_maquina(codigo_maquina, fabrica_id)
-        return jsonify({'mensaje': f'Trabajador {maquina.get('nombre')} eliminado exitosamente'}), 200
+        return jsonify({'mensaje': f"Maquina {maquina.get('nombre')} eliminado exitosamente"}), 200
     except Exception as ex:
         app.logger.error(f'Error al eliminar la maquina: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -370,7 +369,7 @@ def delete_subtask():
             return jsonify({'error': 'La subtask no existe'}), 404
 
         TareaModel.delete_subtask(subtask_id, fabrica_id)
-        return jsonify({'mensaje': f'Subtask {subtask.get('nombre')} eliminada exitosamente'}), 200
+        return jsonify({'mensaje': f"Subtask {subtask.get('nombre')} eliminada exitosamente"}), 200
     except Exception as ex:
         app.logger.error(f'Error al eliminar la subtask: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -410,7 +409,7 @@ def algoritmo_genetico():
     return jsonify(resultado), 200
 
 ############################################################################################
-# En proceso
+# En proceso ¡¡¡No usar aun !!!
 ############################################################################################
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():

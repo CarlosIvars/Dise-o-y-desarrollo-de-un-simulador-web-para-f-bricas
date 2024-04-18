@@ -14,21 +14,26 @@ export class ApiService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
-      })
+      }),
+      withCredentials: true
     };
 
-    return this.http.post<any>(`${environment.apiUrlBase}/login`, {username, password}, httpOptions);
+    return this.http.post<any>(`${environment.apiUrlBase}/login`, {username, password}, httpOptions, );
   }
 
   getAllFabricas(): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrlBase}/fabricas`);
+    const httpOptions = {
+      withCredentials: true
+    };
+    return this.http.get<any>(`${environment.apiUrlBase}/fabricas`, httpOptions);
   }
 
   iniciarFabrica(fabrica_id: number): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
-      })
+      }),
+      withCredentials: true
     };
 
     return this.http.post<any>(`${environment.apiUrlBase}/select_fabrica`, {fabrica_id}, httpOptions);
