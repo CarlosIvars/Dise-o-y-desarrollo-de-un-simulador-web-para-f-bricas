@@ -607,7 +607,7 @@ class TareaModel:
             for codigo, soft_skills, technical_skills in cursor.fetchall():
                 habilidades_subtareas[codigo] = {
                     'soft_skills': soft_skills.split(',') if soft_skills else [],
-                    'technical_skills': technical_skills.split(',') if technical_skills else []
+                    'hard_skills': technical_skills.split(',') if technical_skills else []
                 }
             return habilidades_subtareas
         except Exception as ex:
@@ -747,6 +747,21 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
         except Exception as ex:
             print(f"Error al obtener los beneficios: {ex}")
             return None
+
+    @staticmethod
+    def add_dependencias_subtasks(subtask_dependiente, subtask_dependencia):
+        try:
+            connection = get_db_connection()
+            cursor = connection.cursor()
+            
+            sql = "INSERT INTO relaciones_subtasks (dependiente, dependencia) VALUES (%s, %s)"
+            cursor.execute(sql, (subtask_dependiente, subtask_dependencia))
+            connection.commit()
+            return True
+    
+        except Exception as ex:
+            print(f"Error al añadir la dependencia: {ex}")
+            return False
 
     @staticmethod
     def dependencias_subtasks(skills_matching):

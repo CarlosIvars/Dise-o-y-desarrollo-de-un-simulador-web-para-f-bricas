@@ -12,7 +12,8 @@ from ml_models.AG.genetic_algorithm import *
 #'Bearer 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'
 @app.route('/')
 def init():
-    data = UserModel.load_users()
+    
+    data = FabricaModel.get_fabrica(7)
     print(data)
     print(app.config)
     skills_matching = {
@@ -28,7 +29,6 @@ def init():
     'Tarea10': ['Humano30'],
     'Tarea11': ['Humano30'],
 
-    # Puedes seguir expandiendo según sea necesario
     }
     beneficios= {
         'Tarea1': 100,
@@ -178,11 +178,11 @@ def obtener_fabricas():
         return jsonify({'error': 'Usuario no encontrado'}), 404
     fabricas_data = FabricaModel.get_fabrica(user['id'])
     fabricas = [{
-        'nombre': fabrica[0],
-        'costes': fabrica[1],
-        'beneficios': fabrica[2]
+        'nombre': fabrica[1],
+        'costes': fabrica[2],
+        'beneficios': fabrica[3]
     } for fabrica in fabricas_data]
-
+    print(fabricas)
     return jsonify(fabricas), 200
 
 #Se crea la fabrica, los costes y beneficios se calculan a posteriori, estos estan por default a 0
@@ -193,6 +193,7 @@ def añadir_fabrica():
         return jsonify({'error': 'Usuario no autenticado'}), 401
 
     data = request.json
+    print(data)
     nombre_fabrica = data.get('nombre_fabrica')
     user = UserModel.get_user(usuario)
     resultado = FabricaModel.add_fabrica(nombre_fabrica, user['id'])
@@ -244,7 +245,7 @@ def delete_fabrica():
         app.logger.error(f'Error al eliminar el fabrica: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
 
-@app.route('/update_fabrica', methods =['PUT'])
+@app.route('/update_fabrica', methods =['PATCH'])
 def update_farbica():
     try:
         usuario = session.get('usuario')
@@ -351,7 +352,7 @@ def delete_maquina():
         app.logger.error(f'Error al eliminar la maquina: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
 
-@app.route('/update_trabajador', methods =['PUT'])
+@app.route('/update_trabajador', methods =['PATCH'])
 def update_trabajador():
     try:
         fabrica_id = session.get('fabrica')
@@ -378,7 +379,7 @@ def update_trabajador():
         app.logger.error(f'Error al actualizar el trabajador: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
 
-@app.route('/update_maquina', methods =['PUT'])
+@app.route('/update_maquina', methods =['PATCH'])
 def update_maquina():
     try:
         fabrica_id = session.get('fabrica')
@@ -404,22 +405,32 @@ def update_maquina():
 
 @app.route('/add_subtask', methods = ['POST'])
 def add_subtask():
-    fabrica_id = session.get('fabrica')
-    data = request.json
-    if not fabrica_id:
-        return jsonify({'error': 'Fabrica no encontrada'}), 404
-    if not data or not all(key in data for key in ['nombre','duracion', 'beneficio', 'descripcion','sector']):
-        return jsonify({'error': 'Datos incompletos'}), 400
-    sector = data.get('sector')
-    nombre = data.get('nombre')
-    duracion = data.get('duracion')
-    beneficio = data.get('beneficio')
-    descripcion = data.get('descripcion')
-    subtask_id = TareaModel.add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector)
-    if subtask_id:
-        return jsonify({'mensaje': 'Subtask añadida con exitoso'}), 201
-    else:
-        return jsonify({'mensaje': 'Subtask no se pudo añadir correctamente'}), 500
+    try:
+        fabrica_id = session.get('fabrica')
+        data = request.json
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 404
+        if not data or not all(key in data for key in ['nombre','duracion', 'beneficio', 'descripcion','sector','subtask_dependencia']):
+            return jsonify({'error': 'Datos incompletos'}), 400
+        
+        sector = data.get('sector')
+        nombre = data.get('nombre')
+        duracion = data.get('duracion')
+        beneficio = data.get('beneficio')
+        descripcion = data.get('descripcion')
+        subtask_dependencia = data.get('subtask_dependencia')
+        subtask_id = TareaModel.add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector)
+        
+        if subtask_id:        
+            if subtask_dependencia:
+                TareaModel.add_dependencias_subtasks(subtask_id,subtask_dependencia)
+            
+            return jsonify({'mensaje': 'Subtask añadida con exitoso'}), 201
+        else:
+            return jsonify({'mensaje': 'Subtask no se pudo añadir correctamente'}), 500
+    except Exception as ex:
+        app.logger.error(f'Error al insertar la subtask: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
 
 @app.route('/delete_subtask', methods=['DELETE'])
 def delete_subtask():
@@ -440,6 +451,42 @@ def delete_subtask():
         return jsonify({'mensaje': f"Subtask {subtask.get('nombre')} eliminada exitosamente"}), 200
     except Exception as ex:
         app.logger.error(f'Error al eliminar la subtask: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
+@app.route('/update_subtask', methods = ['PATCH'])
+def update_subtask():
+    try:
+        fabrica_id = session.get('fabrica')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 401
+        
+        data=request.json
+        if not data:
+            return jsonify({'error': 'No se proporcionó subtask'}), 400
+        
+        subtask_id = data.get('id')
+        nombre = data.get('nombre')
+        duracion = data.get('duracion')
+        beneficio = data.get('beneficio')
+        descripcion = data.get('descripcion')
+        if descripcion :
+            nuevas_habilidades = TareaModel.obtener_skills_chatGPT(descripcion)
+        TareaModel.update_subtask(fabrica_id, subtask_id, nombre, duracion, beneficio, descripcion,  nuevas_habilidades)
+        return jsonify({'mensaje': 'Subtask actualizado'}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al actualizar subtask: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
+@app.route('/get_skills', methods =['GET'])
+def get_skills():
+    try:
+        hard_skills = TareaModel.get_hard_skills()
+        soft_skills = TareaModel.get_soft_skills()
+        
+        return jsonify({'hard_skills': list(hard_skills), 'soft_skills': list(soft_skills)}), 200
+    
+    except Exception as e:
+        app.logger.error(f'Error para obtener skills: {e}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
 
 @app.route('/alg_genetico', methods = ['GET'])
