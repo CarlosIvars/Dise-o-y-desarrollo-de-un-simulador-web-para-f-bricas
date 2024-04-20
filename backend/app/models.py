@@ -753,7 +753,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
         try:
             connection = get_db_connection()
             cursor = connection.cursor()
-            
+
             sql = "INSERT INTO relaciones_subtasks (dependiente, dependencia) VALUES (%s, %s)"
             cursor.execute(sql, (subtask_dependiente, subtask_dependencia))
             connection.commit()

@@ -178,6 +178,7 @@ def obtener_fabricas():
         return jsonify({'error': 'Usuario no encontrado'}), 404
     fabricas_data = FabricaModel.get_fabrica(user['id'])
     fabricas = [{
+        'id': fabrica[0],
         'nombre': fabrica[1],
         'costes': fabrica[2],
         'beneficios': fabrica[3]
@@ -193,7 +194,6 @@ def añadir_fabrica():
         return jsonify({'error': 'Usuario no autenticado'}), 401
 
     data = request.json
-    print(data)
     nombre_fabrica = data.get('nombre_fabrica')
     user = UserModel.get_user(usuario)
     resultado = FabricaModel.add_fabrica(nombre_fabrica, user['id'])
@@ -218,13 +218,15 @@ def seleccionar_fabrica():
     
     if not fabrica:
         return jsonify({'mensaje': "Fábrica no encontrada correctamente"}), 404
-
-
+    
     session['fabrica'] = fabrica_id
+    trabajadores = RecursosModel.get_humanos_fabrica(fabrica_id)
+    maquinas = RecursosModel.get_maquinas_farbica(fabrica_id)
+    
 
-    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica_id}), 200
+    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica_id, 'trabajadores' : trabajadores, 'maquinas': maquinas}), 200
 
-@app.route('/delete_farbica', methods=['DELETE'])
+@app.route('/delete_fabrica', methods=['DELETE'])
 def delete_fabrica():
     try:
         usuario = session.get('usuario')
