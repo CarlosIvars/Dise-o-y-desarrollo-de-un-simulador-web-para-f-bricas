@@ -11,6 +11,10 @@
                 <input type="text" [(ngModel)]="duracion" name="duracion" placeholder="Duración">
                 <input type="text" [(ngModel)]="beneficio" name="beneficio" placeholder="Beneficio">
                 <input type="text" [(ngModel)]="descripcion" name="descripcion" placeholder="Descripción">
+                <select [(ngModel)]="subtask_dependencia" name="subtask_dependencia">
+                    <option value="">Sin tarea padre</option>
+                    <option *ngFor="let tarea of tareas" [value]="tarea.id">{{tarea.nombre}}</option>
+                </select>
             </form>
         </div>
         <div class="modal-footer">

@@ -37,7 +37,6 @@ export class TrabajadoresFormComponent {
 
       this.apiService.crearTrabajador(this.nombre, this.apellidos, this.fecha_nacimiento, this.fatiga, this.coste_h, this.preferencias, this.skills).pipe(
         finalize(() => {
-          this.trabajadoresService.anyadirTrabajador(new TrabajadorImpl(1, this.nombre, "ROL", this.coste_h, "000", false));  
           this.cargando = false; 
           this.cerrarModal();
           console.log("Fin de crear trabajador.");
@@ -45,6 +44,7 @@ export class TrabajadoresFormComponent {
       ).subscribe({
         next: (response) => {
           console.log("Respuesta: ", response);
+          this.trabajadoresService.anyadirTrabajador(new TrabajadorImpl(1, this.nombre, "ROL", this.coste_h, "000", false));  
         },
         error: (error) => {
           alert("Error: " + error); 

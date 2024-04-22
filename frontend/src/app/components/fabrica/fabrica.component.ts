@@ -145,33 +145,65 @@ export class FabricaComponent {
       this.cargando = true;
 
       this.apiService.iniciarFabrica(fabrica_id).pipe(
-        finalize(() => {          
-          this.fabricaService.actualizarFabrica(new FabricaImpl(1, "Fabrica por defecto", 1, 7, 41, 5000, 300));
-
-          const trabajadores: Trabajador[] = [];
-          trabajadores.push(new TrabajadorImpl(1, "Carlos", "Ingeniero", 1800, "#FF0000", false));
-          trabajadores.push(new TrabajadorImpl(2, "Javi", "Programador", 1600, "#0023FF", false));
-          this.trabajadoresService.actualizarTrabajadores(trabajadores);
-
-          const maquinas: Maquina[] = [];
-          maquinas.push(new MaquinaImpl(1, "Picadora industrial", "Prueba", 800, "#FF0000"));
-          maquinas.push(new MaquinaImpl(2, "Ensamblaje", "Prueba2", 600, "#0023FF"));
-          this.maquinasService.actualizarMaquinas(maquinas);
-
-          const tareas: Tarea[] = [];
-          tareas.push(new TareaImpl(1, "Preparar", 10, 2, 5, 0));
-          tareas.push(new TareaImpl(2, "Procesar", 0, 5, 30,0));
-          tareas.push(new TareaImpl(3, "Terminar", 0, 7, 10, 0));
-          tareas[1].setTareaPadre(tareas[0]);
-          tareas[2].setTareaPadre(tareas[1]);
-          this.tareasService.actualizarTareas(tareas);
-
+        finalize(() => {   
           this.cargando = false;
           console.log("Fin de cargar el contenido de la fabrica.");
         })
       ).subscribe({
         next: (response) => {
           console.log("Respuesta: ", response);
+
+          if(response.fabrica_id != null && response.fabrica_id != undefined) {
+            //Añadimos la fabrica
+            this.fabricaService.actualizarFabrica(new FabricaImpl(response.fabrica_id, "Fabrica por defecto", 1, 7, 41, 5000, 300));
+
+            //Añadimos los trabajadores
+            if(response.trabajadores != null && response.trabajadores != undefined) {
+              const trabajadores: Trabajador[] = [];
+              for (const trabajador of response.trabajadores) {
+                trabajadores.push(new TrabajadorImpl(trabajador[0], "Trabajador" + trabajador[0], "Ingeniero", 1800, "#FF0000", false));
+              }
+              if (trabajadores.length > 0) {
+                this.trabajadoresService.actualizarTrabajadores(trabajadores);
+              }
+            }
+
+            //Añadimos las maquinas
+            if(response.maquinas != null && response.maquinas != undefined) {
+              const maquinas: Maquina[] = [];
+              for (const maquina of response.maquinas) {
+                maquinas.push(new MaquinaImpl(maquina[0], "Máquina" + maquina[0], "Prueba", 800, "#FF0000"));
+              }
+              if (maquinas.length > 0) {
+                this.maquinasService.actualizarMaquinas(maquinas);
+              }
+            }
+
+            //Añadimos las tareas
+            /*
+            if(response.subtasks != null && response.subtasks != undefined) {
+              const tareas: Tarea[] = [];
+              for (const tarea of response.subtasks) {
+                if(tarea.id != undefined) {
+                  tareas.push(new TareaImpl(1, "Preparar", 10, 2, 5, 0));
+                } 
+              }
+              if (tareas.length > 0) {
+                this.tareasService.actualizarTareas(tareas);
+              }
+            }
+            */
+            const tareas: Tarea[] = [];
+            tareas.push(new TareaImpl(1, "Preparar", 10, 2, 5, 0));
+            tareas.push(new TareaImpl(2, "Procesar", 0, 5, 30,0));
+            tareas.push(new TareaImpl(3, "Terminar", 0, 7, 10, 0));
+            tareas[1].setTareaPadre(tareas[0]);
+            tareas[2].setTareaPadre(tareas[1]);
+            this.tareasService.actualizarTareas(tareas);
+
+          } else {
+            alert("No se ha podido recuperar los datos de la fábrica seleccionada.");
+          }
         },
         error: (error) => {
           alert("Error: " + error); 

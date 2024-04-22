@@ -84,7 +84,7 @@ export class ApiService {
     return this.http.post<any>(`${environment.apiUrlBase}/add_maquina`, {nombre, fatiga, coste_h, skills}, httpOptions);
   }
 
-  crearTarea(sector: string, nombre: string, duracion: number, beneficio: number, descripcion: string) {
+  crearTarea(sector: string, nombre: string, duracion: number, beneficio: number, descripcion: string, subtask_dependencia: string) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -92,6 +92,6 @@ export class ApiService {
       withCredentials: true
     };
 
-    return this.http.post<any>(`${environment.apiUrlBase}/add_subtask`, {sector, nombre, duracion, beneficio, descripcion}, httpOptions);
+    return this.http.post<any>(`${environment.apiUrlBase}/add_subtask`, {sector, nombre, duracion, beneficio, descripcion, subtask_dependencia}, httpOptions);
   }
 }
