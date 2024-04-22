@@ -40,9 +40,9 @@ def run_genetic_algorithm(skills_matching,dependencias, num_generations, num_ind
         # Aplicar operadores genéticos (cruce y mutación)
         offspring = []
         for i in range(0, len(selected), 2):
-            child1, child2 = crossover_operator(selected[i], selected[i+1])
-            child1 = mutation_operator(child1, skills_matching,dependencias)
-            child2 = mutation_operator(child2, skills_matching,dependencias)
+            child1, child2 = crossover_operator(selected[i], selected[i+1], fatigas)
+            child1 = mutation_operator(child1, skills_matching,dependencias,fatigas)
+            child2 = mutation_operator(child2, skills_matching,dependencias,fatigas)
             offspring.extend([child1, child2])
         
         population[:] = offspring
