@@ -9,13 +9,13 @@ import numpy as np
 import json
 from config import config
 from ml_models.AG.genetic_algorithm import *
+from datetime import date
 #'Bearer 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'
 @app.route('/')
 def init():
+    resultado = FabricaModel.get_historial(1)
+    print(resultado)
     
-    data = FabricaModel.get_fabrica(7)
-    print(data)
-    print(app.config)
     skills_matching = {
     'Tarea1': ['Humano1', 'Humano2', 'Humano3', 'Humano4'],
     'Tarea2': ['Humano1', 'Humano4', 'Humano5', 'Humano6'],
@@ -58,7 +58,7 @@ def init():
         'Humano11': 5, 'Humano12': 10, 'Humano13': 25, 'Humano14': 30, 'Humano15': 20,
         'Humano16': 15, 'Humano17': 10, 'Humano18': 5, 'Humano19': 25, 'Humano20': 20,
         'Humano21': 15, 'Humano22': 30, 'Humano23': 5, 'Humano24': 10, 'Humano25': 25,
-        'Humano26': 20, 'Humano27': 15, 'Humano28': 10, 'Humano29': 5, 'Humano30': 30,
+        'Humano26': 20, 'Humano27': 15, 'Humano28': 10, 'Humano29': 5, 'Humano30': 10,
         'Humano31': 25, 'Humano32': 20, 'Humano33': 15
     }
 
@@ -178,6 +178,7 @@ def obtener_fabricas():
         return jsonify({'error': 'Usuario no encontrado'}), 404
     fabricas_data = FabricaModel.get_fabrica(user['id'])
     fabricas = [{
+        'id': fabrica[0],
         'nombre': fabrica[1],
         'costes': fabrica[2],
         'beneficios': fabrica[3]
@@ -193,7 +194,6 @@ def añadir_fabrica():
         return jsonify({'error': 'Usuario no autenticado'}), 401
 
     data = request.json
-    print(data)
     nombre_fabrica = data.get('nombre_fabrica')
     user = UserModel.get_user(usuario)
     resultado = FabricaModel.add_fabrica(nombre_fabrica, user['id'])
@@ -218,13 +218,15 @@ def seleccionar_fabrica():
     
     if not fabrica:
         return jsonify({'mensaje': "Fábrica no encontrada correctamente"}), 404
-
-
+    
     session['fabrica'] = fabrica_id
+    trabajadores = RecursosModel.get_humanos_fabrica(fabrica_id)
+    maquinas = RecursosModel.get_maquinas_farbica(fabrica_id)
+    subtasks = TareaModel.get_subtasks(fabrica_id)
 
-    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica_id}), 200
+    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica_id, 'trabajadores' : trabajadores, 'maquinas': maquinas, 'subtasks' : subtasks}), 200
 
-@app.route('/delete_farbica', methods=['DELETE'])
+@app.route('/delete_fabrica', methods=['DELETE'])
 def delete_fabrica():
     try:
         usuario = session.get('usuario')
@@ -523,6 +525,55 @@ def algoritmo_genetico():
  
     return jsonify(resultado), 200
 
+@app.route('/add_historial', methods = ['POST'])
+def añadir_historial():
+    FabricaModel.add_historial(date.today(),5000,7500,json.dumps(asignaciones),1)
+    try:
+        fabrica_id = session.get('fabrica')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 401
+        
+        data=request.json
+        if not data:
+            return jsonify({'error': 'No se proporcionó informacion para guardar en el historial'}), 400
+        
+        fecha = data.get('fecha') #date.today()
+        coste = data.get('coste')
+        beneficios = data.get('beneficios')
+        asignaciones = data.get('asignaciones')
+        result = FabricaModel.add_historial(fecha,coste,beneficios,json.dumps(asignaciones),fabrica_id)
+
+       
+        return jsonify({'mensaje': 'Historial actualizado' , 'fabrica_id' : result}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al actualizar historial: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
+@app.route('/get_historial', methods = ['GET'])
+def get_historial():
+    try:
+        fabrica_id = session.get('fabrica')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 401
+        
+        resultados = FabricaModel.get_historial(fabrica_id)
+        if resultados:
+            for resultado in resultados:
+                #para trabajar con los resultados si es necesario
+                id_registro = resultado[0]
+                fecha = resultado[1]
+                costes = resultado[2]
+                beneficios = resultado[3]
+                asignaciones_json = resultado[4]
+
+                #asignaciones = json.loads(asignaciones_json)
+
+            return resultados
+        else:
+            return jsonify({'error': 'Error al procesar la solicitud'}), 401
+    except Exception as ex:
+            app.logger.error(f'Error al obtener historial: {ex}')
+            return jsonify({'error': 'Error al procesar la solicitud'}), 500
 ############################################################################################
 # En proceso ¡¡¡No usar aun !!!
 ############################################################################################

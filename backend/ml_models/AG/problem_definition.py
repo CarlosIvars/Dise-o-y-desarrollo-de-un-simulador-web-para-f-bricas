@@ -42,26 +42,25 @@ def evaluate_individual(individual, beneficios, costes, fatigas, dependencias):
             puntaje_aptitud =  -np.Infinity
     return puntaje_aptitud
 
-def initialize_population(skills_matching, num_individuals,dependencias):
+def initialize_population(skills_matching, num_individuals,dependencias, fatigas):
     #Inicializa la poblacion creando num_individuals individuos
     population = []
     for _ in range(num_individuals):
-        individuo = crear_individuo(skills_matching,dependencias)
+        individuo = crear_individuo(skills_matching,dependencias,fatigas)
         population.append(individuo)
     return population
 
-def crear_individuo(skills_matching, dependencias):
+def crear_individuo(skills_matching, dependencias, fatigas):
     #creacion de un individuo cumpliendo con las dependecias exigidas
     individuo = []
     humanos_asignados = set()
     
     # Priorizar subtasks sin dependencias y luego por su orden de dependencia
     subtasks_priorizadas = sorted(skills_matching.keys(), key=lambda x: (x in dependencias, dependencias.get(x, '')))
-    
     for subtask in subtasks_priorizadas:
         #humanos aun no asignados
-        posibles_humanos = set(skills_matching[subtask]) - humanos_asignados
-        
+        posibles_humanos = {h for h in skills_matching[subtask] if fatigas[h] < 100} - humanos_asignados        
+        print(f"Subtask: {subtask}, Posibles Humanos (fatiga < 100): {posibles_humanos}")  # Logueo para depuración
         if posibles_humanos:
             humano_asignado = random.choice(list(posibles_humanos))
             humanos_asignados.add(humano_asignado)
@@ -71,18 +70,22 @@ def crear_individuo(skills_matching, dependencias):
     
     return creator.Individual(individuo)
 
-def crossover_operator(individual1, individual2):
-    """
-    Cruce en un punto entre dos individuos.
-    """
+def crossover_operator(individual1, individual2, fatigas):
     size = min(len(individual1), len(individual2))
     cxpoint = random.randint(1, size - 1)
+    # Realiza el cruce
     individual1[cxpoint:], individual2[cxpoint:] = individual2[cxpoint:], individual1[cxpoint:]
-    
+
+    # Verifica y corrige fatiga
+    for individual in (individual1, individual2):
+        for i, (subtask, humano) in enumerate(individual):
+            if humano is not None and fatigas[humano] >= 100:
+                individual[i] = (subtask, None)  # Asigna None o busca una alternativa válida
+
     return individual1, individual2
 
 
-def mutation_operator(individual, subtasks, dependencias):
+def mutation_operator(individual, subtasks, dependencias, fatigas   ):
     """
     Aplica una mutación simple a un individuo.
 
@@ -94,20 +97,21 @@ def mutation_operator(individual, subtasks, dependencias):
     - individual (list): El individuo mutado.
     """
     # Escoge una posición aleatoria en el individuo
-    nuevo_individual = list(individual) 
-    
+    nuevo_individual = list(individual)
     subtask_a_mutar = random.choice(list(subtasks.keys()))
-    humanos_posibles = set(subtasks[subtask_a_mutar]) - set(h for s, h in nuevo_individual if h is not None)
-    
+    humanos_posibles = {h for h in subtasks[subtask_a_mutar] if h not in [humano for _, humano in individual] and fatigas[h] < 100}
+
+    # Verificar que las dependencias de la subtask a mutar sean respetadas
+    if any(dependencia for dependencia, valor in dependencias.items() if valor == subtask_a_mutar and dependencia not in [subtask for subtask, _ in individual]):
+        return creator.Individual(nuevo_individual)  # No realizar la mutación si se violarían las dependencias
+
     if humanos_posibles:
         nuevo_humano = random.choice(list(humanos_posibles))
-        # Encuentra el índice de la subtask a mutar en el individuo y actualiza el humano asignado
         for i, (subtask, humano) in enumerate(nuevo_individual):
             if subtask == subtask_a_mutar:
                 nuevo_individual[i] = (subtask, nuevo_humano)
                 break
     else:
-        # Si no hay humanos disponibles, considera no hacer la mutación o asignar None
-        pass
-    
+        pass  # Si no hay humanos disponibles, considera no hacer la mutación o asignar None
+
     return creator.Individual(nuevo_individual)
