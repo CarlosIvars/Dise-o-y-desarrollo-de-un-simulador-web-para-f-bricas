@@ -5,10 +5,11 @@
     <div id="cabeceraCentro">
         <div>Dinero: {{fabrica?.dinero}}€ Beneficio: {{fabrica?.beneficio}}€</div>
         <div>Día: {{fabrica?.dia}} Hora: {{fabrica?.hora}}:{{formatearMinutos(fabrica?.minutos)}}</div>
-        <div (click)="toggleFabricaEjecucion()">{{ fabrica?.activa ? 'Pause' : 'Play' }} ({{fabrica?.tiempo}})</div>
+        <div (click)="toggleFabricaEjecucion()">{{ fabrica?.activa ? 'Pause' : 'Play' }} (x{{velocidadEjecucion}})</div>
+        <input type="range" [(ngModel)]="velocidadEjecucion" (change)="cambiarVelocidadEjecucion()" min="1" max="10" step="1">
     </div>
     <div id="cabeceraIzq">
-        Alberto
+        {{userName}}
     </div>
 </header>
 <div *ngIf="cargando">Cargando la fabrica...</div>
@@ -35,9 +36,7 @@
     </div>
     <div id="seccion-principal">
         <button (click)="abrirTareasForm()" style="margin: 5px; float: right;" >Añadir tarea</button>
-        <app-tarea-inicial-card *ngFor="let tareaInicial of tareasIniciales" [tareaInciial]="tareaInicial"></app-tarea-inicial-card>
         <app-tarea-card *ngFor="let tarea of tareas" [tarea]="tarea"></app-tarea-card>
-        <app-tarea-final-card *ngFor="let tareaFinal of tareasFinales" [tareaFinal]="tareaFinal"></app-tarea-final-card>
     </div>
     <div class="barra-lateral" id="bl-derecha">
         <p>Barra lateral derecha.</p>

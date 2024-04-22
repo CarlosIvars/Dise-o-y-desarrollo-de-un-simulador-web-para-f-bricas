@@ -3,13 +3,12 @@
         Fábricas
     </div>
 
-    <div>{{user?.username}}</div>
+    <div>{{userName}}</div>
 </header>
 <div id="content">
     <h2>Bienvenido de nuevo!</h2>
     <div *ngIf="!cargando" id="fabricasGrid">
         <div *ngFor="let fabrica of fabricas" class="fabrica" (click)="abrirFabrica(fabrica.id)">{{fabrica.nombre}}</div>
-        <div (click)="abrirFabrica(1)" class="fabrica">Fábrica 1</div>
         <div (click)="abrirCrearFabrica()" class="fabrica nueva">Crear nueva fábrica</div>
     </div>
     <div *ngIf="cargando">

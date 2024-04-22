@@ -41,13 +41,16 @@ export class LoginFormComponent {
         finalize(() => {
           this.cargando = false; 
           console.log("Finalizado");
-
-          this.userService.actualizarUser({id: 1, nombre: "Alberto", apellidos: "Ballesteros", password: "1", username: "Alberto"});
-          this.router.navigate(['/zona-personal']);
         })
       ).subscribe({
         next: (response) => {
           console.log("Respuesta: ", response);
+
+          if(response.user != undefined) {
+            sessionStorage.setItem("user", response.user);
+          }
+          
+          this.router.navigate(['/zona-personal']);
         },
         error: (error) => {
           alert("Error: " + error); 

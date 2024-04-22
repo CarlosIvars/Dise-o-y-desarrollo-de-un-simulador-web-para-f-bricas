@@ -35,7 +35,7 @@ export class TareasFormComponent {
 
       this.apiService.crearTarea(this.sector, this.nombre, this.duracion, this.beneficio, this.descripcion).pipe(
         finalize(() => {
-          this.tareasService.anyadirTarea(new TareaImpl(5, this.nombre, 10, 12, 0));
+          this.tareasService.anyadirTarea(new TareaImpl(5, this.nombre, 10, 12, 50, 0));
           this.cargando = false; 
           this.cerrarModal();
           console.log("Fin de crear tarea.");

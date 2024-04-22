@@ -36,10 +36,20 @@ export class TareasService {
   asignarTrabajadorATarea(tarea: Tarea, trabajador: Trabajador) {
     // Dejamos libre el actual trabajador de la tarea...
     const trabajadorViejo = tarea.getTrabajador();
-    if(trabajadorViejo){
+    if(trabajadorViejo != undefined){
       trabajadorViejo.activo = false;
       this.trabajadoresService.actualizarTrabajador(trabajadorViejo);
     }
+
+    //Eliminamos el nuevo trabajador de todas las tareas
+    const tareas = this.tareasSubject.getValue();
+    for(const tarea of tareas) {
+      const tareaTrabajador = tarea.getTrabajador();
+      if(tareaTrabajador != undefined && tareaTrabajador.id === trabajador.id) {
+        tarea.removeTrabajador();
+      }
+    }
+    this.actualizarTareas(tareas);
     
     // Añadimos el nuevo trabajador a la tarea
     tarea.setTrabajador(trabajador);

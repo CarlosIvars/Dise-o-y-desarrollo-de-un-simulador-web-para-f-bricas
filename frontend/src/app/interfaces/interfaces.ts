@@ -6,7 +6,6 @@ export interface Fabrica {
     minutos: number,
     dinero: number,
     beneficio: number,
-    tiempo: number,
     activa: boolean
 }
 
@@ -27,42 +26,21 @@ export interface Maquina {
     color: string
 }
 
-export interface TareaInicial {
-    id: number,
-    nombre: string,
-    precio: number,
-    cantidad: number
-}
-
 export interface Tarea {
     id: number,
     nombre: string,
     cantidad: number,
-    tiempo: number,
+    duracion: number,
     tiempoActual: number,
-    activa: boolean
+    isWorking: boolean,
+    precioVenta: number
 
     getTrabajador(): Trabajador | undefined,
     setTrabajador(trabajador: Trabajador): void,
-    
+    removeTrabajador(): void
 
-    addDependencias(tarea: TareaDependencia): void,
-    eliminarIdDependencia(id: number): void,
-    obtenerDependencias(): TareaDependencia[]
-}
-
-export interface TareaFinal {
-    id: number,
-    precio: number,
-
-    addDependencias(tarea: TareaDependencia): void,
-    eliminarIdDependencia(id: number): void,
-    obtenerDependencias(): TareaDependencia[]
-}
-
-export interface TareaDependencia {
-    id: number,
-    cantidad: number
+    getTareaPadre(): Tarea | undefined,
+    setTareaPadre(tarea: Tarea): void
 }
 
 export interface User {

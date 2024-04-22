@@ -17,7 +17,6 @@
         </div>
     </div>
     <div id="logo-img"></div>
-    <div (click)="login()">Prueba api</div>
 </div>
 <app-login-form *ngIf="mostrarlogin" (close)="cerrarIncioSesion()" (registroUsuario)="abrirRegistroUsuario()"></app-login-form>
 <app-register-form *ngIf="mostrarRegistro" (close)="cerrarRegistroUsuario()" (inicioSesion)="abrirIncioSesion()"></app-register-form>

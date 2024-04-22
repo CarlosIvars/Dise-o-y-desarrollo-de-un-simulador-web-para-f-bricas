@@ -10,8 +10,6 @@ import { InicioComponent } from './components/inicio/inicio.component';
 import { ZonaPersonalComponent } from './components/zona-personal/zona-personal.component';
 import { MaquinaCardComponent } from './components/fabrica/maquina-card/maquina-card.component';
 import { TareaCardComponent } from './components/fabrica/tarea-card/tarea-card.component';
-import { TareaInicialCardComponent } from './components/fabrica/tarea-inicial-card/tarea-inicial-card.component';
-import { TareaFinalCardComponent } from './components/fabrica/tarea-final-card/tarea-final-card.component';
 import { LoginFormComponent } from './components/inicio/login-form/login-form.component';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { errorHandlerInterceptor } from './interceptors/error-handler.interceptor';
@@ -31,8 +29,6 @@ import { TareasFormComponent } from './components/fabrica/tareas-form/tareas-for
     TrabajadorCardComponent,
     MaquinaCardComponent,
     TareaCardComponent,
-    TareaInicialCardComponent,
-    TareaFinalCardComponent,
     LoginFormComponent,
     RegisterFormComponent,
     CrearFabricaFormComponent,

@@ -32,12 +32,4 @@ export class InicioComponent {
   cerrarRegistroUsuario() {
     this.mostrarRegistro = false;
   }
-
-  login() {
-    console.log("Click login");
-    this.apiService.login("Prueba", "1").subscribe({
-      next: (response) => console.log("Respuesta: ", response),
-      error: (error) => {alert("Error: " + error);}
-    });
-  }
 }

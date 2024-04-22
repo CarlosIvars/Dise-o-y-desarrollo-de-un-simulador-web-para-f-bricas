@@ -13,8 +13,7 @@ import { FabricaImpl } from '../../clases/fabrica.class';
 })
 export class ZonaPersonalComponent {
 
-  user?: User;
-  private userSub?: Subscription;
+  userName: string = "Usuario";
 
   fabricas: Fabrica[] = [];
 
@@ -25,17 +24,12 @@ export class ZonaPersonalComponent {
   constructor(private router: Router, private userService: UserService, private apiService: ApiService) { }
 
   ngOnInit(): void {
-    this.userSub = this.userService.user$.subscribe((user) => {
-      this.user = user;
-    });
+    let userName = sessionStorage.getItem("user");
+    if (userName != null && userName !== "") {
+      this.userName = userName;
+    }
 
     this.cargarFabricas();
-  }
-
-  ngOnDestroy(): void {
-    if (this.userSub) {
-      this.userSub.unsubscribe();
-    }
   }
 
   abrirFabrica(id: number) {
@@ -48,14 +42,16 @@ export class ZonaPersonalComponent {
 
     this.apiService.getAllFabricas().pipe(
       finalize(() => {
-        this.fabricas.push(new FabricaImpl(1, "Fabrica añadida a mano", 33, 7, 30, 3000, 500));
         this.cargando = false;
-        
         console.log("Fin de cargar todas las fabricas.");
       })
     ).subscribe({
-      next: (response) => {
-        console.log("Respuesta: ", response);
+      next: (fabricas) => {
+        console.log("Respuesta: ", fabricas);
+        for (let fabrica of fabricas) {
+          console.log("Añadiendo la siguiente fábrica: ", fabrica);
+          this.fabricas.push(new FabricaImpl(1, fabrica.nombre, 33, 7, 30, fabrica.beneficios, fabrica.costes));
+        }
       },
       error: (error) => {
         alert("Error: " + error); 

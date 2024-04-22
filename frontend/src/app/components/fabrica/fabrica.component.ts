@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Fabrica, Trabajador, Maquina, TareaInicial, Tarea, TareaFinal } from '../../interfaces/interfaces';
+import { Fabrica, Trabajador, Maquina, Tarea } from '../../interfaces/interfaces';
 import { FabricaService } from '../../services/fabrica.service';
 import { Subscription, finalize } from 'rxjs';
 import { TareasService } from '../../services/tareas.service';
@@ -22,7 +22,9 @@ import { TareaImpl } from '../../clases/tarea.class';
 export class FabricaComponent {
   fabrica_id?: number;
 
-  cargando = true;
+  velocidadEjecucion: number = 1;
+
+  userName: string = "Usuario";
 
   fabrica?: Fabrica;
   private fabricaSub?: Subscription;
@@ -33,14 +35,10 @@ export class FabricaComponent {
   maquinas: Maquina[] = [];
   private maquinasSub?: Subscription;
 
-  tareasIniciales: TareaInicial[] = [];
-  private tareasInicialesSub?: Subscription;
-
   tareas: Tarea[] = [];
   private tareasSub?: Subscription;
 
-  tareasFinales: TareaFinal[] = [];
-  private tareasFinalesSub?: Subscription;
+  cargando = true;
 
   trabajadoresForm: boolean = false;
   maquinasForm: boolean = false;
@@ -50,6 +48,12 @@ export class FabricaComponent {
 
   ngOnInit(): void {
     this.fabrica_id = Number(this.route.snapshot.paramMap.get('id'));
+
+    //Recuperamos el nombre de usuario
+    let userName = sessionStorage.getItem("user");
+    if (userName != null && userName !== "") {
+      this.userName = userName;
+    }
 
     this.fabricaSub = this.fabricaService.fabrica$.subscribe(fabrica => {
       this.fabrica = fabrica;
@@ -63,19 +67,13 @@ export class FabricaComponent {
       this.maquinas = maquinas;
     })
 
-    this.tareasInicialesSub = this.fabricaService.tareasIniciales$.subscribe(tareasIniciales => {
-      this.tareasIniciales = tareasIniciales;
-    });
-
     this.tareasSub = this.tareasService.tareas$.subscribe(tareas => {
       this.tareas = tareas;
     });
 
-    this.tareasFinalesSub = this.fabricaService.tareasFinales$.subscribe(tareasFinales => {
-      this.tareasFinales = tareasFinales;
-    });
-
     this.iniciarFabrica(this.fabrica_id);
+
+    this.cambiarVelocidadEjecucion();
   }
 
   ngOnDestroy(): void {
@@ -91,16 +89,8 @@ export class FabricaComponent {
       this.maquinasSub.unsubscribe();
     }
 
-    if (this.tareasInicialesSub) {
-      this.tareasInicialesSub.unsubscribe();
-    }
-
     if (this.tareasSub) {
       this.tareasSub.unsubscribe();
-    }
-
-    if (this.tareasFinalesSub) {
-      this.tareasFinalesSub.unsubscribe();
     }
   }
 
@@ -112,6 +102,10 @@ export class FabricaComponent {
       this.fabrica.activa = true;
       this.timerService.iniciarEjecucion();
     }
+  }
+
+  cambiarVelocidadEjecucion() {
+    this.timerService.cambiarVelocidadEjecucion(this.velocidadEjecucion);
   }
 
   formatearMinutos(numero: number | undefined) {
@@ -150,7 +144,7 @@ export class FabricaComponent {
       console.log("Cargando el contenido de la fabrica...");
       this.cargando = true;
 
-      this.apiService.getAllFabricas().pipe(
+      this.apiService.iniciarFabrica(fabrica_id).pipe(
         finalize(() => {          
           this.fabricaService.actualizarFabrica(new FabricaImpl(1, "Fabrica por defecto", 1, 7, 41, 5000, 300));
 
@@ -165,9 +159,11 @@ export class FabricaComponent {
           this.maquinasService.actualizarMaquinas(maquinas);
 
           const tareas: Tarea[] = [];
-          tareas.push(new TareaImpl(1, "Preparar", 10, 5, 0));
-          tareas.push(new TareaImpl(2, "Procesar", 0, 15, 0));
-          tareas.push(new TareaImpl(3, "Embalar", 0, 7, 0));
+          tareas.push(new TareaImpl(1, "Preparar", 10, 2, 5, 0));
+          tareas.push(new TareaImpl(2, "Procesar", 0, 5, 30,0));
+          tareas.push(new TareaImpl(3, "Terminar", 0, 7, 10, 0));
+          tareas[1].setTareaPadre(tareas[0]);
+          tareas[2].setTareaPadre(tareas[1]);
           this.tareasService.actualizarTareas(tareas);
 
           this.cargando = false;

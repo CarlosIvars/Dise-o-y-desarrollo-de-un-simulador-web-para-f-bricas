@@ -1,30 +1,30 @@
-import { Tarea, Trabajador, TareaDependencia } from "../interfaces/interfaces";
+import { Tarea, Trabajador } from "../interfaces/interfaces";
 
-export class TareaImpl implements TareaDependencia, Tarea {
+export class TareaImpl implements Tarea {
     private trabajador: Trabajador | undefined;
-    private dependencias: TareaDependencia[] = [];
-    activa: boolean;
+    private tareaPadre: Tarea | undefined;
+    isWorking: boolean;
 
-    constructor(public id: number, public nombre: string, public cantidad: number, public tiempo: number, public tiempoActual: number) {
-        this.activa = false;
+    constructor(public id: number, public nombre: string, public cantidad: number, public duracion: number, public precioVenta: number, public tiempoActual: number) {
+        this.isWorking = false;
     }
 
-    // Getter y setter para trabajador
+    // Getter y setter para el trabajador
     getTrabajador(): Trabajador | undefined {
         return this.trabajador;
     }
-    setTrabajador(trabajador: Trabajador): void {
+    setTrabajador(trabajador: Trabajador | undefined): void {
         this.trabajador = trabajador;
     }
+    removeTrabajador(): void {
+        this.trabajador = undefined;
+    }
 
-    // Añadir, modificar y eliminar dependencias.
-    addDependencias(tarea: TareaDependencia): void {
-        this.dependencias.push(tarea);
+    // Getter y setter para la tareaPadre
+    getTareaPadre(): Tarea | undefined {
+        return this.tareaPadre;
     }
-    eliminarIdDependencia(id: number): void {        
-        this.dependencias = this.dependencias.filter(tarea => tarea.id !== id);
-    }
-    obtenerDependencias(): TareaDependencia[] {
-        return this.dependencias;
+    setTareaPadre(tarea: Tarea): void {
+        this.tareaPadre = tarea;
     }
 }

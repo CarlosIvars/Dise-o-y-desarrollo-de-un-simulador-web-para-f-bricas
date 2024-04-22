@@ -18,7 +18,18 @@ export class ApiService {
       withCredentials: true
     };
 
-    return this.http.post<any>(`${environment.apiUrlBase}/login`, {username, password}, httpOptions, );
+    return this.http.post<any>(`${environment.apiUrlBase}/login`, {username, password}, httpOptions);
+  }
+
+  registerUser(username: string, name: string, surname: string, password: string): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true
+    };
+
+    return this.http.post<any>(`${environment.apiUrlBase}/register`, {username, name, surname, password}, httpOptions);
   }
 
   getAllFabricas(): Observable<any> {
@@ -66,7 +77,8 @@ export class ApiService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
-      })
+      }),
+      withCredentials: true
     };
 
     return this.http.post<any>(`${environment.apiUrlBase}/add_maquina`, {nombre, fatiga, coste_h, skills}, httpOptions);
@@ -76,7 +88,8 @@ export class ApiService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
-      })
+      }),
+      withCredentials: true
     };
 
     return this.http.post<any>(`${environment.apiUrlBase}/add_subtask`, {sector, nombre, duracion, beneficio, descripcion}, httpOptions);

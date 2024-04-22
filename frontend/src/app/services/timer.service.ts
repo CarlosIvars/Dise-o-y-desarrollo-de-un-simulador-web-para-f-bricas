@@ -12,6 +12,7 @@ export class TimerService {
   //Para guardar el timeout del tiempo
   private timeoutId: any;
 
+  private velocidadEjecucion: number = 1;
 
   //Guardamos todas la variables necesarias mediante un observable
   fabrica?: Fabrica;
@@ -33,8 +34,6 @@ export class TimerService {
 
   }
 
-
-
   //Metodos relacionados con la gestion del tiempo:
   iniciarEjecucion() {
     //Marcamos la fabrica como activa
@@ -46,9 +45,9 @@ export class TimerService {
       const execute = () => {
         this.scriptEjecucion();
         console.log('Script ejecutado');
-        this.timeoutId = setTimeout(execute, this.fabrica?.tiempo);
+        this.timeoutId = setTimeout(execute, 1000 / this.velocidadEjecucion);
       };
-      this.timeoutId = setTimeout(execute, this.fabrica.tiempo);
+      this.timeoutId = setTimeout(execute, 1000 / this.velocidadEjecucion);
     }
   }
 
@@ -63,93 +62,77 @@ export class TimerService {
     }
   }
 
-  cambiarTimepoEjecucion(tiempo: number) {
-    if(this.fabrica != undefined) {
-      this.pararEjecucion();
-
-      // Actualizamos el tiempo
-      this.fabrica.tiempo = tiempo;
-      this.fabricaService.actualizarFabrica(this.fabrica);
-
-      this.iniciarEjecucion();
-    }
+  cambiarVelocidadEjecucion(tiempo: number) {
+    var activa = this.fabrica?.activa
+    if(activa) { this.pararEjecucion(); }
+    this.velocidadEjecucion = tiempo;
+    if(activa) { this.iniciarEjecucion(); }
   }
 
   scriptEjecucion() {
     if(this.fabrica != undefined) {
       console.log("Ejecutando script...");
 
-      /*
-
-      this.gestionarHora(fabrica);
+      this.gestionarHora(this.fabrica);
       
-      const tiempo = fabrica.tiempo / 1000; // Pasamos el tiempo a segundos (minutos ficticios)
-      
-      // Preparamos cada tarea:
-      for (const tarea of tareas) {
+      // Buscamos tareas ociosas para tratar de arrancarlas
+      for (const tarea of this.tareas) {
 
-        // Si no tiene un trabajador asignado continuamos
+        // Comprobamos si tiene un trabajador asignado
         if(tarea.getTrabajador() == undefined) {
-          console.log("Sin trabajador...");
+          console.log(`Tarea ${tarea.nombre} sin trabajador asignado...`);
           continue;
         }
         
-        // Probamos a mover la caja da la tarea padre a la hija
-        if(tarea.activa == false) {
-          console.log("Buscando dependencias...");
-          if(this.buscaDependencias(tarea) == false) {
-            console.log("No se han encontrado cajas disponibles.");
-            continue;
+        // Si la tarea se encuentra ociosa tratamos de iniciarla
+        if(!tarea.isWorking) {
+
+          // Buscamos en los padres para ver si puede inicarse
+          if(this.puedeIniciarTarea(tarea)) {
+            console.log(`Iniciando tarea ${tarea.nombre} ...`);
+            let tareaPadre = tarea.getTareaPadre();
+            if(tareaPadre != undefined) {
+              tareaPadre.cantidad--;
+            }
+            tarea.isWorking = true;
+            tarea.tiempoActual = 0;
           }
         }
       }
 
-      // Procesamos cada tarea
-      for (const tarea of tareas) {
+      // Procesamos las tareas iniciadas
+      for (const tarea of this.tareas) {
 
-        // Si no tiene un trabajador asignado continuamos
+        // Comprobamos si tiene un trabajador asignado
         if(tarea.getTrabajador() == undefined) {
-          console.log("Sin trabajador...");
+          console.log(`Tarea ${tarea.nombre} sin trabajador asignado...`);
           continue;
         }
         
-        // Si no tiene cajas que procesar continuamos
-        if(tarea.activa == false) {
-          console.log("Sin cajas que procesar.");
-          continue;
-        }
+        // Comprobamos si la tarea está en macha (si ya se le ha asignado una caja)
+        if(tarea.isWorking) {
+          //Añadimos el tiempo a la tarea (solo se suma uno porque el script se está ejecutando x veces más rapido)
+          tarea.tiempoActual += 1;
 
-        //Añadimos el tiempo a la tarea
-        tarea.tiempoActual += tiempo;
-
-        //Si ya ha terminado con la ejcucion, nos guardamos la caja
-        if(tarea.tiempoActual >= tarea.tiempo){
-          tarea.cantidad++;
-          tarea.tiempoActual = 0;
-          tarea.activa = false;
-          console.log("Caja procesada...");
-        }
-      
-      }
-
-      // Vendemos las cajas que tenemos 
-      for (const tareaFinal of tareasFinales) {
-        const dependencias = tareaFinal.obtenerDependencias();
-        if(dependencias.length == 1) {
-          if(dependencias[0].cantidad > 0) {
-            dependencias[0].cantidad--;
-            fabrica.dinero += tareaFinal.precio;
+          // Comprobamos si ha terminado la tarea para proceder con la venta  
+          if(tarea.tiempoActual >= tarea.duracion){
+            this.fabrica.dinero += tarea.precioVenta;
+            tarea.cantidad += 1;
+            tarea.tiempoActual = 0;
+            tarea.isWorking = false;
+            
+            console.log(`Tarea ${tarea.nombre} procesada. (+${tarea.precioVenta}€)`);
           }
         }
-      } 
-      */
+      }
+
+      this.fabricaService.actualizarFabrica(this.fabrica);
+      this.tareasService.actualizarTareas(this.tareas);
     }
   }
 
   gestionarHora(fabrica: Fabrica) {
-    const tiempo = fabrica.tiempo / 1000;
-
-    fabrica.minutos += tiempo;
+    fabrica.minutos += 1;
     if(fabrica.minutos > 59) {
       fabrica.minutos = fabrica.minutos - 60;
       fabrica.hora++;
@@ -160,20 +143,18 @@ export class TimerService {
     }
   }
 
-  buscaDependencias(tarea: Tarea){
-    let cajaEncontrada = false;
+  puedeIniciarTarea(tarea: Tarea): boolean {
+    var tareaPadre = tarea.getTareaPadre();
 
-    const dependencias = tarea.obtenerDependencias();
-    if(dependencias.length == 1){
-      if (dependencias[0].cantidad > 0) {
-        dependencias[0].cantidad--;
-        tarea.activa = true;
-        cajaEncontrada = true;
+    if(tareaPadre == undefined){
+      return true;
+    } else {
+      if (tareaPadre.cantidad > 0) {
+        return true;
       } else {
-        tarea.activa = false;
+        return false;
       }
     }
+  }
 
-    return cajaEncontrada;
-  };
 }
