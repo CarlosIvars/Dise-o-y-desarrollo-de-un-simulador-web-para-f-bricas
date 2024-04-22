@@ -41,6 +41,7 @@ Clase TareaModel:
 - get_hard_skills(sector)
 - get_habilidades_subtareas(fabrica_id)
 - obtener_skills_chatGPT(sector,descripcion)
+- get_subtask(fabrica_id)
 - add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector)
 - delete_subtask(id_subtask)
 - update_subtask(fabrica_id, subtask_id, nombre=None, duracion=None, beneficio=None, descripcion=None,  nuevas_habilidades=None)
@@ -219,6 +220,42 @@ class FabricaModel:
                 print("No se proporcionaron valores para actualizar")
         except Exception as ex:
             print(f"Error al actualizar información de la fábrica: {ex}")
+
+    @staticmethod
+    def add_historial(fecha,costes, beneficios, asignaciones,fabrica_id):
+        try: 
+            cursor = get_db_connection().cursor()
+            sql = '''INSERT INTO historial(fecha, costes, beneficios, asignaciones, fabrica_id) VALUES(%s, %s, %s, %s, %s)'''
+            cursor.execute(sql, (fecha, costes, beneficios, asignaciones, fabrica_id))
+            conexion.connection.commit()
+            return fabrica_id
+        
+        except Exception as ex:
+            print(f"Error al guardar el historial: {ex}")
+            return None
+    @staticmethod
+    def get_historial(fabrica_id):
+        try: 
+            cursor = get_db_connection().cursor()
+            sql = '''SELECT id, fecha, costes, beneficios, asignaciones FROM historial WHERE fabrica_id = %s'''
+            cursor.execute(sql, (fabrica_id,))
+            lista_resultados = []
+            resultados = cursor.fetchall()
+            for resultado in resultados:
+                registro = {
+                    'id': resultado[0],
+                    'fecha': str(resultado[1]),  # convertir fecha a string
+                    'costes': resultado[2],
+                    'beneficios': resultado[3],
+                    'asignaciones': json.loads(resultado[4])  # convertir JSON a lista
+                }
+                lista_resultados.append(registro)
+
+            return json.dumps(lista_resultados)  # convertir la lista de diccionarios a JSON
+        
+        except Exception as ex:
+            print(f"Error al obtener el historial: {ex}")
+            return None
 
 class RecursosModel:
     @staticmethod
@@ -658,9 +695,20 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             cursor.execute(sql, (subtask_id,fabrica_id))
             return cursor.fetchone()
         except Exception as ex:
-            print(f"Error al obtener fábricas: {ex}")
+            print(f"Error al obtener subtask: {ex}")
             return None
-        
+    
+    @staticmethod
+    def get_subtasks(fabrica_id):
+        try:
+            cursor = get_db_connection().cursor()
+            sql =  "SELECT id, nombre, duracion, beneficio,descripcion FROM Subtasks WHERE fabrica_id= %s"
+            cursor.execute(sql, (fabrica_id))
+            return cursor.fetchall()
+        except Exception as ex:
+            print(f"Error al obtener subtasks: {ex}")
+            return None
+
     @staticmethod
     def add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector):
         # guardar los datos en la base de datos
@@ -767,7 +815,6 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
     def dependencias_subtasks(skills_matching):
         try: 
             cursor = get_db_connection().cursor()
-            tarea_ids = tuple(skills_matching.keys())
 
             if len(tarea_ids) == 1:
                 tarea_ids = (tarea_ids[0],)
@@ -782,7 +829,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
         except Exception as ex:
             print(f"Error al obtener las dependencias: {ex}")
             return None
-        
+
     @staticmethod
     def skills_matching(fabrica_id):
         acciones = TareaModel.get_habilidades_subtareas(fabrica_id)
