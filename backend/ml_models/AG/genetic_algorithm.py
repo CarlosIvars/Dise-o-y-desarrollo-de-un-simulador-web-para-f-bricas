@@ -27,7 +27,7 @@ def selection_operator(population, aptitudes, k):
 
 def run_genetic_algorithm(skills_matching,dependencias, num_generations, num_individuals,k,beneficios, costes, fatigas):
     # Inicializar la población
-    population = initialize_population(skills_matching, num_individuals,dependencias)
+    population = initialize_population(skills_matching, num_individuals,dependencias,fatigas)
 
     # Evaluar la población inicial
     aptitudes = evaluate_population(population, beneficios, costes, fatigas, dependencias)

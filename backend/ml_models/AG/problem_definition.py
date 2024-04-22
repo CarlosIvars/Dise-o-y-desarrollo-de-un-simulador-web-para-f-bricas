@@ -42,15 +42,15 @@ def evaluate_individual(individual, beneficios, costes, fatigas, dependencias):
             puntaje_aptitud =  -np.Infinity
     return puntaje_aptitud
 
-def initialize_population(skills_matching, num_individuals,dependencias):
+def initialize_population(skills_matching, num_individuals,dependencias, fatigas):
     #Inicializa la poblacion creando num_individuals individuos
     population = []
     for _ in range(num_individuals):
-        individuo = crear_individuo(skills_matching,dependencias)
+        individuo = crear_individuo(skills_matching,dependencias,fatigas)
         population.append(individuo)
     return population
 
-def crear_individuo(skills_matching, dependencias):
+def crear_individuo(skills_matching, dependencias, fatigas):
     #creacion de un individuo cumpliendo con las dependecias exigidas
     individuo = []
     humanos_asignados = set()
@@ -60,8 +60,7 @@ def crear_individuo(skills_matching, dependencias):
     
     for subtask in subtasks_priorizadas:
         #humanos aun no asignados
-        posibles_humanos = set(skills_matching[subtask]) - humanos_asignados
-        
+        posibles_humanos = {h for h in skills_matching[subtask] if fatigas[h] < 100} - humanos_asignados        
         if posibles_humanos:
             humano_asignado = random.choice(list(posibles_humanos))
             humanos_asignados.add(humano_asignado)
