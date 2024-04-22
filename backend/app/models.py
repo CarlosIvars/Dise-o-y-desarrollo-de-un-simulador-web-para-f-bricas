@@ -306,7 +306,7 @@ class RecursosModel:
     def add_maquina(id_fabrica, nombre, fatiga, coste_uso, habilidades):
         try:
             cursor = get_db_connection().cursor()
-            sql = "INSERT INTO Maquinas (nombre, fatiga, coste, fabrica_id) VALUES (%s, %s, %s, %s)"
+            sql = "INSERT INTO Maquinas (nombre, fatiga, coste_h, fabrica_id) VALUES (%s, %s, %s, %s)"
             cursor.execute(sql, (nombre, fatiga, coste_uso, id_fabrica))
             id_maquina = cursor.lastrowid
             for habilidad in habilidades:
