@@ -280,7 +280,7 @@ class RecursosModel:
     def get_humanos_fabrica(id_fabrica):
         try:
             cursor = get_db_connection().cursor()
-            sql = "SELECT id,codigo, nombre FROM Trabajadores WHERE fabrica_id = %s"
+            sql = "SELECT * FROM Trabajadores WHERE fabrica_id = %s"
             cursor.execute(sql, (id_fabrica,))
             return cursor.fetchall()
         except Exception as ex:
@@ -291,7 +291,7 @@ class RecursosModel:
     def get_maquinas_farbica(id_fabrica):
         try:
             cursor = get_db_connection().cursor()
-            sql = "SELECT id, codigo, nombre FROM Maquinas WHERE fabrica_id = %s"
+            sql = "SELECT * FROM Maquinas WHERE fabrica_id = %s"
             cursor.execute(sql, (id_fabrica,))
             return cursor.fetchall()
         except Exception as ex:
