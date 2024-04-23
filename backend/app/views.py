@@ -181,7 +181,7 @@ def obtener_fabricas():
         'id': fabrica[0],
         'nombre': fabrica[1],
         'costes': fabrica[2],
-        'beneficios': fabrica[3]
+        'beneficios': fabrica[3],
         'capital' : fabrica[4]
     } for fabrica in fabricas_data]
     print(fabricas)
