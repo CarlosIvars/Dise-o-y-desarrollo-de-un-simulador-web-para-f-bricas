@@ -161,7 +161,7 @@ export class FabricaComponent {
             if(response.trabajadores != null && response.trabajadores != undefined) {
               const trabajadores: Trabajador[] = [];
               for (const trabajador of response.trabajadores) {
-                trabajadores.push(new TrabajadorImpl(trabajador[0], "Trabajador" + trabajador[0], "Ingeniero", 1800, "#FF0000", false));
+                trabajadores.push(new TrabajadorImpl(trabajador[0], "Trabajador" + trabajador[1], "Ingeniero", 1800, "#FF0000", false));
               }
               if (trabajadores.length > 0) {
                 this.trabajadoresService.actualizarTrabajadores(trabajadores);
@@ -172,7 +172,7 @@ export class FabricaComponent {
             if(response.maquinas != null && response.maquinas != undefined) {
               const maquinas: Maquina[] = [];
               for (const maquina of response.maquinas) {
-                maquinas.push(new MaquinaImpl(maquina[0], "Máquina" + maquina[0], "Prueba", 800, "#FF0000"));
+                maquinas.push(new MaquinaImpl(maquina[0], "Máquina" + maquina[1], "Prueba", 800, "#FF0000"));
               }
               if (maquinas.length > 0) {
                 this.maquinasService.actualizarMaquinas(maquinas);

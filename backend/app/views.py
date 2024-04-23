@@ -182,6 +182,7 @@ def obtener_fabricas():
         'nombre': fabrica[1],
         'costes': fabrica[2],
         'beneficios': fabrica[3]
+        'capital' : fabrica[4]
     } for fabrica in fabricas_data]
     print(fabricas)
     return jsonify(fabricas), 200
@@ -198,7 +199,7 @@ def añadir_fabrica():
     user = UserModel.get_user(usuario)
     resultado = FabricaModel.add_fabrica(nombre_fabrica, user['id'])
     if resultado:
-        return jsonify({'mensaje': 'Fábrica añadida correctamente'}), 201
+        return jsonify({'mensaje': 'Fábrica añadida correctamente',"fabrica": resultado}), 201
     else:
         return jsonify({'error': 'No se pudo añadir la fábrica'}), 500
     
@@ -224,7 +225,7 @@ def seleccionar_fabrica():
     maquinas = RecursosModel.get_maquinas_farbica(fabrica_id)
     subtasks = TareaModel.get_subtasks(fabrica_id)
 
-    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica_id, 'trabajadores' : trabajadores, 'maquinas': maquinas, 'subtasks' : subtasks}), 200
+    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica': fabrica, 'trabajadores' : trabajadores, 'maquinas': maquinas, 'subtasks' : subtasks}), 200
 
 @app.route('/delete_fabrica', methods=['DELETE'])
 def delete_fabrica():
@@ -248,7 +249,7 @@ def delete_fabrica():
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
 
 @app.route('/update_fabrica', methods =['PATCH'])
-def update_farbica():
+def update_fabrica():
     try:
         usuario = session.get('usuario')
         if not usuario:
@@ -263,8 +264,8 @@ def update_farbica():
         nuevos_costes = data.get('costes')
         nuevos_beneficios = data.get('beneficios')
 
-        FabricaModel.update_fabrica(fabrica_id, nombre, nuevos_costes, nuevos_beneficios)
-        return jsonify({'mensaje': 'fabrica actualizada'}), 200
+        fabrica = FabricaModel.update_fabrica(fabrica_id, nombre, nuevos_costes, nuevos_beneficios)
+        return jsonify({'mensaje': 'fabrica actualizada', 'fabrica' : fabrica}), 200
     except Exception as ex:
         app.logger.error(f'Error al actualizar el fabrica: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -287,9 +288,10 @@ def add_trabajador():
     coste_h = data.get('coste_h')
     preferencias = data.get('preferencias')
     skills = data.get('skills')
-    trabajador_id = RecursosModel.add_trabajador(fabrica_id, nombre, apellidos, fecha_nacimiento, fatiga, coste_h, preferencias, skills)
-    if trabajador_id:
-        return jsonify({'mensaje': 'Trabajador añadido con exitoso'}), 201
+    trabajador = RecursosModel.add_trabajador(fabrica_id, nombre, apellidos, fecha_nacimiento, fatiga, coste_h, preferencias, skills)
+    
+    if trabajador:
+        return jsonify({'mensaje': 'Trabajador añadido con exitoso', 'trabajador' : trabajador}), 201
     else:
         return jsonify({'mensaje': 'El trabajador no se pudo añadir correctamente'}), 500
     
@@ -306,9 +308,9 @@ def add_maquina():
     coste_h = data.get('coste_h')
     skills = data.get('skills')
     print(nombre, fatiga, coste_h, skills)
-    maquina_id = RecursosModel.add_maquina(fabrica_id, nombre, fatiga, coste_h, skills)
-    if maquina_id:
-        return jsonify({'mensaje': 'Maquina añadida con exitoso'}), 201
+    maquina = RecursosModel.add_maquina(fabrica_id, nombre, fatiga, coste_h, skills)
+    if maquina:
+        return jsonify({'mensaje': 'Maquina añadida con exitoso', 'maquina' : maquina}), 201
     else:
         return jsonify({'mensaje': 'La maquina no se pudo añadir correctamente'}), 500
 
@@ -344,7 +346,7 @@ def delete_maquina():
             return jsonify({'error': 'No se proporcionó maquina'}), 400
         
         codigo_maquina = data.get('maquina')
-        maquina = RecursosModel.get_trabajador(codigo_maquina)
+        maquina = RecursosModel.get_maquina(codigo_maquina)
         if not maquina:
             return jsonify({'error': 'La maquina no existe'}), 404
 
@@ -375,8 +377,8 @@ def update_trabajador():
         trabajos_apto = data.get('trabajos_apto')
         nuevas_habilidades = data.get('nuevas_habilidades')
 
-        RecursosModel.update_trabajador(trabajador_id, nombre, apellidos, fecha_nacimiento, trabajos_apto, fatiga, coste_h, preferencias_trabajo, nuevas_habilidades)
-        return jsonify({'mensaje': 'Trabajador actualizado'}), 200
+        trabajador = RecursosModel.update_trabajador(trabajador_id, nombre, apellidos, fecha_nacimiento, trabajos_apto, fatiga, coste_h, preferencias_trabajo, nuevas_habilidades)
+        return jsonify({'mensaje': 'Trabajador actualizado', 'trabajador' : trabajador}), 200
     except Exception as ex:
         app.logger.error(f'Error al actualizar el trabajador: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -398,8 +400,8 @@ def update_maquina():
         fatiga = data.get('fatiga')
         nuevas_habilidades = data.get('nuevas_habilidades')
 
-        RecursosModel.update_maquina(maquina_id, nombre, fatiga, coste_h, nuevas_habilidades)
-        return jsonify({'mensaje': 'Trabajador actualizado'}), 200
+        maquina= RecursosModel.update_maquina(maquina_id, nombre, fatiga, coste_h, nuevas_habilidades)
+        return jsonify({'mensaje': 'Trabajador actualizado', 'maquina' : maquina}), 200
     except Exception as ex:
         app.logger.error(f'Error al actualizar el trabajador: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -421,13 +423,13 @@ def add_subtask():
         beneficio = data.get('beneficio')
         descripcion = data.get('descripcion')
         subtask_dependencia = data.get('subtask_dependencia')
-        subtask_id = TareaModel.add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector)
+        subtask= TareaModel.add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector)
         
-        if subtask_id:        
+        if subtask:        
             if subtask_dependencia:
-                TareaModel.add_dependencias_subtasks(subtask_id,subtask_dependencia)
+                TareaModel.add_dependencias_subtasks(subtask['id'],subtask_dependencia)
             
-            return jsonify({'mensaje': 'Subtask añadida con exitoso'}), 201
+            return jsonify({'mensaje': 'Subtask añadida con exitoso', 'subtask' : subtask}), 201
         else:
             return jsonify({'mensaje': 'Subtask no se pudo añadir correctamente'}), 500
     except Exception as ex:
@@ -473,8 +475,8 @@ def update_subtask():
         descripcion = data.get('descripcion')
         if descripcion :
             nuevas_habilidades = TareaModel.obtener_skills_chatGPT(descripcion)
-        TareaModel.update_subtask(fabrica_id, subtask_id, nombre, duracion, beneficio, descripcion,  nuevas_habilidades)
-        return jsonify({'mensaje': 'Subtask actualizado'}), 200
+        subtask =TareaModel.update_subtask(fabrica_id, subtask_id, nombre, duracion, beneficio, descripcion,  nuevas_habilidades)
+        return jsonify({'mensaje': 'Subtask actualizado', 'subtask' : subtask}), 200
     except Exception as ex:
         app.logger.error(f'Error al actualizar subtask: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -527,7 +529,6 @@ def algoritmo_genetico():
 
 @app.route('/add_historial', methods = ['POST'])
 def añadir_historial():
-    FabricaModel.add_historial(date.today(),5000,7500,json.dumps(asignaciones),1)
     try:
         fabrica_id = session.get('fabrica')
         if not fabrica_id:
@@ -544,7 +545,7 @@ def añadir_historial():
         result = FabricaModel.add_historial(fecha,coste,beneficios,json.dumps(asignaciones),fabrica_id)
 
        
-        return jsonify({'mensaje': 'Historial actualizado' , 'fabrica_id' : result}), 200
+        return jsonify({'mensaje': 'Historial actualizado' , 'historial' : result}), 200
     except Exception as ex:
         app.logger.error(f'Error al actualizar historial: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500

@@ -139,13 +139,18 @@ class UserModel(UserMixin):
 
 class FabricaModel:
     @staticmethod
-    def add_fabrica(nombre, id_usuario):
+    def add_fabrica(nombre, id_usuario, capital):
         try:
             cursor = get_db_connection().cursor()
-            sql =  "INSERT INTO Fabrica (nombre, usuario_id) VALUES (%s, %s)"
-            cursor.execute(sql, (nombre, id_usuario))
+            sql =  "INSERT INTO Fabrica (nombre, usuario_id, capital) VALUES (%s, %s, %s)"
+            cursor.execute(sql, (nombre, id_usuario, capital))
             conexion.connection.commit()
-            return nombre  
+
+            last_id = cursor.lastrowid
+            sql_select = "SELECT * FROM Fabrica WHERE id = %s"
+            cursor.execute(sql_select, (last_id,))
+            fabrica = cursor.fetchone()
+            return fabrica  
         except Exception as ex:
             print(f"Error al añadir fábrica: {ex}")
             return None
@@ -154,7 +159,7 @@ class FabricaModel:
     def get_fabrica(id_usuario):
         try:
             cursor = get_db_connection().cursor()
-            sql =  "SELECT id, nombre, costes, beneficios FROM Fabrica WHERE usuario_id = %s"
+            sql =  "SELECT id, nombre, costes, beneficios, capital FROM Fabrica WHERE usuario_id = %s"
             cursor.execute(sql, (id_usuario,))
             return cursor.fetchall()
         except Exception as ex:
@@ -165,7 +170,7 @@ class FabricaModel:
     def get_fabrica_by_id(id_usuario, id_fabrica):
         try:
             cursor = get_db_connection().cursor()
-            sql =  "SELECT nombre, costes, beneficios FROM Fabrica WHERE usuario_id = %s AND id = %s"
+            sql =  "SELECT nombre, costes, beneficios, capital FROM Fabrica WHERE usuario_id = %s AND id = %s"
             cursor.execute(sql, (id_usuario,id_fabrica))
             return cursor.fetchone()
         except Exception as ex:
@@ -209,17 +214,23 @@ class FabricaModel:
             if nuevos_beneficios is not None:
                 sql += "beneficios = %s, "
                 update_values.append(nuevos_beneficios)
-            sql = sql.rstrip(", ") + " WHERE id = %s"  # Usar el ID en lugar del nombre
+            sql = sql.rstrip(", ") + " WHERE id = %s"  
             update_values.append(fabrica_id)  # Agregar el ID como último valor
 
             if len(update_values) > 1:  # Verificar si se proporcionaron valores para actualizar
                 cursor.execute(sql, tuple(update_values))
                 conexion.connection.commit()
-                print("Información de la fábrica actualizada exitosamente")
+                print("Información de la fábrica actualizada exitosamente") 
+                sql = "SELECT * FROM Fabrica WHERE id = %s"
+                cursor.execute(sql, (fabrica_id,))
+                fabrica_actualizada = cursor.fetchone()
+                return fabrica_actualizada
             else:
                 print("No se proporcionaron valores para actualizar")
+                return None
         except Exception as ex:
             print(f"Error al actualizar información de la fábrica: {ex}")
+            return None
 
     @staticmethod
     def add_historial(fecha,costes, beneficios, asignaciones,fabrica_id):
@@ -228,11 +239,18 @@ class FabricaModel:
             sql = '''INSERT INTO historial(fecha, costes, beneficios, asignaciones, fabrica_id) VALUES(%s, %s, %s, %s, %s)'''
             cursor.execute(sql, (fecha, costes, beneficios, asignaciones, fabrica_id))
             conexion.connection.commit()
-            return fabrica_id
-        
+
+            last_id = cursor.lastrowid
+            sql_select = "SELECT * FROM historial WHERE id = %s"
+            cursor.execute(sql_select, (last_id,))
+            historial = cursor.fetchone()
+
+            return historial
+                    
         except Exception as ex:
             print(f"Error al guardar el historial: {ex}")
             return None
+        
     @staticmethod
     def get_historial(fabrica_id):
         try: 
@@ -262,7 +280,7 @@ class RecursosModel:
     def get_humanos_fabrica(id_fabrica):
         try:
             cursor = get_db_connection().cursor()
-            sql = "SELECT id,codigo FROM Trabajadores WHERE fabrica_id = %s"
+            sql = "SELECT id,codigo, nombre FROM Trabajadores WHERE fabrica_id = %s"
             cursor.execute(sql, (id_fabrica,))
             return cursor.fetchall()
         except Exception as ex:
@@ -273,7 +291,7 @@ class RecursosModel:
     def get_maquinas_farbica(id_fabrica):
         try:
             cursor = get_db_connection().cursor()
-            sql = "SELECT id, codigo FROM Maquinas WHERE fabrica_id = %s"
+            sql = "SELECT id, codigo, nombre FROM Maquinas WHERE fabrica_id = %s"
             cursor.execute(sql, (id_fabrica,))
             return cursor.fetchall()
         except Exception as ex:
@@ -284,7 +302,7 @@ class RecursosModel:
     def get_trabajador(codigo):
         try:
             cursor = get_db_connection().cursor()
-            sql = "SELECT id, nombre, fatiga, trabajo_id  FROM Trabajadores WHERE codigo = %s"
+            sql = "SELECT *  FROM Trabajadores WHERE codigo = %s"
             cursor.execute(sql, (codigo,))
             return cursor.fetchone()
         except Exception as ex:
@@ -295,7 +313,7 @@ class RecursosModel:
     def get_maquina(codigo):
         try:
             cursor = get_db_connection().cursor()
-            sql = "SELECT id, nombre, fatiga, trabajo_id  FROM Maquinas WHERE codigo = %s"
+            sql = "SELECT * FROM Maquinas WHERE codigo = %s"
             cursor.execute(sql, (codigo,))
             return cursor.fetchone()
         except Exception as ex:
@@ -313,7 +331,13 @@ class RecursosModel:
                 sql_h = ''' INSERT INTO skills_maquinas (maquina_id, skill_id) VALUES (%s,%s)'''
                 cursor.execute(sql_h, (id_maquina, habilidad))
             conexion.connection.commit()
-            return id_fabrica
+
+            last_id = cursor.lastrowid
+            sql_select = "SELECT * FROM Maquinas WHERE id = %s"
+            cursor.execute(sql_select, (last_id,))
+            maquina = cursor.fetchone()
+            return maquina
+            
         except Exception as ex:
             print(f"Error al insertar en la base de datos: {ex}")
             return None
@@ -330,7 +354,13 @@ class RecursosModel:
                 sql_h = '''INSERT INTO skills_trabajadores (trabajador_id, skill_id) VALUES (%s,%s)'''
                 cursor.execute(sql_h, (id_trabajador, habilidad))
             conexion.connection.commit()
-            return id_trabajador
+
+            last_id = cursor.lastrowid
+            sql_select = "SELECT * FROM Trabajadores WHERE id = %s"
+            cursor.execute(sql_select, (last_id,))
+            trabajador = cursor.fetchone()
+            return trabajador
+
         except Exception as ex:
             print(f"Error al insertar en la base de datos: {ex}")
             return None
@@ -384,9 +414,13 @@ class RecursosModel:
                     cursor.execute("INSERT INTO skills_trabajadores (trabajador_id, skill_id) VALUES (%s, %s)", (trabajador_id, skill_id))
 
             conexion.connection.commit()
+            cursor.execute("SELECT * FROM Trabajador WHERE id = %s", (trabajador_id,))
+            trabajador_actualizado = cursor.fetchone()
             print("Información del trabajador actualizada exitosamente")
+            return trabajador_actualizado
         except Exception as ex:
             print(f"Error al actualizar información del trabajador: {ex}")
+            return None
 
 
     @staticmethod
@@ -431,8 +465,13 @@ class RecursosModel:
 
             conexion.connection.commit()
             print("Información de la máquina actualizada exitosamente")
+            cursor.execute("SELECT * FROM Maquinas WHERE id = %s", (maquina_id,))
+            maquina_actualizada = cursor.fetchone()
+            return maquina_actualizada
+
         except Exception as ex:
             print(f"Error al actualizar información de la máquina: {ex}")
+            return None
 
     @staticmethod
     def get_habilidades_maquinas(id_fabrica):
@@ -691,7 +730,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
     def get_subtask(subtask_id,fabrica_id):
         try:
             cursor = get_db_connection().cursor()
-            sql =  "SELECT nombre, duracion, beneficio,descripcion FROM Subtasks WHERE id = %s AND fabrica_id= %s"
+            sql =  "SELECT * FROM Subtasks WHERE id = %s AND fabrica_id= %s"
             cursor.execute(sql, (subtask_id,fabrica_id))
             return cursor.fetchone()
         except Exception as ex:
@@ -702,7 +741,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
     def get_subtasks(fabrica_id):
         try:
             cursor = get_db_connection().cursor()
-            sql =  "SELECT id, nombre, duracion, beneficio,descripcion FROM Subtasks WHERE fabrica_id= %s"
+            sql =  "SELECT * FROM Subtasks WHERE fabrica_id= %s"
             cursor.execute(sql, (fabrica_id))
             return cursor.fetchall()
         except Exception as ex:
@@ -728,7 +767,12 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
                 sql_h = ''' INSERT INTO skills_subtasks (subtask_id, skill_id) VALUES (%s,%s)'''
                 cursor.execute(sql_h, (id_subtask, habilidad))
             conexion.connection.commit()
-            return fabrica_id
+
+            sql_select = "SELECT * FROM Subtasks WHERE id = %s"
+            cursor.execute(sql_select, (id_subtask,))
+            subtask = cursor.fetchone()
+            return subtask
+
         except Exception as ex:
             print(f"Error al insertar subtarea en la base de datos: {ex}")
             return {}
@@ -778,8 +822,14 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
 
             conexion.connection.commit()
             print("Información de la subtask actualizada exitosamente")
+            sql_select = "SELECT * FROM Subtasks WHERE id = %s AND fabrica_id = %s"
+            cursor.execute( sql_select, (subtask_id, fabrica_id))
+            subtask = cursor.fetchone()
+            return subtask
+
         except Exception as ex:
             print(f"Error al actualizar información de la subtask: {ex}")
+            return None
     
     @staticmethod
     def beneficio_subtasks(fabrica_id):
@@ -812,7 +862,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             return False
 
     @staticmethod
-    def dependencias_subtasks(skills_matching):
+    def dependencias_subtasks():
         try: 
             cursor = get_db_connection().cursor()
 
