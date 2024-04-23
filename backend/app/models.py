@@ -332,7 +332,7 @@ class RecursosModel:
                 cursor.execute(sql_h, (id_maquina, habilidad))
             conexion.connection.commit()
 
-            last_id = cursor.lastrowid
+            last_id = id_maquina
             sql_select = "SELECT * FROM Maquinas WHERE id = %s"
             cursor.execute(sql_select, (last_id,))
             maquina = cursor.fetchone()
@@ -355,7 +355,7 @@ class RecursosModel:
                 cursor.execute(sql_h, (id_trabajador, habilidad))
             conexion.connection.commit()
 
-            last_id = cursor.lastrowid
+            last_id = id_trabajador
             sql_select = "SELECT * FROM Trabajadores WHERE id = %s"
             cursor.execute(sql_select, (last_id,))
             trabajador = cursor.fetchone()
