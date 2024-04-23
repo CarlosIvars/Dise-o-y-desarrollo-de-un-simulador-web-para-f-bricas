@@ -224,8 +224,8 @@ def seleccionar_fabrica():
     trabajadores = RecursosModel.get_humanos_fabrica(fabrica_id)
     maquinas = RecursosModel.get_maquinas_farbica(fabrica_id)
     subtasks = TareaModel.get_subtasks(fabrica_id)
-
-    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica': fabrica, 'trabajadores' : trabajadores, 'maquinas': maquinas, 'subtasks' : subtasks}), 200
+    print(session)
+    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica, 'trabajadores' : trabajadores, 'maquinas': maquinas, 'subtasks' : subtasks}), 200
 
 @app.route('/delete_fabrica', methods=['DELETE'])
 def delete_fabrica():

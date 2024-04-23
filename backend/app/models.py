@@ -742,7 +742,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
         try:
             cursor = get_db_connection().cursor()
             sql =  "SELECT * FROM Subtasks WHERE fabrica_id= %s"
-            cursor.execute(sql, (fabrica_id))
+            cursor.execute(sql, (fabrica_id,))
             return cursor.fetchall()
         except Exception as ex:
             print(f"Error al obtener subtasks: {ex}")
