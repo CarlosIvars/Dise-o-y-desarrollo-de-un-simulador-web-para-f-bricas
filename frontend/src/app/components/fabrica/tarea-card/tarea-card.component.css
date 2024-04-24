@@ -31,3 +31,15 @@
     right: 5px;
     font-weight: bold;
 }
+
+.tarea .editar{
+    position: absolute;
+    bottom: 5px;
+    left: 40px;
+}
+
+.tarea .borrar{
+    position: absolute;
+    bottom: 5px;
+    left: 57px;
+}

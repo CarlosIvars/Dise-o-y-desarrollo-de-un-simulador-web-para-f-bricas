@@ -32,4 +32,12 @@ export class TrabajadoresService {
     this.actualizarTrabajadores(trabajadores);
   }
 
+  eliminarTrabajador(id: string) {
+    const trabajadores = this.trabajadoresSubsject.getValue();
+    const index = trabajadores.findIndex(t => t.id === id);
+    if (index !== -1) {
+      trabajadores.splice(index, 1);
+      this.actualizarTrabajadores(trabajadores);
+    }
+  }
 }

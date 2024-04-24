@@ -59,7 +59,7 @@ export class TareasFormComponent {
       ).subscribe({
         next: (response) => {
           console.log("Respuesta: ", response);
-          this.tareasService.anyadirTarea(new TareaImpl(5, this.nombre, 10, 12, 50, 0));
+          this.tareasService.anyadirTarea(new TareaImpl(5, this.nombre, 10, 12, 50, 0, "Desc"));
         },
         error: (error) => {
           alert("Error: " + error); 

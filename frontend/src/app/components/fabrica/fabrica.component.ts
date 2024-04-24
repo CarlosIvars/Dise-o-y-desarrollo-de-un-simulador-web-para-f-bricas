@@ -40,9 +40,20 @@ export class FabricaComponent {
 
   cargando = true;
 
+  //Forms para los trabajadores
   trabajadoresForm: boolean = false;
+  editTrabajadoresForm: boolean = false;
+  trabajadorEditando!: Trabajador;
+
+  //Forms para las maquinas
   maquinasForm: boolean = false;
+  editMaquinasForm: boolean = false;
+  maquinaEditando!: Maquina;
+
+  //Forms para las tareas
   tareasForm: boolean = false;
+  editTareasForm: boolean = false;
+  tareaEditando!: Tarea;
 
   constructor(private fabricaService: FabricaService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService, private tareasService: TareasService, private timerService: TimerService, private route: ActivatedRoute, private apiService: ApiService) {}
 
@@ -123,6 +134,15 @@ export class FabricaComponent {
     this.trabajadoresForm = false;
   }
 
+  //EditTrabajadoresForm
+  abrirEditTrabajadoresForm(trabajador: Trabajador): void {
+    this.trabajadorEditando = trabajador;
+    this.editTrabajadoresForm = true;
+  }
+  cerrarEditTrabajadoresForm(): void {
+    this.editTrabajadoresForm = false;
+  }
+
   //MaquinasForm
   abrirMaquinasForm(): void {
     this.maquinasForm = true;
@@ -131,12 +151,30 @@ export class FabricaComponent {
     this.maquinasForm = false;
   }
 
+  //EditMaquinasForm
+  abrirEditMaquinasForm(maquina: Maquina): void {
+    this.maquinaEditando = maquina;
+    this.editMaquinasForm = true;
+  }
+  cerrarEditMaquinasForm(): void {
+    this.editMaquinasForm = false;
+  }
+
   //TareasForm
   abrirTareasForm(): void {
     this.tareasForm = true;
   }
   cerrarTareasForm(): void {
     this.tareasForm = false;
+  }
+
+  //EditTareasForm
+  abrirEditTareasForm(tarea: Tarea): void {
+    this.tareaEditando = tarea;
+    this.editTareasForm = true;
+  }
+  cerrarEditTareasForm(): void {
+    this.editTareasForm = false;
   }
 
   iniciarFabrica(fabrica_id: number) {
@@ -153,46 +191,108 @@ export class FabricaComponent {
         next: (response) => {
           console.log("Respuesta: ", response);
 
+          //Comprobamos si nos llega la respuesta
           if(response.fabrica_id != null && response.fabrica_id != undefined) {
-            //Añadimos la fabrica
-            this.fabricaService.actualizarFabrica(new FabricaImpl(response.fabrica_id, "Fabrica por defecto", 1, 7, 41, 5000, 300));
 
-            //Añadimos los trabajadores
-            if(response.trabajadores != null && response.trabajadores != undefined) {
-              const trabajadores: Trabajador[] = [];
-              for (const trabajador of response.trabajadores) {
-                trabajadores.push(new TrabajadorImpl(trabajador[0], "Trabajador" + trabajador[1], "Ingeniero", 1800, "#FF0000", false));
-              }
-              if (trabajadores.length > 0) {
-                this.trabajadoresService.actualizarTrabajadores(trabajadores);
-              }
-            }
+            const fabrica_id = this.fabrica_id;
+            const fabrica_nombre = response.fabrica_id[0];
+            const fabrica_costes = response.fabrica_id[1];
+            const fabrica_beneficios = response.fabrica_id[2];
+            const fabrica_capital = response.fabrica_id[3];
 
-            //Añadimos las maquinas
-            if(response.maquinas != null && response.maquinas != undefined) {
-              const maquinas: Maquina[] = [];
-              for (const maquina of response.maquinas) {
-                maquinas.push(new MaquinaImpl(maquina[0], "Máquina" + maquina[0], "Prueba", 800, "#FF0000"));
+            //Si tenemos todos los datos añadimos la fabrica
+            if(fabrica_id != undefined && fabrica_nombre != undefined && fabrica_costes != undefined && fabrica_beneficios != undefined && fabrica_capital != undefined) {
+              this.fabricaService.actualizarFabrica(new FabricaImpl(fabrica_id, fabrica_nombre, 1, 0, 0, fabrica_capital, fabrica_beneficios));
+
+              //Comprobamos si tenemos los datos para los trabajadores
+              if(response.trabajadores != null && response.trabajadores != undefined) {
+                const trabajadores: Trabajador[] = [];
+
+                for (const trabajador of response.trabajadores) {
+                  //const numeric_id = trabajador[0];
+                  const alfanumeric_id = trabajador[1];
+                  const nombre = trabajador[2];
+                  const apellidos = trabajador[3];
+                  const fecha_nacimiento = trabajador[4];
+                  const trabajados_apto = trabajador[5];
+                  const fatiga = trabajador[6];
+                  const coste_h = trabajador[7];
+                  const preferencias_trabajo = trabajador[8];
+                  //const fabrica_id = trabajador[9];
+                  //const trabajo_id = trabajador[10];
+
+                  //Si tenemos todos los datos añadimos el trabajador
+                  if(alfanumeric_id != undefined && nombre != undefined && apellidos != undefined && trabajados_apto != undefined && fatiga != undefined && coste_h != undefined && preferencias_trabajo != undefined) {
+                    trabajadores.push(new TrabajadorImpl(alfanumeric_id, nombre, apellidos, fecha_nacimiento, trabajados_apto, fatiga, coste_h, preferencias_trabajo));
+                  } else {
+                    console.log("Omitiendo la generacion del trabajador por falta de datos...");
+                  }
+                }
+                if (trabajadores.length > 0) {
+                  this.trabajadoresService.actualizarTrabajadores(trabajadores);
+                }
+              } else {
+                console.error("No se ha podido obtener el array de trabajadores");
               }
-              if (maquinas.length > 0) {
-                this.maquinasService.actualizarMaquinas(maquinas);
+
+              //Comprobamos si tenemos los datos para las maquinas
+              if(response.maquinas != null && response.maquinas != undefined) {
+                const maquinas: Maquina[] = [];
+
+                for (const maquina of response.maquinas) {
+                  //const numeric_id = maquina[0];
+                  const alfanumeric_id = maquina[1];
+                  const nombre = maquina[2];
+                  const fatiga = maquina[3];
+                  const coste_h = maquina[4];
+                  //const fabrica_id = maquina[5];
+                  //const trabajo_id = maquina[6];
+
+                  //Si tenemos todos los datos añadimos la maquina
+                  if(alfanumeric_id != undefined && nombre != undefined && fatiga != undefined && coste_h != undefined) {
+                    maquinas.push(new MaquinaImpl(alfanumeric_id, nombre,fatiga, coste_h));
+                  } else {
+                    console.log("Omitiendo la generacion de la maquina por falta de datos...");
+                  }
+                }
+                if (maquinas.length > 0) {
+                  this.maquinasService.actualizarMaquinas(maquinas);
+                }
+              } else {
+                console.error("No se ha podido obtener el array de maquinas");
               }
+
+              //Comprobamos si tenemos los datos para las tareas
+              if(response.subtasks != null && response.subtasks != undefined) {
+                const tareas: Tarea[] = [];
+
+                for (const tarea of response.subtasks) {
+                  const id = tarea[0];
+                  const nombre = tarea[1];
+                  const duracion = tarea[2];
+                  const beneficio = tarea[3];
+                  const descripcion = tarea[4];
+
+                  //Si tenemos todos los datos añadimos la tarea
+                  if(id != undefined && nombre != undefined && duracion != undefined && beneficio != undefined && descripcion != undefined) {
+                    tareas.push(new TareaImpl(id, nombre, 0, duracion, beneficio, 0, descripcion));
+                  } else {
+                    console.log("Omitiendo la generacion de la tarea por falta de datos...");
+                  }
+                }
+                if (tareas.length > 0) {
+                  this.tareasService.actualizarTareas(tareas);
+                }
+              } else {
+                console.error("No se ha podido obtener el array de tareas");
+              }
+
+            } else {
+              alert("Faltan datos para la incialización de la fábrica.")
             }
 
             //Añadimos las tareas
             /*
-            if(response.subtasks != null && response.subtasks != undefined) {
-              const tareas: Tarea[] = [];
-              for (const tarea of response.subtasks) {
-                if(tarea.id != undefined) {
-                  tareas.push(new TareaImpl(1, "Preparar", 10, 2, 5, 0));
-                } 
-              }
-              if (tareas.length > 0) {
-                this.tareasService.actualizarTareas(tareas);
-              }
-            }
-            */
             const tareas: Tarea[] = [];
             tareas.push(new TareaImpl(1, "Preparar", 10, 2, 5, 0));
             tareas.push(new TareaImpl(2, "Procesar", 0, 5, 30,0));
@@ -200,6 +300,7 @@ export class FabricaComponent {
             tareas[1].setTareaPadre(tareas[0]);
             tareas[2].setTareaPadre(tareas[1]);
             this.tareasService.actualizarTareas(tareas);
+            */
 
           } else {
             alert("No se ha podido recuperar los datos de la fábrica seleccionada.");
@@ -210,5 +311,39 @@ export class FabricaComponent {
         }
       });
     }
+  }
+
+  skillMatching() {
+    console.log("Realizando el skill matching...");
+  
+    this.apiService.skillMatching().pipe(
+      finalize(() => {
+        console.log("Fin del skill matching.");
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log("Respuesta: ", response);
+      },
+      error: (error) => {
+        alert("Error: " + error); 
+      }
+    });
+  }
+
+  algoritmoGenetico() {
+    console.log("Realizando el algoritmo genetico...");
+  
+    this.apiService.algoritmoGenetico().pipe(
+      finalize(() => {
+        console.log("Fin del algoritmo genetico.");
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log("Respuesta: ", response);
+      },
+      error: (error) => {
+        alert("Error: " + error); 
+      }
+    });
   }
 }

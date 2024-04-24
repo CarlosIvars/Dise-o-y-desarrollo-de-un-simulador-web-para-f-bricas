@@ -33,3 +33,15 @@
 .trabajador-card:hover .editar {
     display: block;
 }
+
+.trabajador-card .borrar {
+    position: absolute;
+    top: 3px;
+    right: 20px;
+    cursor: pointer;
+    display: none;
+}
+
+.trabajador-card:hover .borrar {
+    display: block;
+}

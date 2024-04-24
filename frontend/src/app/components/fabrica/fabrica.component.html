@@ -21,7 +21,7 @@
                 <button (click)="abrirTrabajadoresForm()">Añadir</button>
             </div>
             <div class="lista-card">
-                <app-trabajador-card *ngFor="let trabajador of trabajadores" [trabajador]="trabajador"></app-trabajador-card>
+                <app-trabajador-card *ngFor="let trabajador of trabajadores" [trabajador]="trabajador" (editarTrabajadorForm)="abrirEditTrabajadoresForm($event)"></app-trabajador-card>
             </div>
         </div>
         <div class="seccion" id="sc-maquinas">
@@ -30,18 +30,27 @@
                 <button (click)="abrirMaquinasForm()">Añadir</button>
             </div>
             <div class="lista-card">
-                <app-maquina-card *ngFor="let maquina of maquinas" [maquina]="maquina"></app-maquina-card>
+                <app-maquina-card *ngFor="let maquina of maquinas" [maquina]="maquina" (editarMaquinaForm)="abrirEditMaquinasForm($event)"></app-maquina-card>
             </div>
         </div>
     </div>
     <div id="seccion-principal">
         <button (click)="abrirTareasForm()" style="margin: 5px; float: right;" >Añadir tarea</button>
-        <app-tarea-card *ngFor="let tarea of tareas" [tarea]="tarea"></app-tarea-card>
+        <app-tarea-card *ngFor="let tarea of tareas" [tarea]="tarea" (editarTareaForm)="abrirEditTareasForm($event)"></app-tarea-card>
     </div>
     <div class="barra-lateral" id="bl-derecha">
         <p>Barra lateral derecha.</p>
+        <button (click)="skillMatching()">Skills matching</button>
+        <button (click)="algoritmoGenetico()">Algoritmo genético</button>
     </div>
 </div>
+
 <app-trabajadores-form *ngIf="trabajadoresForm" (close)="cerrarTrabajadoresForm()"></app-trabajadores-form>
+<app-edit-trabajadores-form *ngIf="editTrabajadoresForm" [trabajador]="trabajadorEditando" (close)="cerrarEditTrabajadoresForm()"></app-edit-trabajadores-form>
+
 <app-maquinas-form *ngIf="maquinasForm" (close)="cerrarMaquinasForm()"></app-maquinas-form>
+<app-edit-maquinas-form *ngIf="editMaquinasForm" [maquina]="maquinaEditando" (close)="cerrarEditMaquinasForm()"></app-edit-maquinas-form>
+
 <app-tareas-form *ngIf="tareasForm" (close)="cerrarTareasForm()"></app-tareas-form>
+<app-edit-tareas-form *ngIf="editTareasForm" [tarea]="tareaEditando" (close)="cerrarEditTareasForm()"></app-edit-tareas-form>
+

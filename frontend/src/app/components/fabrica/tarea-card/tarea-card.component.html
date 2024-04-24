@@ -3,4 +3,7 @@
     <div class="tiempo">{{formatearDecimales(tarea.tiempoActual)}} / {{tarea.duracion}}</div>
     <div class="asignado" (drop)="drop($event, tarea)" (dragover)="allowDrop($event)">{{tarea.getTrabajador()?.nombre}}</div>
     <div class="cantidad">{{tarea.cantidad}}</div>
+
+    <div class="editar" (click)="editarTarea()">E</div>
+    <div class="borrar" (click)="borrarTarea()">B</div>
 </div>

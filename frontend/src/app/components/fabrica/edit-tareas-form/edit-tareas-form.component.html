@@ -1,0 +1,20 @@
+<div class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-title">Modificar tarea</div>
+            <div class="header-close-icon" (click)="cerrarModal()">X</div>
+        </div>
+        <div class="modal-body">
+            <form>
+                <input type="text" [(ngModel)]="tarea.nombre" name="nombre" placeholder="Nombre">
+                <input type="text" [(ngModel)]="tarea.duracion" name="duracion" placeholder="Duración">
+                <input type="text" [(ngModel)]="tarea.precioVenta" name="precioVenta" placeholder="Precio de venta">
+                <input type="text" [(ngModel)]="tarea.descripcion" name="descripcion" placeholder="Descripción">
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button (click)="modificarTarea()" [disabled]="cargando">Modificar tarea</button>
+            <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
+        </div>
+    </div>
+</div>

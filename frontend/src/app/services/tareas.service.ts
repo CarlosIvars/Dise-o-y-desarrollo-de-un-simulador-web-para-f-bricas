@@ -33,6 +33,15 @@ export class TareasService {
     this.actualizarTareas(tareas);
   }
 
+  eliminarTarea(id: number) {
+    const tareas = this.tareasSubject.getValue();
+    const index = tareas.findIndex(t => t.id === id);
+    if (index !== -1) {
+      tareas.splice(index, 1);
+      this.actualizarTareas(tareas);
+    }
+  }
+
   asignarTrabajadorATarea(tarea: Tarea, trabajador: Trabajador) {
     // Dejamos libre el actual trabajador de la tarea...
     const trabajadorViejo = tarea.getTrabajador();

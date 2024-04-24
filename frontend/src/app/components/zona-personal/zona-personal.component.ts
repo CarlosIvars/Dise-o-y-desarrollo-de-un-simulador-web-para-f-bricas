@@ -49,8 +49,10 @@ export class ZonaPersonalComponent {
       next: (fabricas) => {
         console.log("Respuesta: ", fabricas);
         for (let fabrica of fabricas) {
-          console.log("Añadiendo la siguiente fábrica: ", fabrica);
-          this.fabricas.push(new FabricaImpl(1, fabrica.nombre, 33, 7, 30, fabrica.beneficios, fabrica.costes));
+          const { id, nombre, capital, beneficios } = fabrica;
+          if(id != undefined && nombre != undefined && capital != undefined && beneficios != undefined) {
+            this.fabricas.push(new FabricaImpl(id, nombre, 1, 0, 0, capital, beneficios));
+          }
         }
       },
       error: (error) => {

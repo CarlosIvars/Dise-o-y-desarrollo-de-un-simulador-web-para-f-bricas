@@ -1,26 +1,23 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Trabajador } from '../../../interfaces/interfaces';
 import { ApiService } from '../../../services/api.service';
 import { finalize } from 'rxjs';
 import { TrabajadoresService } from '../../../services/trabajadores.service';
 import { TrabajadorImpl } from '../../../clases/trabajador.class';
 
 @Component({
-  selector: 'app-trabajadores-form',
-  templateUrl: './trabajadores-form.component.html',
-  styleUrl: './trabajadores-form.component.css'
+  selector: 'app-edit-trabajadores-form',
+  templateUrl: './edit-trabajadores-form.component.html',
+  styleUrl: './edit-trabajadores-form.component.css'
 })
-export class TrabajadoresFormComponent {
+export class EditTrabajadoresFormComponent {
   @Output() close = new EventEmitter();
 
   cargando: boolean = false;
 
-  nombre: string = "";
-  apellidos: string = "";
-  fecha_nacimiento: string = "";
-  fatiga: string = "";
-  coste_h!: number;
-  preferencias: string = "";
-  skills: string = "";
+  @Input() trabajador!: Trabajador;
+
+  nuevas_habilidades: string = "";
 
   constructor(private apiService: ApiService, private trabajadoresService: TrabajadoresService) { }
 
@@ -30,16 +27,16 @@ export class TrabajadoresFormComponent {
     }
   }
 
-  crearTrabajador(): void {
+  modificarTrabajador(): void {
     if(!this.cargando){
-      console.log("Creando trabajador...");
+      console.log("Modificando el trabajador...");
       this.cargando = true;
 
-      this.apiService.crearTrabajador(this.nombre, this.apellidos, this.fecha_nacimiento, this.fatiga, this.coste_h, this.preferencias, this.skills).pipe(
+      this.apiService.modificarTrabajador(this.trabajador.id, this.trabajador.nombre, this.trabajador.apellidos, this.trabajador.fecha_nacimiento, this.trabajador.fatiga, this.trabajador.coste_h, this.trabajador.preferencias_trabajo, this.trabajador.trabajos_apto, this.nuevas_habilidades).pipe(
         finalize(() => {
           this.cargando = false; 
           this.cerrarModal();
-          console.log("Fin de crear trabajador.");
+          console.log("Fin de modificar trabajador.");
         })
       ).subscribe({
         next: (response) => {
@@ -58,7 +55,8 @@ export class TrabajadoresFormComponent {
             //const trabajo_id = response.trabajador[10];
 
             if(alfanumeric_id != undefined && nombre != undefined && apellidos != undefined && trabajados_apto != undefined && fatiga != undefined && coste_h != undefined && preferencias_trabajo != undefined) {
-              this.trabajadoresService.anyadirTrabajador(new TrabajadorImpl(alfanumeric_id, nombre, apellidos, fecha_nacimiento, trabajados_apto, fatiga, coste_h, preferencias_trabajo));
+              const trabajador = new TrabajadorImpl(alfanumeric_id, nombre, apellidos, fecha_nacimiento, trabajados_apto, fatiga, coste_h, preferencias_trabajo);
+              this.trabajadoresService.actualizarTrabajador(trabajador);
             }
           }
         },

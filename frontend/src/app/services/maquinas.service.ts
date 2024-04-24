@@ -31,4 +31,13 @@ export class MaquinasService {
     maquinas.push(maquina);
     this.actualizarMaquinas(maquinas);
   }
+
+  eliminarMaquina(id: string) {
+    const maquinas = this.maquinasSubsject.getValue();
+    const index = maquinas.findIndex(t => t.id === id);
+    if (index !== -1) {
+      maquinas.splice(index, 1);
+      this.actualizarMaquinas(maquinas);
+    }
+  }
 }

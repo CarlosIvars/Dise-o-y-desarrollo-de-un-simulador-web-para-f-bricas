@@ -19,6 +19,9 @@ import { CrearFabricaFormComponent } from './components/zona-personal/new-fabric
 import { TrabajadoresFormComponent } from './components/fabrica/trabajadores-form/trabajadores-form.component';
 import { MaquinasFormComponent } from './components/fabrica/maquinas-form/maquinas-form.component';
 import { TareasFormComponent } from './components/fabrica/tareas-form/tareas-form.component';
+import { EditTrabajadoresFormComponent } from './components/fabrica/edit-trabajadores-form/edit-trabajadores-form.component';
+import { EditMaquinasFormComponent } from './components/fabrica/edit-maquinas-form/edit-maquinas-form.component';
+import { EditTareasFormComponent } from './components/fabrica/edit-tareas-form/edit-tareas-form.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,10 @@ import { TareasFormComponent } from './components/fabrica/tareas-form/tareas-for
     CrearFabricaFormComponent,
     TrabajadoresFormComponent,
     MaquinasFormComponent,
-    TareasFormComponent
+    TareasFormComponent,
+    EditTrabajadoresFormComponent,
+    EditMaquinasFormComponent,
+    EditTareasFormComponent
   ],
   imports: [
     BrowserModule,

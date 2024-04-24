@@ -1,8 +1,8 @@
 <div class="maquina-card">
-    <div class="img" [style.color]="maquina.color">X</div>
+    <div class="img">X</div>
     <div class="info">
         <div class="nombre">{{maquina.nombre}}</div>
-        <div class="puesto">{{maquina.rol}}</div>
     </div>
-    <div class="editar">E</div>
+    <div class="editar" (click)="editarMaquina()">E</div>
+    <div class="borrar" (click)="borrarMaquina()">B</div>
 </div>

@@ -1,0 +1,20 @@
+<div class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-title">Modificar máquina</div>
+            <div class="header-close-icon" (click)="cerrarModal()">X</div>
+        </div>
+        <div class="modal-body">
+            <form>
+                <input type="text" [(ngModel)]="maquina.nombre" name="nombre" placeholder="Nombre">
+                <input type="text" [(ngModel)]="maquina.fatiga" name="fatiga" placeholder="Fatiga">
+                <input type="text" [(ngModel)]="maquina.coste_h" name="coste_h" placeholder="Coste por horas">
+                <input type="text" [(ngModel)]="nuevas_habilidades" name="nuevas_habilidades" placeholder="Nuevas habilidades">
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button (click)="modificarMaquina()" [disabled]="cargando">Modificar máquina</button>
+            <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
+        </div>
+    </div>
+</div>

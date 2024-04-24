@@ -10,20 +10,22 @@ export interface Fabrica {
 }
 
 export interface Trabajador {
-    id: number,
+    id: string,
     nombre: string,
-    rol: string,
-    sueldo: number,
-    color: string,
+    apellidos: string,
+    fecha_nacimiento: string,
+    trabajos_apto: number,
+    fatiga: number,
+    coste_h: number,
+    preferencias_trabajo: number,
     activo: boolean
 }
 
 export interface Maquina {
-    id: number,
+    id: string,
     nombre: string,
-    rol: string,
-    sueldo: number,
-    color: string
+    fatiga: number,
+    coste_h: number
 }
 
 export interface Tarea {
@@ -33,7 +35,8 @@ export interface Tarea {
     duracion: number,
     tiempoActual: number,
     isWorking: boolean,
-    precioVenta: number
+    precioVenta: number,
+    descripcion: string,
 
     getTrabajador(): Trabajador | undefined,
     setTrabajador(trabajador: Trabajador): void,
