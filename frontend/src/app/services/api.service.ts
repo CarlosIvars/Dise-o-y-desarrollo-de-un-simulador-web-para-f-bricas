@@ -91,7 +91,7 @@ export class ApiService {
         'Content-Type':  'application/json'
       }),
       withCredentials: true,
-      params: {trabajador: trabajador_id}
+      body: {trabajador: trabajador_id}
     };
 
     return this.http.delete<any>(`${environment.apiUrlBase}/delete_trabajador`, httpOptions);
@@ -119,6 +119,18 @@ export class ApiService {
     return this.http.patch<any>(`${environment.apiUrlBase}/update_maquina`, {id, nombre, fatiga, coste_h, nuevas_habilidades}, httpOptions);
   }
 
+  eliminarMaquina(maquina_id: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true,
+      body: {maquina: maquina_id}
+    };
+
+    return this.http.delete<any>(`${environment.apiUrlBase}/delete_maquina`, httpOptions);
+  }
+
   crearTarea(sector: string, nombre: string, duracion: number, beneficio: number, descripcion: string, subtask_dependencia: string) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -139,6 +151,18 @@ export class ApiService {
     };
 
     return this.http.patch<any>(`${environment.apiUrlBase}/update_subtask`, {id, nombre, duracion, beneficio, descripcion}, httpOptions);
+  }
+
+  eliminarTarea(tarea_id: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true,
+      body: {subtask: tarea_id}
+    };
+
+    return this.http.delete<any>(`${environment.apiUrlBase}/delete_subtask`, httpOptions);
   }
 
   skillMatching() {

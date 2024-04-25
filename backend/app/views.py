@@ -330,7 +330,7 @@ def delete_trabajador():
             return jsonify({'error': 'El trabajador no existe'}), 404
 
         RecursosModel.delete_trabajador(codigo_trabajador,fabrica_id)
-        return jsonify({'mensaje': f"Trabajador {trabajador.get('nombre')} eliminado exitosamente"}), 200
+        return jsonify({'mensaje': f"Trabajador {trabajador[1]} eliminado exitosamente"}), 200
     except Exception as ex:
         app.logger.error(f'Error al eliminar el trabajador: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -351,7 +351,7 @@ def delete_maquina():
             return jsonify({'error': 'La maquina no existe'}), 404
 
         RecursosModel.delete_maquina(codigo_maquina, fabrica_id)
-        return jsonify({'mensaje': f"Maquina {maquina.get('nombre')} eliminado exitosamente"}), 200
+        return jsonify({'mensaje': f"Maquina {maquina[1]} eliminado exitosamente"}), 200
     except Exception as ex:
         app.logger.error(f'Error al eliminar la maquina: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -452,7 +452,7 @@ def delete_subtask():
             return jsonify({'error': 'La subtask no existe'}), 404
 
         TareaModel.delete_subtask(subtask_id, fabrica_id)
-        return jsonify({'mensaje': f"Subtask {subtask.get('nombre')} eliminada exitosamente"}), 200
+        return jsonify({'mensaje': f"Subtask {subtask[1]} eliminada exitosamente"}), 200
     except Exception as ex:
         app.logger.error(f'Error al eliminar la subtask: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500

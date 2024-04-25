@@ -23,7 +23,7 @@ export class TareaCardComponent {
     if(confirm("¿Estás seguro que deseas eliminar la tarea?")) {
       console.log("Eliminando la tarea...");
     
-      this.apiService.eliminarTrabajador(this.tarea.id+"").pipe(
+      this.apiService.eliminarTarea(this.tarea.id+"").pipe(
         finalize(() => {
           console.log("Fin de eliminar tarea.");
         })
