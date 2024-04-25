@@ -13,7 +13,7 @@ from datetime import date
 #'Bearer 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'
 @app.route('/')
 def init():
-    resultado = FabricaModel.get_historial(1)
+    resultado = TareaModel.skills_matching(1)
     print(resultado)
     
     skills_matching = {
@@ -484,14 +484,29 @@ def update_subtask():
 @app.route('/get_skills', methods =['GET'])
 def get_skills():
     try:
-        hard_skills = TareaModel.get_hard_skills()
+        #sector = session.get('sector')
+        sector = 'robotica colaborativa'
+        hard_skills = TareaModel.get_hard_skills(sector)
         soft_skills = TareaModel.get_soft_skills()
+        print(hard_skills)
         
         return jsonify({'hard_skills': list(hard_skills), 'soft_skills': list(soft_skills)}), 200
     
     except Exception as e:
         app.logger.error(f'Error para obtener skills: {e}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
+    
+@app.route('/skills_matching', methods = ['GET'])
+def skills_matching():
+    try:
+        fabrica_id = session.get('fabrica')
+        skills_matching = TareaModel.skills_matching(fabrica_id)
+        print(skills_matching)
+        return jsonify({'skills_matching' : skills_matching}), 200
+    
+    except Exception as e:
+        app.logger.error(f'Error para obtener skills_mathcing: {e}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500    
 
 @app.route('/alg_genetico', methods = ['GET'])
 def algoritmo_genetico():

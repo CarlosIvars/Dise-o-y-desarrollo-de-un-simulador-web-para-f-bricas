@@ -169,7 +169,7 @@ export class ApiService {
     const httpOptions = {
       withCredentials: true
     };
-    return this.http.get<any>(`${environment.apiUrlBase}/get_skills`, httpOptions);
+    return this.http.get<any>(`${environment.apiUrlBase}/skills_matching`, httpOptions);
   }
 
   algoritmoGenetico() {

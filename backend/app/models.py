@@ -881,21 +881,30 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             return None
 
     @staticmethod
-    def skills_matching(fabrica_id):
-        acciones = TareaModel.get_habilidades_subtareas(fabrica_id)
-        recursos = RecursosModel.obtener_habilidades_recursos(fabrica_id)
-        matching_skills = {}
-        for accion_id, habilidades_accion in acciones.items():
-            h_tecnicas_accion, h_interpersonales_accion = habilidades_accion
+    def skills_matching(fabrica_id):      
+        try: 
+            acciones = TareaModel.get_habilidades_subtareas(fabrica_id)
+            recursos = RecursosModel.obtener_habilidades_recursos(fabrica_id)
+            matching_skills = {}
+            for accion_id, habilidades_accion in acciones.items():
+                h_tecnicas_accion, h_interpersonales_accion = habilidades_accion
 
-            humanos_validos = []
-            for humano_id, habilidades_humano in recursos.items():
-                h_tecnicas_humano, h_interpersonales_humano = habilidades_humano
+                humanos_validos = []
+                for humano_id, habilidades_humano in recursos.items():
+                    h_tecnicas_humano, h_interpersonales_humano = habilidades_humano
 
-                if (set(h_tecnicas_accion).issubset(set(h_tecnicas_humano)) and
-                    set(h_interpersonales_accion).issubset(set(h_interpersonales_humano))):
-                    humanos_validos.append(humano_id)
+                    if (set(h_tecnicas_accion).issubset(set(h_tecnicas_humano)) and
+                        set(h_interpersonales_accion).issubset(set(h_interpersonales_humano))):
+                        humanos_validos.append(humano_id)
 
-            matching_skills[accion_id] = humanos_validos
-
-        return matching_skills
+                matching_skills[accion_id] = humanos_validos
+             
+            cursor = get_db_connection().cursor()
+            sql = "UPDATE Fabrica SET skills_matching = %s WHERE id = %s"
+            cursor.execute(sql, (json.dumps(matching_skills),fabrica_id))
+            conexion.connection.commit()
+            return matching_skills
+        
+        except Exception as ex:
+            print(f"Error al crear skills_matching: {ex}")
+            return None

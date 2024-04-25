@@ -60,7 +60,7 @@ def crear_individuo(skills_matching, dependencias, fatigas):
     for subtask in subtasks_priorizadas:
         #humanos aun no asignados
         posibles_humanos = {h for h in skills_matching[subtask] if fatigas[h] < 100} - humanos_asignados        
-        print(f"Subtask: {subtask}, Posibles Humanos (fatiga < 100): {posibles_humanos}")  # Logueo para depuración
+        #print(f"Subtask: {subtask}, Posibles Humanos (fatiga < 100): {posibles_humanos}")  # Logueo para depuración
         if posibles_humanos:
             humano_asignado = random.choice(list(posibles_humanos))
             humanos_asignados.add(humano_asignado)
