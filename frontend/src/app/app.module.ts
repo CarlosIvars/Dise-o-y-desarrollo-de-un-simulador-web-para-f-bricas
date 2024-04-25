@@ -22,6 +22,7 @@ import { TareasFormComponent } from './components/fabrica/tareas-form/tareas-for
 import { EditTrabajadoresFormComponent } from './components/fabrica/edit-trabajadores-form/edit-trabajadores-form.component';
 import { EditMaquinasFormComponent } from './components/fabrica/edit-maquinas-form/edit-maquinas-form.component';
 import { EditTareasFormComponent } from './components/fabrica/edit-tareas-form/edit-tareas-form.component';
+import { EditFabricaFormComponent } from './components/zona-personal/edit-fabrica-form/edit-fabrica-form.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { EditTareasFormComponent } from './components/fabrica/edit-tareas-form/e
     TareasFormComponent,
     EditTrabajadoresFormComponent,
     EditMaquinasFormComponent,
-    EditTareasFormComponent
+    EditTareasFormComponent,
+    EditFabricaFormComponent
   ],
   imports: [
     BrowserModule,

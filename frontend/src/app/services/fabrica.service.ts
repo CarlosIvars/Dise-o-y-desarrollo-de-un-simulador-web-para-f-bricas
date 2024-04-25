@@ -19,5 +19,4 @@ export class FabricaService {
   actualizarFabrica(fabrica: Fabrica) {
     this.fabricaSubject.next(fabrica);
   }
-
 }

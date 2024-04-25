@@ -3,12 +3,15 @@
         Fábricas
     </div>
 
-    <div>{{userName}}</div>
+    <div (click)="cerrarSesion()">{{userName}}</div>
 </header>
 <div id="content">
     <h2>Bienvenido de nuevo!</h2>
     <div *ngIf="!cargando" id="fabricasGrid">
-        <div *ngFor="let fabrica of fabricas" class="fabrica" (click)="abrirFabrica(fabrica.id)">{{fabrica.nombre}}</div>
+        <div *ngFor="let fabrica of fabricas" class="fabrica" (click)="abrirFabrica(fabrica.id)">{{fabrica.nombre}}
+            <div class="editar"(click)="abrirEditFabricaForm(fabrica); $event.stopPropagation();">E</div>
+            <div class="borrar" (click)="borrarFabrica(fabrica); $event.stopPropagation();">B</div>
+        </div>
         <div (click)="abrirCrearFabrica()" class="fabrica nueva">Crear nueva fábrica</div>
     </div>
     <div *ngIf="cargando">
@@ -16,3 +19,4 @@
     </div>
 </div>
 <app-crear-fabrica-form *ngIf="mostrarCrearFabrica" (close)="cerrarCrearFabrica()"></app-crear-fabrica-form>
+<app-edit-fabrica-form *ngIf="editarFabricaForm" [fabrica]="fabricaEditar" (close)="cerrarEditFabricaForm()"></app-edit-fabrica-form>

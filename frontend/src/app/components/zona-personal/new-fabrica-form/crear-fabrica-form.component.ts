@@ -13,6 +13,8 @@ export class CrearFabricaFormComponent {
   cargando: boolean = false;
 
   nombre_fabrica: string = "";
+  capital_inicial!: number;
+  sector: string = "";
 
   constructor(private apiService: ApiService) { }
 
@@ -27,7 +29,7 @@ export class CrearFabricaFormComponent {
       console.log("Creando la fabrica...");
       this.cargando = true;
 
-      this.apiService.crearFabrica(this.nombre_fabrica).pipe(
+      this.apiService.crearFabrica(this.nombre_fabrica, this.capital_inicial, this.sector).pipe(
         finalize(() => {
           this.cargando = false; 
           console.log("Fin de crear fabrica");

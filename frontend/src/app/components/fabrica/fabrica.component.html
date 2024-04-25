@@ -8,7 +8,7 @@
         <div (click)="toggleFabricaEjecucion()">{{ fabrica?.activa ? 'Pause' : 'Play' }} (x{{velocidadEjecucion}})</div>
         <input type="range" [(ngModel)]="velocidadEjecucion" (change)="cambiarVelocidadEjecucion()" min="1" max="10" step="1">
     </div>
-    <div id="cabeceraIzq">
+    <div id="cabeceraIzq" (click)="cerrarSesion()">
         {{userName}}
     </div>
 </header>

@@ -19,6 +19,31 @@
     height: 100px;
     cursor: pointer;
     user-select: none;
+    position: relative;
+}
+
+.fabrica .editar {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+.fabrica:hover .editar {
+    display: block;
+}
+
+.fabrica .borrar {
+    position: absolute;
+    top: 3px;
+    right: 20px;
+    cursor: pointer;
+    display: none;
+}
+
+.fabrica:hover .borrar {
+    display: block;
 }
 
 .fabrica.nueva {

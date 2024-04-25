@@ -41,6 +41,7 @@ export class EditTrabajadoresFormComponent {
       ).subscribe({
         next: (response) => {
           console.log("Respuesta: ", response);
+          
           if(response.trabajador != null && response.trabajador != undefined) {
             //const numeric_id = response.trabajador[0];
             const alfanumeric_id = response.trabajador[1];
@@ -57,7 +58,11 @@ export class EditTrabajadoresFormComponent {
             if(alfanumeric_id != undefined && nombre != undefined && apellidos != undefined && trabajados_apto != undefined && fatiga != undefined && coste_h != undefined && preferencias_trabajo != undefined) {
               const trabajador = new TrabajadorImpl(alfanumeric_id, nombre, apellidos, fecha_nacimiento, trabajados_apto, fatiga, coste_h, preferencias_trabajo);
               this.trabajadoresService.actualizarTrabajador(trabajador);
+            } else {
+              console.error("Dtaos insuficionestes para modificar trabajador...")
             }
+          } else {
+            console.error("No se ha recibido los datos esperados...")
           }
         },
         error: (error) => {

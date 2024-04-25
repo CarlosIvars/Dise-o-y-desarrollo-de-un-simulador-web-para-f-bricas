@@ -5,6 +5,7 @@ import { Fabrica, User } from '../../interfaces/interfaces';
 import { UserService } from '../../services/user.service';
 import { ApiService } from '../../services/api.service';
 import { FabricaImpl } from '../../clases/fabrica.class';
+import { FabricaService } from '../../services/fabrica.service';
 
 @Component({
   selector: 'app-zona-personal',
@@ -17,9 +18,12 @@ export class ZonaPersonalComponent {
 
   fabricas: Fabrica[] = [];
 
-  cargando = true;
+  cargando: boolean = true;
 
-  mostrarCrearFabrica = false;
+  mostrarCrearFabrica: boolean = false;
+
+  editarFabricaForm: boolean = false;
+  fabricaEditar!: Fabrica;
 
   constructor(private router: Router, private userService: UserService, private apiService: ApiService) { }
 
@@ -67,5 +71,44 @@ export class ZonaPersonalComponent {
   }
   cerrarCrearFabrica() {
     this.mostrarCrearFabrica = false;
+  }
+
+  //EditMaquinasForm
+  abrirEditFabricaForm(fabrica: Fabrica): void {
+    this.fabricaEditar = fabrica;
+    this.editarFabricaForm = true;
+  }
+  cerrarEditFabricaForm(): void {
+    this.editarFabricaForm = false;
+  }
+
+  borrarFabrica(fabrica: Fabrica): void {
+    if(confirm("¿Estás seguro que deseas eliminar la fábrica?")) {
+      console.log("Eliminando la fabrica...");
+    
+      this.apiService.eliminarFabrica(fabrica.id).pipe(
+        finalize(() => {
+          console.log("Fin de eliminar fabrica.");
+        })
+      ).subscribe({
+        next: (response) => {
+          console.log("Respuesta: ", response);
+
+          //Eliminamos la fabrica
+          const index = this.fabricas.findIndex(t => t.id === response.id);
+          if (index !== -1) {
+            this.fabricas.splice(index, 1);
+          }
+
+        },
+        error: (error) => {
+          alert("Error: " + error); 
+        }
+      });
+    }
+  }
+
+  cerrarSesion() {
+    this.router.navigate(['/']);
   }
 }

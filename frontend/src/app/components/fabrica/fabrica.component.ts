@@ -7,7 +7,7 @@ import { TareasService } from '../../services/tareas.service';
 import { TrabajadoresService } from '../../services/trabajadores.service';
 import { TimerService } from '../../services/timer.service';
 import { MaquinasService } from '../../services/maquinas.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { FabricaImpl } from '../../clases/fabrica.class';
 import { TrabajadorImpl } from '../../clases/trabajador.class';
@@ -55,7 +55,7 @@ export class FabricaComponent {
   editTareasForm: boolean = false;
   tareaEditando!: Tarea;
 
-  constructor(private fabricaService: FabricaService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService, private tareasService: TareasService, private timerService: TimerService, private route: ActivatedRoute, private apiService: ApiService) {}
+  constructor(private fabricaService: FabricaService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService, private tareasService: TareasService, private timerService: TimerService, private route: ActivatedRoute, private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
     this.fabrica_id = Number(this.route.snapshot.paramMap.get('id'));
@@ -345,5 +345,9 @@ export class FabricaComponent {
         alert("Error: " + error); 
       }
     });
+  }
+
+  cerrarSesion() {
+    this.router.navigate(['/']);
   }
 }

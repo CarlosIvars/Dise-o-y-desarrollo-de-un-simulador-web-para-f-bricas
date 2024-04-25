@@ -50,7 +50,7 @@ export class ApiService {
     return this.http.post<any>(`${environment.apiUrlBase}/select_fabrica`, {fabrica_id}, httpOptions);
   }
 
-  crearFabrica(nombre_fabrica: string): Observable<any> {
+  crearFabrica(nombre_fabrica: string, capital_inicial: number, sector: string): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -58,7 +58,30 @@ export class ApiService {
       withCredentials: true
     };
 
-    return this.http.post<any>(`${environment.apiUrlBase}/fabricas`, {nombre_fabrica}, httpOptions);
+    return this.http.post<any>(`${environment.apiUrlBase}/fabricas`, {nombre_fabrica, capital_inicial, sector}, httpOptions);
+  }
+
+  modificarFabrica(nombre_fabrica: string, sector: string): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true
+    };
+
+    return this.http.patch<any>(`${environment.apiUrlBase}/update_fabrica`, {nombre_fabrica, sector}, httpOptions);
+  }
+
+  eliminarFabrica(fabrica_id: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true,
+      body: {fabrica: fabrica_id}
+    };
+
+    return this.http.delete<any>(`${environment.apiUrlBase}/delete_fabrica`, httpOptions);
   }
 
   crearTrabajador(nombre: string, apellidos: string, fecha_nacimiento: string, fatiga: string, coste_h: number, preferencias: string, skills: string) {
@@ -153,7 +176,7 @@ export class ApiService {
     return this.http.patch<any>(`${environment.apiUrlBase}/update_subtask`, {id, nombre, duracion, beneficio, descripcion}, httpOptions);
   }
 
-  eliminarTarea(tarea_id: string) {
+  eliminarTarea(tarea_id: number) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
