@@ -22,28 +22,43 @@
     position: relative;
 }
 
+.fabrica .cuerpo {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fabrica .cuerpo .nombreFabrica{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.fabrica .cuerpo .dinero i{
+    margin-right: 5px;
+}
+
+.fabrica .cuerpo .beneficio i{
+    margin-right: 5px;
+}
+
 .fabrica .editar {
     position: absolute;
-    top: 3px;
+    top: 4px;
     right: 5px;
     cursor: pointer;
     display: none;
+    padding: 0px 3px;
+    border-radius: 4px;
+    font-size: 20px;
 }
 
 .fabrica:hover .editar {
     display: block;
 }
 
-.fabrica .borrar {
-    position: absolute;
-    top: 3px;
-    right: 20px;
-    cursor: pointer;
-    display: none;
-}
-
-.fabrica:hover .borrar {
-    display: block;
+.fabrica:hover .editar:hover {
+    background-color: rgb(235, 233, 233);
 }
 
 .fabrica.nueva {

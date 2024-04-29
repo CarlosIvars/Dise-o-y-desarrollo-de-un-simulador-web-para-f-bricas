@@ -4,9 +4,11 @@ export interface Fabrica {
     dia: number,
     hora: number,
     minutos: number,
-    dinero: number,
+    capital: number,
     beneficio: number,
-    activa: boolean
+    coste: number,
+    activa: boolean,
+    sector: string
 }
 
 export interface Trabajador {
@@ -44,12 +46,4 @@ export interface Tarea {
 
     getTareaPadre(): Tarea | undefined,
     setTareaPadre(tarea: Tarea): void
-}
-
-export interface User {
-    id: number,
-    nombre: string,
-    apellidos: string,
-    password: string,
-    username: string
 }

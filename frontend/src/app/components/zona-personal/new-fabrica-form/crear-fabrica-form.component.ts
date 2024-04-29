@@ -26,23 +26,31 @@ export class CrearFabricaFormComponent {
 
   crearFabrica():void {
     if(!this.cargando){
-      console.log("Creando la fabrica...");
-      this.cargando = true;
+      if(this.puedeEnviar()) {
+        console.log("Creando la fabrica...");
+        this.cargando = true;
 
-      this.apiService.crearFabrica(this.nombre_fabrica, this.capital_inicial, this.sector).pipe(
-        finalize(() => {
-          this.cargando = false; 
-          console.log("Fin de crear fabrica");
-          this.close.emit();
-        })
-      ).subscribe({
-        next: (response) => {
-          console.log("Respuesta: ", response);
-        },
-        error: (error) => {
-          alert("Error: " + error); 
-        }
-      });
+        this.apiService.crearFabrica(this.nombre_fabrica, this.capital_inicial, this.sector).pipe(
+          finalize(() => {
+            this.cargando = false; 
+            console.log("Fin de crear fabrica");
+            this.close.emit();
+          })
+        ).subscribe({
+          next: (response) => {
+            console.log("Respuesta: ", response);
+          },
+          error: (error) => {
+            alert("Error: " + error); 
+          }
+        });
+      } else {
+        alert("Debe rellenar todos los datos para crear una nueva fábrica.");
+      }
     }
+  }
+
+  puedeEnviar() {
+    return (this.nombre_fabrica != undefined && this.capital_inicial != undefined && this.sector != undefined);
   }
 }

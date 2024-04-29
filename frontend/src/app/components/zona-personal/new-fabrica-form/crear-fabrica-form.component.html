@@ -7,7 +7,10 @@
         <div class="modal-body">
             <form>
                 <input type="text" [(ngModel)]="nombre_fabrica" name="nombre_fabrica" placeholder="Nombre de la fábrica">
-                <input type="text" [(ngModel)]="capital_inicial" name="capital_inicial" placeholder="Capital inicial">
+                <div class="input-container">
+                    <input type="text" [(ngModel)]="capital_inicial" name="capital_inicial" placeholder="Capital inicial">
+                    <div class="unidad">€</div>
+                </div>
                 <input type="text" [(ngModel)]="sector" name="sector" placeholder="Sector">
             </form>
         </div>

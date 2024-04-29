@@ -17,8 +17,8 @@
             </div> 
         </div>
         <div class="modal-footer">
-            <button (click)="registrarUsuario()">Registrarse</button>
-            <button (click)="cerrarModal()">Cancelar</button>
+            <button (click)="registrarUsuario()" [disabled]="cargando || !puedeEnviar()" [title]="puedeEnviar() ? 'Regístrate' : 'Rellene todos los campos para registrarse'">Registrarse</button>
+            <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
         </div>
     </div>
 </div>

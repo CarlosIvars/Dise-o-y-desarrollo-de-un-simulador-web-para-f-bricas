@@ -7,11 +7,15 @@
         <div class="modal-body">
             <form>
                 <input type="text" [(ngModel)]="nombre_fabrica" name="nombre_fabrica" placeholder="Nombre de la fábrica">
-                <input type="text" [(ngModel)]="sector" name="sector" placeholder="Sector">
+                <input type="text" [value]="capital" title="Capital" disabled>
+                <input type="text" [value]="sector" title="Sector" disabled>
+                <input type="text" [value]="beneficio" title="Beneficio" disabled>
+                <input type="text" [value]="coste" title="Coste" disabled>
             </form>
         </div>
         <div class="modal-footer">
-            <button (click)="editarFabrica()" [disabled]="cargando">Editar Fábrica</button>
+            <button (click)="editarFabrica()" [disabled]="cargando">Editar fábrica</button>
+            <button (click)="borrarFabrica(this.fabrica)" [disabled]="cargando">Borrar fábrica</button>
             <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
         </div>
     </div>

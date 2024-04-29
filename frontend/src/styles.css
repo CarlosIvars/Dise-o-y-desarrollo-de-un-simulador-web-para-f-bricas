@@ -150,7 +150,6 @@ header{
     display: flex;
     align-items: center;
     height: 30px;
-    border-bottom: 1px solid lightgray;
     padding: 20px;
     padding-top: 23px;
 }
@@ -161,8 +160,10 @@ header{
     flex-grow: 1;
 }
 
-.modal-header .modal-close-icon {
+.modal-header .header-close-icon {
     flex-grow: 0;
+    font-size: 20px;
+    cursor: pointer;
 }
 
 .modal-body {
@@ -176,4 +177,21 @@ header{
     display: flex;
     justify-content: right;
     gap: 10px;
+}
+
+/*Estilos para los inputs de los forms*/
+.input-container {
+    position: relative;
+}
+
+.input-container input{
+    width: 100%;
+}
+
+.input-container .unidad{
+    position: absolute;
+    top: 50%;
+    right: 5px; /* Ajusta la posición horizontal del símbolo del euro */
+    transform: translateY(-50%);
+    color: gray; /* Color opcional del símbolo */
 }

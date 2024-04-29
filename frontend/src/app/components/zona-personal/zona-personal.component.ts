@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription, finalize } from 'rxjs';
-import { Fabrica, User } from '../../interfaces/interfaces';
-import { UserService } from '../../services/user.service';
+import { finalize } from 'rxjs';
+import { Fabrica} from '../../interfaces/interfaces';
 import { ApiService } from '../../services/api.service';
 import { FabricaImpl } from '../../clases/fabrica.class';
-import { FabricaService } from '../../services/fabrica.service';
 
 @Component({
   selector: 'app-zona-personal',
@@ -25,7 +23,7 @@ export class ZonaPersonalComponent {
   editarFabricaForm: boolean = false;
   fabricaEditar!: Fabrica;
 
-  constructor(private router: Router, private userService: UserService, private apiService: ApiService) { }
+  constructor(private router: Router, private apiService: ApiService) { }
 
   ngOnInit(): void {
     let userName = sessionStorage.getItem("user");
@@ -52,11 +50,19 @@ export class ZonaPersonalComponent {
     ).subscribe({
       next: (fabricas) => {
         console.log("Respuesta: ", fabricas);
-        for (let fabrica of fabricas) {
-          const { id, nombre, capital, beneficios } = fabrica;
-          if(id != undefined && nombre != undefined && capital != undefined && beneficios != undefined) {
-            this.fabricas.push(new FabricaImpl(id, nombre, 1, 0, 0, capital, beneficios));
+
+        try{
+          for (let fabrica of fabricas) {
+            const { id, nombre, capital, beneficios, costes } = fabrica;
+            if(id != undefined && nombre != undefined && capital != undefined && beneficios != undefined && costes != undefined) {
+              this.fabricas.push(new FabricaImpl(id, nombre, 1, 0, 0, capital, beneficios, costes, "Prueba"));
+            } else {
+              alert("No se pudo obtener los datos necesarios para insertar una de las fábricas.");
+            }
           }
+        } catch (error: any) {
+          console.error(error);
+          alert("Error al procesar la respuesta: " + error.message);
         }
       },
       error: (error) => {
@@ -83,28 +89,10 @@ export class ZonaPersonalComponent {
   }
 
   borrarFabrica(fabrica: Fabrica): void {
-    if(confirm("¿Estás seguro que deseas eliminar la fábrica?")) {
-      console.log("Eliminando la fabrica...");
-    
-      this.apiService.eliminarFabrica(fabrica.id).pipe(
-        finalize(() => {
-          console.log("Fin de eliminar fabrica.");
-        })
-      ).subscribe({
-        next: (response) => {
-          console.log("Respuesta: ", response);
-
-          //Eliminamos la fabrica
-          const index = this.fabricas.findIndex(t => t.id === response.id);
-          if (index !== -1) {
-            this.fabricas.splice(index, 1);
-          }
-
-        },
-        error: (error) => {
-          alert("Error: " + error); 
-        }
-      });
+    //Eliminamos la fabrica
+    const index = this.fabricas.findIndex(t => t.id === fabrica.id);
+    if (index !== -1) {
+      this.fabricas.splice(index, 1);
     }
   }
 

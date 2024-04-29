@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { finalize } from 'rxjs';
-import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-login-form',
@@ -18,7 +17,7 @@ export class LoginFormComponent {
   username: string = "";
   password: string = "";
 
-  constructor(private apiService: ApiService, private userService: UserService, private router: Router) { }
+  constructor(private apiService: ApiService, private router: Router) { }
 
   cerrarModal(): void {
     if(!this.cargando) {
@@ -45,17 +44,29 @@ export class LoginFormComponent {
       ).subscribe({
         next: (response) => {
           console.log("Respuesta: ", response);
-
-          if(response.user != undefined) {
-            sessionStorage.setItem("user", response.user);
-          }
           
-          this.router.navigate(['/zona-personal']);
+          //Encapsulamos todo en un try catch por si las moscas...
+          try {
+            //Solo avanzamos si nos llega el userName
+            if(response.user != undefined) {
+              sessionStorage.setItem("user", response.user);
+              this.router.navigate(['/zona-personal']);
+            } else {
+              alert("Error interno al obtener el nombre de usuario.")
+            }
+          } catch (error: any) {
+            console.error(error);
+            alert("Error al procesar la respuesta: " + error.message);
+          }
         },
         error: (error) => {
           alert("Error: " + error); 
         }
       });
     }
+  }
+
+  puedeEnviar() {
+    return (this.username != "" && this.password != "")
   }
 }

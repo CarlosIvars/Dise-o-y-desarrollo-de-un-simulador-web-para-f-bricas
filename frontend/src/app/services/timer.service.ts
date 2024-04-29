@@ -116,7 +116,7 @@ export class TimerService {
 
           // Comprobamos si ha terminado la tarea para proceder con la venta  
           if(tarea.tiempoActual >= tarea.duracion){
-            this.fabrica.dinero += tarea.precioVenta;
+            this.fabrica.capital += tarea.precioVenta;
             tarea.cantidad += 1;
             tarea.tiempoActual = 0;
             tarea.isWorking = false;

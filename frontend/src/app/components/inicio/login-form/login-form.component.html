@@ -2,7 +2,9 @@
     <div class="modal-container">
         <div class="modal-header">
             <div class="modal-title">Inicar sesion</div>
-            <div class="header-close-icon" (click)="cerrarModal()">X</div>
+            <div class="header-close-icon" (click)="cerrarModal()" title="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </div>
         </div>
         <div class="modal-body">
             <form>
@@ -15,7 +17,7 @@
             </div> 
         </div>
         <div class="modal-footer">
-            <button (click)="iniciarSesion()" [disabled]="cargando">Inicar sesión</button>
+            <button (click)="iniciarSesion()" [disabled]="cargando || !puedeEnviar()" [title]="puedeEnviar() ? 'Inciar sesión' : 'Rellene todos los campos para iniciar sesión'">Inicar sesión</button>
             <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
         </div>
     </div>

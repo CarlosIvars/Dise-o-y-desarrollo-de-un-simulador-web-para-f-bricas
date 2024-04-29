@@ -61,7 +61,7 @@ export class ApiService {
     return this.http.post<any>(`${environment.apiUrlBase}/fabricas`, {nombre_fabrica, capital_inicial, sector}, httpOptions);
   }
 
-  modificarFabrica(nombre_fabrica: string, sector: string): Observable<any> {
+  modificarFabrica(nombre_fabrica: string): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -69,7 +69,7 @@ export class ApiService {
       withCredentials: true
     };
 
-    return this.http.patch<any>(`${environment.apiUrlBase}/update_fabrica`, {nombre_fabrica, sector}, httpOptions);
+    return this.http.patch<any>(`${environment.apiUrlBase}/update_fabrica`, {nombre_fabrica}, httpOptions);
   }
 
   eliminarFabrica(fabrica_id: number) {
