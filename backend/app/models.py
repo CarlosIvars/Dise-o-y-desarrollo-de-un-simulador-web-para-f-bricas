@@ -139,11 +139,11 @@ class UserModel(UserMixin):
 
 class FabricaModel:
     @staticmethod
-    def add_fabrica(nombre, id_usuario, capital):
+    def add_fabrica(nombre, id_usuario, capital,sector):
         try:
             cursor = get_db_connection().cursor()
-            sql =  "INSERT INTO Fabrica (nombre, usuario_id, capital) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (nombre, id_usuario, capital))
+            sql =  "INSERT INTO Fabrica (nombre, usuario_id, capital,sector) VALUES (%s, %s, %s,%s)"
+            cursor.execute(sql, (nombre, id_usuario, capital, sector))
             conexion.connection.commit()
 
             last_id = cursor.lastrowid
@@ -159,7 +159,7 @@ class FabricaModel:
     def get_fabrica(id_usuario):
         try:
             cursor = get_db_connection().cursor()
-            sql =  "SELECT id, nombre, costes, beneficios, capital FROM Fabrica WHERE usuario_id = %s"
+            sql =  "SELECT id, nombre, costes, beneficios, capital, sector FROM Fabrica WHERE usuario_id = %s"
             cursor.execute(sql, (id_usuario,))
             return cursor.fetchall()
         except Exception as ex:
@@ -170,7 +170,7 @@ class FabricaModel:
     def get_fabrica_by_id(id_usuario, id_fabrica):
         try:
             cursor = get_db_connection().cursor()
-            sql =  "SELECT nombre, costes, beneficios, capital FROM Fabrica WHERE usuario_id = %s AND id = %s"
+            sql =  "SELECT * FROM Fabrica WHERE usuario_id = %s AND id = %s"
             cursor.execute(sql, (id_usuario,id_fabrica))
             return cursor.fetchone()
         except Exception as ex:
@@ -193,14 +193,14 @@ class FabricaModel:
         try:
             cursor = get_db_connection().cursor()
             sql = "DELETE FROM Fabrica WHERE id = %s"
-            cursor.execute(sql, (id_fabrica))
+            cursor.execute(sql, (id_fabrica,))
             conexion.connection.commit()
             print("Fabrica eliminada exitosamente")
         except Exception as ex:
             print(f"Error al eliminar fabrica de la base de datos: {ex}")
 
     @staticmethod
-    def update_fabrica(fabrica_id, nombre=None, nuevos_costes=None, nuevos_beneficios=None):
+    def update_fabrica(fabrica_id, nombre=None, nuevos_costes=None, nuevos_beneficios=None, nuevo_capital = None):
         try:
             cursor = get_db_connection().cursor()
             sql = "UPDATE Fabrica SET "
@@ -214,6 +214,9 @@ class FabricaModel:
             if nuevos_beneficios is not None:
                 sql += "beneficios = %s, "
                 update_values.append(nuevos_beneficios)
+            if nuevo_capital is not None:
+                sql += "capital = %s"
+                update_values.append(nuevo_capital) 
             sql = sql.rstrip(", ") + " WHERE id = %s"  
             update_values.append(fabrica_id)  # Agregar el ID como último valor
 
@@ -275,6 +278,18 @@ class FabricaModel:
             print(f"Error al obtener el historial: {ex}")
             return None
 
+    @staticmethod
+    def get_sectores():
+        try:
+            cursor = get_db_connection().cursor()
+            sql = "SELECT DISTINCT sector FROM skills WHERE tipo = %s "
+            cursor.execute(sql, ('hard',))
+            resultados = cursor.fetchall()
+            return resultados
+        except Exception as ex:
+            print(f"Error al obtener los sectores: {ex}")
+            return None
+        
 class RecursosModel:
     @staticmethod
     def get_humanos_fabrica(id_fabrica):

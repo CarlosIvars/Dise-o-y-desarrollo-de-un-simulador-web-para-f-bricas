@@ -119,7 +119,8 @@ def register():
 
     reg = UserModel.register_user(user)
     if reg:
-       return jsonify({'mensaje': 'Registro exitoso'}), 201
+        session['usuario'] = user.get('username') # Guarda el username en el session
+        return jsonify({'message': 'registro exitoso', 'user': username}), 201
     else:
         return jsonify({'mensaje': 'El usuario no se pudo registrar correctamente'}), 500
 
@@ -182,9 +183,9 @@ def obtener_fabricas():
         'nombre': fabrica[1],
         'costes': fabrica[2],
         'beneficios': fabrica[3],
-        'capital' : fabrica[4]
+        'capital' : fabrica[4],
+        'sector' : fabrica[5]
     } for fabrica in fabricas_data]
-    print(fabricas)
     return jsonify(fabricas), 200
 
 #Se crea la fabrica, los costes y beneficios se calculan a posteriori, estos estan por default a 0
@@ -196,13 +197,28 @@ def añadir_fabrica():
 
     data = request.json
     nombre_fabrica = data.get('nombre_fabrica')
+    capital = data.get('capital_inicial')
+    sector  = data.get('sector')
     user = UserModel.get_user(usuario)
-    resultado = FabricaModel.add_fabrica(nombre_fabrica, user['id'])
+    resultado = FabricaModel.add_fabrica(nombre_fabrica, user['id'], capital, sector)
     if resultado:
+        session['fabrica'] = resultado[0]
+        session['sector'] = resultado[7]
         return jsonify({'mensaje': 'Fábrica añadida correctamente',"fabrica": resultado}), 201
     else:
         return jsonify({'error': 'No se pudo añadir la fábrica'}), 500
     
+@app.route('/sectores', methods = ['GET'])
+def get_sectores():
+    usuario = session.get('usuario')
+    if not usuario:
+        return jsonify({'error': 'Usuario no autenticado'}), 401
+    sectores = FabricaModel.get_sectores()
+    if sectores:
+        return jsonify({'mensaje': 'Sectores encontrados correctamente','sectores' : sectores}), 200
+    else: 
+        return jsonify({'Error al devolver los sectores'}), 400
+
 @app.route('/select_fabrica', methods=['POST'])
 def seleccionar_fabrica():
     usuario = session.get('usuario')
@@ -216,11 +232,11 @@ def seleccionar_fabrica():
     user = UserModel.get_user(usuario)
     fabrica_id = data.get('fabrica_id')
     fabrica = FabricaModel.get_fabrica_by_id(user['id'], fabrica_id)
-    
     if not fabrica:
         return jsonify({'mensaje': "Fábrica no encontrada correctamente"}), 404
     
     session['fabrica'] = fabrica_id
+    session['sector'] = fabrica[7]
     trabajadores = RecursosModel.get_humanos_fabrica(fabrica_id)
     maquinas = RecursosModel.get_maquinas_farbica(fabrica_id)
     subtasks = TareaModel.get_subtasks(fabrica_id)
@@ -236,14 +252,14 @@ def delete_fabrica():
         data = request.json
         if not data:
             return jsonify({'error': 'No se proporcionó fabrica'}), 400
-        
         fabrica_id = data.get('fabrica')
-        fabrica = FabricaModel.get_fabrica_by_id(usuario,fabrica_id)
+        user = UserModel.get_user(usuario)
+        fabrica = FabricaModel.get_fabrica_by_id(user['id'],fabrica_id)
         if not fabrica:
             return jsonify({'error': 'La fabrica no existe'}), 404
 
         FabricaModel.delete_fabrica(fabrica_id)
-        return jsonify({'mensaje': f"Fabrica {fabrica.get('nombre')} eliminado exitosamente"}), 200
+        return jsonify({'mensaje': f"Fabrica {fabrica[0]} eliminado exitosamente"}), 200
     except Exception as ex:
         app.logger.error(f'Error al eliminar el fabrica: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
@@ -258,13 +274,15 @@ def update_fabrica():
         data=request.json
         if not data:
             return jsonify({'error': 'No se proporcionó fabrica'}), 400
-        
         fabrica_id = data.get('id')
-        nombre = data.get('nombre')
+        nombre = data.get('nombre_fabrica')
         nuevos_costes = data.get('costes')
         nuevos_beneficios = data.get('beneficios')
+        nuevo_capital = data.get('capital')
+        print(data)
 
-        fabrica = FabricaModel.update_fabrica(fabrica_id, nombre, nuevos_costes, nuevos_beneficios)
+        fabrica = FabricaModel.update_fabrica(fabrica_id, nombre, nuevos_costes, nuevos_beneficios,nuevo_capital)
+        print(fabrica)
         return jsonify({'mensaje': 'fabrica actualizada', 'fabrica' : fabrica}), 200
     except Exception as ex:
         app.logger.error(f'Error al actualizar el fabrica: {ex}')
@@ -417,7 +435,7 @@ def add_subtask():
         if not data or not all(key in data for key in ['nombre','duracion', 'beneficio', 'descripcion','sector','subtask_dependencia']):
             return jsonify({'error': 'Datos incompletos'}), 400
         
-        sector = data.get('sector')
+        sector = session.get('sector')
         nombre = data.get('nombre')
         duracion = data.get('duracion')
         beneficio = data.get('beneficio')
@@ -484,8 +502,7 @@ def update_subtask():
 @app.route('/get_skills', methods =['GET'])
 def get_skills():
     try:
-        #sector = session.get('sector')
-        sector = 'robotica colaborativa'
+        sector = session.get('sector')
         hard_skills = TareaModel.get_hard_skills(sector)
         soft_skills = TareaModel.get_soft_skills()
         print(hard_skills)
