@@ -45,7 +45,7 @@
     </div>
 </div>
 
-<app-trabajadores-form *ngIf="trabajadoresForm" (close)="cerrarTrabajadoresForm()"></app-trabajadores-form>
+<app-trabajadores-form [hard_skills]="hard_skills" [soft_skills]="soft_skills" *ngIf="trabajadoresForm" (close)="cerrarTrabajadoresForm()"></app-trabajadores-form>
 <app-edit-trabajadores-form *ngIf="editTrabajadoresForm" [trabajador]="trabajadorEditando" (close)="cerrarEditTrabajadoresForm()"></app-edit-trabajadores-form>
 
 <app-maquinas-form *ngIf="maquinasForm" (close)="cerrarMaquinasForm()"></app-maquinas-form>

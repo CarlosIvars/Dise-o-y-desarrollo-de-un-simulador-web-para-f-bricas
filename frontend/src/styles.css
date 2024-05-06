@@ -133,7 +133,7 @@ header{
 
 .modal-container {
     width: 400px;
-    height: 400px;
+    min-height: 400px;
     background-color: white;
     position: fixed;
     top: 50%;

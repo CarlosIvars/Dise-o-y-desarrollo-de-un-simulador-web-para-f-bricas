@@ -38,6 +38,9 @@ export class FabricaComponent {
   tareas: Tarea[] = [];
   private tareasSub?: Subscription;
 
+  hard_skills = [];
+  soft_skills = [];
+
   cargando = true;
 
   //Forms para los trabajadores
@@ -83,6 +86,7 @@ export class FabricaComponent {
     });
 
     this.iniciarFabrica(this.fabrica_id);
+    this.getSkills();
 
     this.cambiarVelocidadEjecucion();
   }
@@ -314,6 +318,35 @@ export class FabricaComponent {
         }
       });
     }
+  }
+
+  getSkills() {
+    console.log("Recuperando las skills...")
+    this.apiService.getSkills().pipe(
+      finalize(() => {
+        console.log("Fin de recuperar las skills.");
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log("Respuesta: ", response);
+
+        try{
+          const { hard_skills, soft_skills } = response;
+          if(hard_skills != undefined && soft_skills != undefined) {
+            this.hard_skills = hard_skills;
+            this.soft_skills = soft_skills;
+          } else {
+            alert("No se pudo recuperar los datos de las skills.");
+          }
+        } catch (error: any) {
+          console.error(error);
+          alert("Error al procesar la respuesta: " + error.message);
+        }
+      },
+      error: (error) => {
+        alert("Error: " + error); 
+      }
+    });
   }
 
   skillMatching() {

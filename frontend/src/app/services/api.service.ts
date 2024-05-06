@@ -84,7 +84,7 @@ export class ApiService {
     return this.http.delete<any>(`${environment.apiUrlBase}/delete_fabrica`, httpOptions);
   }
 
-  crearTrabajador(nombre: string, apellidos: string, fecha_nacimiento: string, fatiga: string, coste_h: number, preferencias: string, skills: string) {
+  crearTrabajador(nombre: string, apellidos: string, fecha_nacimiento: string, fatiga: number, coste_h: number, preferencias: string, skills: string) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -186,6 +186,13 @@ export class ApiService {
     };
 
     return this.http.delete<any>(`${environment.apiUrlBase}/delete_subtask`, httpOptions);
+  }
+
+  getSkills() {
+    const httpOptions = {
+      withCredentials: true
+    };
+    return this.http.get<any>(`${environment.apiUrlBase}/get_skills`, httpOptions);
   }
 
   skillMatching() {

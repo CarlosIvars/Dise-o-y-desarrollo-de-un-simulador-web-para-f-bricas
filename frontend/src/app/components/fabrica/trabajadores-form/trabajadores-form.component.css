@@ -3,3 +3,11 @@ form {
     flex-direction: column;
     gap: 10px;
 }
+
+.slider-container {
+    display: flex;
+}
+
+.slider-container p {
+    margin: 0px 0px 0px 5px;
+}

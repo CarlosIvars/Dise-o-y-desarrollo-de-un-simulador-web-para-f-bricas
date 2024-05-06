@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { finalize } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 import { TrabajadoresService } from '../../../services/trabajadores.service';
 import { TrabajadorImpl } from '../../../clases/trabajador.class';
+import { Tarea } from '../../../interfaces/interfaces';
+import { TareasService } from '../../../services/tareas.service';
 
 @Component({
   selector: 'app-trabajadores-form',
@@ -10,6 +12,9 @@ import { TrabajadorImpl } from '../../../clases/trabajador.class';
   styleUrl: './trabajadores-form.component.css'
 })
 export class TrabajadoresFormComponent {
+  @Input() hard_skills = [];
+  @Input() soft_skills = [];
+
   @Output() close = new EventEmitter();
 
   cargando: boolean = false;
@@ -17,12 +22,27 @@ export class TrabajadoresFormComponent {
   nombre: string = "";
   apellidos: string = "";
   fecha_nacimiento: string = "";
-  fatiga: string = "";
+  fatiga: number = 0;
   coste_h!: number;
   preferencias: string = "";
   skills: string = "";
 
-  constructor(private apiService: ApiService, private trabajadoresService: TrabajadoresService) { }
+  preferenciasList: Tarea[] = [];
+  private tareasSub?: Subscription;
+  
+  constructor(private apiService: ApiService, private trabajadoresService: TrabajadoresService, private tareasService: TareasService) { }
+
+  ngOnInit(): void {
+    this.tareasSub = this.tareasService.tareas$.subscribe(tareas => {
+      this.preferenciasList = tareas;
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.tareasSub) {
+      this.tareasSub.unsubscribe();
+    }
+  }
 
   cerrarModal(): void {
     if(!this.cargando) {
