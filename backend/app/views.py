@@ -118,8 +118,9 @@ def register():
     )
 
     reg = UserModel.register_user(user)
+    print(reg)
     if reg:
-        session['usuario'] = user.get('username') # Guarda el username en el session
+        session['usuario'] = username # Guarda el username en el session
         return jsonify({'message': 'registro exitoso', 'user': username}), 201
     else:
         return jsonify({'mensaje': 'El usuario no se pudo registrar correctamente'}), 500
@@ -432,7 +433,7 @@ def add_subtask():
         data = request.json
         if not fabrica_id:
             return jsonify({'error': 'Fabrica no encontrada'}), 404
-        if not data or not all(key in data for key in ['nombre','duracion', 'beneficio', 'descripcion','sector','subtask_dependencia']):
+        if not data or not all(key in data for key in ['nombre','duracion', 'beneficio', 'descripcion','subtask_dependencia']):
             return jsonify({'error': 'Datos incompletos'}), 400
         
         sector = session.get('sector')
@@ -505,7 +506,6 @@ def get_skills():
         sector = session.get('sector')
         hard_skills = TareaModel.get_hard_skills(sector)
         soft_skills = TareaModel.get_soft_skills()
-        print(hard_skills)
         
         return jsonify({'hard_skills': list(hard_skills), 'soft_skills': list(soft_skills)}), 200
     
