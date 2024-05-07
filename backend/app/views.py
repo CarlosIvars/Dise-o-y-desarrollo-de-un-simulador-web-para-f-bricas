@@ -13,6 +13,11 @@ from datetime import date
 #'Bearer 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'
 @app.route('/')
 def init():
+    sectores = FabricaModel.get_sectores()
+    if sectores:
+        return jsonify({'mensaje': 'Sectores encontrados correctamente','sectores' : sectores}), 200
+    else: 
+        return jsonify({'Error al devolver los sectores'}), 400
     resultado = TareaModel.skills_matching(1)
     print(resultado)
     
@@ -242,7 +247,7 @@ def seleccionar_fabrica():
     maquinas = RecursosModel.get_maquinas_farbica(fabrica_id)
     subtasks = TareaModel.get_subtasks(fabrica_id)
     print(session   )
-    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica[1], 'trabajadores' : trabajadores, 'maquinas': maquinas, 'subtasks' : subtasks}), 200
+    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica, 'trabajadores' : trabajadores, 'maquinas': maquinas, 'subtasks' : subtasks}), 200
 
 @app.route('/delete_fabrica', methods=['DELETE'])
 def delete_fabrica():

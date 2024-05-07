@@ -285,7 +285,7 @@ class FabricaModel:
             sql = "SELECT DISTINCT sector FROM skills WHERE tipo = %s "
             cursor.execute(sql, ('hard',))
             resultados = cursor.fetchall()
-            return resultados
+            return [sector[0] for sector in resultados] 
         except Exception as ex:
             print(f"Error al obtener los sectores: {ex}")
             return None
