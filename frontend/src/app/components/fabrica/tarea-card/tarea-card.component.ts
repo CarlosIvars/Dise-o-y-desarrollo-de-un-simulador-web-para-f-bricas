@@ -19,26 +19,6 @@ export class TareaCardComponent {
     this.editarTareaForm.emit(this.tarea);
   }
 
-  borrarTarea() {
-    if(confirm("¿Estás seguro que deseas eliminar la tarea?")) {
-      console.log("Eliminando la tarea...");
-    
-      this.apiService.eliminarTarea(this.tarea.id).pipe(
-        finalize(() => {
-          console.log("Fin de eliminar tarea.");
-        })
-      ).subscribe({
-        next: (response) => {
-          console.log("Respuesta: ", response);
-          this.tareaServce.eliminarTarea(this.tarea.id);
-        },
-        error: (error) => {
-          alert("Error: " + error); 
-        }
-      });
-    }
-  }
-
   drop(ev: DragEvent, tarea: Tarea) {
     ev.preventDefault();
     const data = ev.dataTransfer?.getData('application/json');

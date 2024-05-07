@@ -11,6 +11,7 @@
         <div *ngFor="let fabrica of fabricas" class="fabrica" (click)="abrirFabrica(fabrica.id)">
             <div class="cuerpo">
                 <div class="nombreFabrica">{{fabrica.nombre}}</div>
+                <div class="sector">Sector: {{fabrica.sector}}</div>
                 <div class="dinero"><i class="bi bi-cash-stack"></i>{{fabrica.capital}}</div>
                 <div class="beneficio"><i class="bi bi-graph-up"></i>{{fabrica.beneficio}}</div>
             </div>
@@ -24,5 +25,5 @@
         Cargando las fabricas...
     </div>
 </div>
-<app-crear-fabrica-form *ngIf="mostrarCrearFabrica" (close)="cerrarCrearFabrica()"></app-crear-fabrica-form>
-<app-edit-fabrica-form *ngIf="editarFabricaForm" [fabrica]="fabricaEditar" (close)="cerrarEditFabricaForm()" (deleteFabrica)="borrarFabrica($event)"></app-edit-fabrica-form>
+<app-crear-fabrica-form *ngIf="mostrarCrearFabrica" [sectores]="sectores" (close)="cerrarCrearFabrica()" (fabricaCreada)="crearFabrica($event)"></app-crear-fabrica-form>
+<app-edit-fabrica-form *ngIf="editarFabricaForm" [sectores]="sectores" [fabrica]="fabricaEditar" (close)="cerrarEditFabricaForm()" (fabricaModificada)="modificarFabrica($event)" (deleteFabrica)="borrarFabrica($event)"></app-edit-fabrica-form>

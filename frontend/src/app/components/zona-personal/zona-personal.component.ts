@@ -23,6 +23,8 @@ export class ZonaPersonalComponent {
   editarFabricaForm: boolean = false;
   fabricaEditar!: Fabrica;
 
+  sectores = [];
+
   constructor(private router: Router, private apiService: ApiService) { }
 
   ngOnInit(): void {
@@ -32,6 +34,7 @@ export class ZonaPersonalComponent {
     }
 
     this.cargarFabricas();
+    this.cargarSectores();
   }
 
   abrirFabrica(id: number) {
@@ -53,9 +56,9 @@ export class ZonaPersonalComponent {
 
         try{
           for (let fabrica of fabricas) {
-            const { id, nombre, capital, beneficios, costes } = fabrica;
-            if(id != undefined && nombre != undefined && capital != undefined && beneficios != undefined && costes != undefined) {
-              this.fabricas.push(new FabricaImpl(id, nombre, 1, 0, 0, capital, beneficios, costes, "Prueba"));
+            const { id, nombre, capital, beneficios, costes, sector } = fabrica;
+            if(id != undefined && nombre != undefined && capital != undefined && beneficios != undefined && costes != undefined && sector != undefined) {
+              this.fabricas.push(new FabricaImpl(id, nombre, 1, 0, 0, capital, beneficios, costes, sector));
             } else {
               alert("No se pudo obtener los datos necesarios para insertar una de las fábricas.");
             }
@@ -98,5 +101,42 @@ export class ZonaPersonalComponent {
 
   cerrarSesion() {
     this.router.navigate(['/']);
+  }
+
+  cargarSectores() {
+    console.log("Cargando los sectores...");
+
+    this.apiService.getSectores().pipe(
+      finalize(() => {
+        console.log("Fin de cargar todos los sectores.");
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log("Sectores: ", response);
+
+        try{
+          if(response.sectores != undefined) {
+            this.sectores = response.sectores;
+          }
+        } catch (error: any) {
+          console.error(error);
+          alert("Error al procesar la respuesta: " + error.message);
+        }
+      },
+      error: (error) => {
+        alert("Error: " + error); 
+      }
+    });
+  }
+
+  crearFabrica(fabrica: Fabrica) {
+    this.router.navigate(['/fabrica', fabrica.id]);
+  }
+
+  modificarFabrica(fabrica: Fabrica) {
+    const index = this.fabricas.findIndex(t => t.id === fabrica.id);
+    if (index !== -1) {
+      this.fabricas[index] = fabrica;
+    }
   }
 }

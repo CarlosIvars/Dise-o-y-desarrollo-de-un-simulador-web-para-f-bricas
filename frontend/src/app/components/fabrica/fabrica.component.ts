@@ -211,15 +211,16 @@ export class FabricaComponent {
             if(response.fabrica_id == null || response.fabrica_id == undefined) {
               alert("No se han podido recuperar los datos de la fábrica seleccionada.");
             } else {
-              const fabrica_id = this.fabrica_id;
-              const fabrica_nombre = response.fabrica_id[0];
-              const fabrica_costes = response.fabrica_id[1];
-              const fabrica_beneficios = response.fabrica_id[2];
-              const fabrica_capital = response.fabrica_id[3];
+              const fabrica_id = response.fabrica_id[0];
+              const fabrica_nombre = response.fabrica_id[1];
+              const fabrica_costes = response.fabrica_id[2];
+              const fabrica_beneficios = response.fabrica_id[3];
+              const fabrica_capital = response.fabrica_id[4];
+              const fabrica_sector = response.fabrica_id[7];
 
               //Se comprueba si nos llegan todos los datos de la fabrica, sino no continuamos
-              if(fabrica_id != undefined && fabrica_nombre != undefined && fabrica_costes != undefined && fabrica_beneficios != undefined && fabrica_capital != undefined) {
-                fabrica = new FabricaImpl(fabrica_id, fabrica_nombre, 1, 0, 0, fabrica_capital, fabrica_beneficios, fabrica_costes, "prueba");
+              if(fabrica_id != undefined && fabrica_nombre != undefined && fabrica_costes != undefined && fabrica_beneficios != undefined && fabrica_capital != undefined && fabrica_sector != undefined) {
+                fabrica = new FabricaImpl(fabrica_id, fabrica_nombre, 1, 0, 0, fabrica_capital, fabrica_beneficios, fabrica_costes, fabrica_sector);
 
                 //Se comprueba si nos llegan los trabajadores
                 if(response.trabajadores != null && response.trabajadores != undefined) {

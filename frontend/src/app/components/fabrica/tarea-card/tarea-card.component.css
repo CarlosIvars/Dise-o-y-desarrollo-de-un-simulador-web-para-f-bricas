@@ -38,8 +38,6 @@
     left: 40px;
 }
 
-.tarea .borrar{
-    position: absolute;
-    bottom: 5px;
-    left: 57px;
+.tarea:hover .editar:hover {
+    background-color: rgb(235, 233, 233);
 }

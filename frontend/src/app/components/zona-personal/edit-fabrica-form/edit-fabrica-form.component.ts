@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/
 import { Fabrica } from '../../../interfaces/interfaces';
 import { ApiService } from '../../../services/api.service';
 import { finalize } from 'rxjs';
-import { FabricaService } from '../../../services/fabrica.service';
 import { FabricaImpl } from '../../../clases/fabrica.class';
 
 @Component({
@@ -11,10 +10,12 @@ import { FabricaImpl } from '../../../clases/fabrica.class';
   styleUrl: './edit-fabrica-form.component.css'
 })
 export class EditFabricaFormComponent {
+  @Input() sectores = [];
+  @Input() fabrica: Fabrica = {} as Fabrica;
   @Output() close = new EventEmitter();
   @Output() deleteFabrica = new EventEmitter<Fabrica>();
+  @Output() fabricaModificada = new EventEmitter<Fabrica>();
 
-  @Input() fabrica: Fabrica = {} as Fabrica;
 
   cargando: boolean = false;
 
@@ -25,7 +26,7 @@ export class EditFabricaFormComponent {
   coste!: number;
 
 
-  constructor(private apiService: ApiService, private fabricaService: FabricaService) { }
+  constructor(private apiService: ApiService) { }
 
   ngOnInit() {
     if(this.fabrica != undefined) {
@@ -52,7 +53,7 @@ export class EditFabricaFormComponent {
       console.log("Modificando la fabrica...");
       this.cargando = true;
 
-      this.apiService.modificarFabrica(this.nombre_fabrica).pipe(
+      this.apiService.modificarNombreFabrica(this.fabrica.id, this.nombre_fabrica).pipe(
         finalize(() => {
           this.cargando = false; 
           console.log("Fin de modificar fabrica");
@@ -65,13 +66,18 @@ export class EditFabricaFormComponent {
         try{
           //Comprobamos que recibimos la respuesta
           if(response.fabrica != null && response.fabrica != undefined) {
+            const fabrica_id = response.fabrica[0];
+            const fabrica_nombre = response.fabrica[1];
+            const fabrica_costes = response.fabrica[2];
+            const fabrica_beneficios = response.fabrica[3];
+            const fabrica_capital = response.fabrica[4];
+            const fabrica_sector = response.fabrica[7];
 
-            //Si tenemos todos los datos añadimos la tarea
-            const { id, nombre, capital, beneficios, costes } = response.fabrica;
-            if(id != undefined && nombre != undefined && capital != undefined && beneficios != undefined && costes != undefined) {
-              this.fabricaService.actualizarFabrica(new FabricaImpl(id, nombre, 1, 0, 0, capital, beneficios, costes, "Prueba"));
+            if(fabrica_id != undefined && fabrica_nombre != undefined && fabrica_costes != undefined && fabrica_beneficios != undefined && fabrica_capital != undefined && fabrica_sector != undefined) {
+              let fabrica = new FabricaImpl(fabrica_id, fabrica_nombre, 1, 0, 0, fabrica_capital, fabrica_beneficios, fabrica_costes, fabrica_sector);
+              this.fabricaModificada.emit(fabrica);
             } else {
-              alert("Error: los datos recibidos por el servidor son erroneros o insuficientes...");
+              alert("Los datos recibidos por el servidor son erroneros o insuficientes...");
             }
           } else {
             alert("Error: no se pudo acceder a los datos recibidos por el servidor.");
@@ -100,6 +106,7 @@ export class EditFabricaFormComponent {
           finalize(() => {
             console.log("Fin de eliminar fabrica.");
             this.cargando = false;
+            this.close.emit();
           })
         ).subscribe({
           next: (response) => {

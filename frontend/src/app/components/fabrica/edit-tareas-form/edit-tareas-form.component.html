@@ -14,6 +14,7 @@
         </div>
         <div class="modal-footer">
             <button (click)="modificarTarea()" [disabled]="cargando">Modificar tarea</button>
+            <button (click)="borrarTarea()" [disabled]="cargando">Borrar tarea</button>
             <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
         </div>
     </div>

@@ -11,7 +11,9 @@
                     <input type="text" [(ngModel)]="capital_inicial" name="capital_inicial" placeholder="Capital inicial">
                     <div class="unidad">€</div>
                 </div>
-                <input type="text" [(ngModel)]="sector" name="sector" placeholder="Sector">
+                <select [(ngModel)]="sector" name="sector">
+                    <option *ngFor="let sector of sectores" [value]="sector">{{ sector }}</option>
+                </select>
             </form>
         </div>
         <div class="modal-footer">
