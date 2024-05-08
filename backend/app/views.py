@@ -4,15 +4,24 @@ from werkzeug.security import check_password_hash
 from flask import *
 from .forms import *
 from .models import *
+from skills import *
 from ml_models import *
 import numpy as np
+import pandas as pd
 import json
+import ast
 from config import config
 from ml_models.AG.genetic_algorithm import *
 from datetime import date
+from bs4 import BeautifulSoup 
+from collections import Counter
+from deep_translator import GoogleTranslator
+
 #'Bearer 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'
 @app.route('/')
 def init():
+    df = pd.read_csv('./skills/onet_skills_data.csv')
+    print(df)
     sectores = FabricaModel.get_sectores()
     if sectores:
         return jsonify({'mensaje': 'Sectores encontrados correctamente','sectores' : sectores}), 200
@@ -448,7 +457,7 @@ def add_subtask():
         coste = data.get('coste')
         descripcion = data.get('descripcion')
         subtask_dependencia = data.get('subtask_dependencia')
-        subtask= TareaModel.add_subtask(nombre, duracion, beneficio,coste, descripcion, fabrica_id, sector)
+        subtask= TareaModel.add_subtask(nombre, duracion, beneficio, coste, descripcion, fabrica_id, sector)
         
         if subtask:        
             if subtask_dependencia:
@@ -633,12 +642,41 @@ def upload_file():
             return 'File uploaded successfully'
     return render_template('upload.html')
 
+@app.route('/actualizar_hard_skills',methods = ['GET'])
+def actualizar_hard_skills():
+    try:
+        df = pd.read_csv('./skills/onet_skills_data.csv')
+    except FileNotFoundError:
+        return "El archivo CSV no fue encontrado.", 404
 
-@app.route('/<usuario>/<fabrica>',)
-def ver_fabrica(usuario, fabrica):
-    print(usuario, fabrica)
-    # Aquí va la lógica para manejar la solicitud para una fábrica específica
-    return render_template('pagina_fabrica.html', usuario=usuario, fabrica=fabrica)
+    try:
+        df['Skills'] = df['Skills'].apply(ast.literal_eval)
+    except ValueError:
+        return "Error en la conversión de datos de Skills.", 400
+
+    try:
+        cluster_skill_counts = df.groupby('Cluster')['Skills'].agg(lambda skill_lists: Counter(skill for skills in skill_lists for skill in skills))
+        top_10_skills = cluster_skill_counts.apply(lambda x: x.most_common(10))
+    except Exception as e:
+        return f"Error al procesar habilidades: {str(e)}", 500
+
+    try:
+        def traducir(texto):
+            return GoogleTranslator(source='auto', target='es').translate(texto)
+
+        # Traducir el nombre del sector
+        top_10_skills.index = [traducir(cluster) for cluster in top_10_skills.index]
+
+        # Traducir las habilidades
+        for cluster in top_10_skills.index:
+            top_10_skills[cluster] = [(traducir(skill), count) for skill, count in top_10_skills[cluster]]
+            
+
+    except Exception as e:
+        return f"Error al traducir: {str(e)}", 500
+    FabricaModel.actualizar_hard_skills(top_10_skills)
+    
+    return "Habilidades duras actualizadas correctamente.", 200
 
 @app.route('/<usuario>/<fabrica>/skill_matching')
 def obtener_habilidades(fabrica_id):

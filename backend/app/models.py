@@ -57,6 +57,7 @@ import json
 from app import app
 from flask import jsonify
 import requests
+import re
 from openai import OpenAI
 from config import config
 
@@ -289,6 +290,21 @@ class FabricaModel:
         except Exception as ex:
             print(f"Error al obtener los sectores: {ex}")
             return None
+
+    @staticmethod
+    def actualizar_hard_skills(best_hard_skills):
+        for sector, skills in best_hard_skills.items():
+            for skill, count in skills:
+                try:
+                    skill_name, skill_desc =  re.split(r' — |:', skill, 1)  # Separar el nombre y la descripción
+                    cursor = get_db_connection().cursor()
+                    sql = "INSERT INTO skills (nombre, info, tipo, sector) VALUES (%s, %s, %s, %s)"
+                    cursor.execute(sql, (skill_name, skill_desc, 'hard', sector))
+                    get_db_connection().commit()
+                    
+                except Exception as ex:
+                    print(f"Error al añadir habilidad: {ex}")
+            
         
 class RecursosModel:
     @staticmethod
@@ -890,7 +906,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             return False
 
     @staticmethod
-    def dependencias_subtasks():
+    def dependencias_subtasks(tarea_ids):
         try: 
             cursor = get_db_connection().cursor()
 
