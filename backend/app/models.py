@@ -764,7 +764,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             return None
 
     @staticmethod
-    def add_subtask(nombre, duracion, beneficio, descripcion, fabrica_id, sector):
+    def add_subtask(nombre, duracion, beneficio,coste, descripcion, fabrica_id, sector):
         # guardar los datos en la base de datos
         # se debe rellenar la tabla de skills_subtaks, tiendo en cuenta la tarea a la que estamos 
         # haciendo referencia y además buscar las habilidades que tocan en la tabla de skills
@@ -772,8 +772,8 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
         try:
             cursor = get_db_connection().cursor()
             ### parte tabla de subtasks
-            sql = '''INSERT INTO Subtasks(nombre, duracion, beneficio, descripcion, fabrica_id) VALUES(%s, %s, %s, %s, %s)'''
-            cursor.execute(sql, (nombre, duracion, beneficio, descripcion, fabrica_id))
+            sql = '''INSERT INTO Subtasks(nombre, duracion, beneficio, coste, descripcion, fabrica_id) VALUES(%s, %s, %s, %s, %s, %s)'''
+            cursor.execute(sql, (nombre, duracion, beneficio,coste, descripcion, fabrica_id))
             #parte tabla skills_subtasks
             sector = "robotica colaborativa"
             habilidades = TareaModel.obtener_skills_chatGPT(sector, descripcion)
@@ -807,7 +807,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
 
 
     @staticmethod
-    def update_subtask(fabrica_id, subtask_id, nombre=None, duracion=None, beneficio=None, descripcion=None,  nuevas_habilidades=None):
+    def update_subtask(fabrica_id, subtask_id, nombre=None, duracion=None, beneficio=None,coste = None, descripcion=None,  nuevas_habilidades=None):
         try:
             cursor = get_db_connection().cursor()
             update_values_subtask = []
@@ -818,6 +818,8 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
                 update_values_subtask.append(('duracion', duracion))
             if beneficio is not None:
                 update_values_subtask.append(('beneficio', beneficio))
+            if coste is not None:
+                update_values_subtask.append(('coste', coste))
             if descripcion is not None:
                 update_values_subtask.append(('descripcion', descripcion))
 
@@ -850,12 +852,23 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
     def beneficio_subtasks(fabrica_id):
         try:
             cursor = get_db_connection().cursor()
-
-            # Consultar el coste del trabajador o máquina en la base de datos
             sql = "SELECT id, beneficio FROM Subtasks WHERE fabrica_id = %s"
             cursor.execute(sql, (fabrica_id,))
             resultado = cursor.fetchall()
             beneficios = {id: beneficio for id, beneficio in resultado}
+            return beneficios
+        except Exception as ex:
+            print(f"Error al obtener los beneficios: {ex}")
+            return None
+        
+    @staticmethod
+    def coste_subtasks(fabrica_id):
+        try:
+            cursor = get_db_connection().cursor()
+            sql = "SELECT id, coste FROM Subtasks WHERE fabrica_id = %s"
+            cursor.execute(sql, (fabrica_id,))
+            resultado = cursor.fetchall()
+            beneficios = {id: coste for id, coste in resultado}
             return beneficios
         except Exception as ex:
             print(f"Error al obtener los beneficios: {ex}")
