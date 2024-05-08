@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { finalize } from 'rxjs';
 import { MaquinasService } from '../../../services/maquinas.service';
@@ -10,12 +10,14 @@ import { MaquinaImpl } from '../../../clases/maquina.class';
   styleUrl: './maquinas-form.component.css'
 })
 export class MaquinasFormComponent {
+  @Input() hard_skills = [];
+
   @Output() close = new EventEmitter();
 
   cargando: boolean = false;
 
   nombre: string = "";
-  fatiga: string = "";
+  fatiga: number = 0;
   coste_h!: number;
   skills: string = "";
 

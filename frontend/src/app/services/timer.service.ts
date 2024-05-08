@@ -116,12 +116,12 @@ export class TimerService {
 
           // Comprobamos si ha terminado la tarea para proceder con la venta  
           if(tarea.tiempoActual >= tarea.duracion){
-            this.fabrica.capital += tarea.precioVenta;
+            this.fabrica.capital += tarea.beneficio;
             tarea.cantidad += 1;
             tarea.tiempoActual = 0;
             tarea.isWorking = false;
             
-            console.log(`Tarea ${tarea.nombre} procesada. (+${tarea.precioVenta}€)`);
+            console.log(`Tarea ${tarea.nombre} procesada. (+${tarea.beneficio}€)`);
           }
         }
       }

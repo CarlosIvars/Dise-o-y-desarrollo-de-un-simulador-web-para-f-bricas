@@ -279,10 +279,11 @@ export class FabricaComponent {
                     const duracion = tarea[2];
                     const beneficio = tarea[3];
                     const descripcion = tarea[4];
+                    const coste = 0
 
                     //Si tenemos todos los datos añadimos la tarea
                     if(id != undefined && nombre != undefined && duracion != undefined && beneficio != undefined && descripcion != undefined) {
-                      tareas.push(new TareaImpl(id, nombre, 0, duracion, beneficio, 0, descripcion));
+                      tareas.push(new TareaImpl(id, nombre, 0, duracion, beneficio, coste, 0, descripcion));
                     } else {
                       console.log("Omitiendo la generacion de la tarea por falta de datos...");
                     }
