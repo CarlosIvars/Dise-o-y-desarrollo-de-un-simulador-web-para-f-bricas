@@ -30,14 +30,6 @@
     display: block;
 }
 
-.maquina-card .borrar {
-    position: absolute;
-    top: 3px;
-    right: 20px;
-    cursor: pointer;
-    display: none;
-}
-
-.maquina-card:hover .borrar {
-    display: block;
+.maquina-card:hover .editar:hover {
+    background-color: rgb(235, 233, 233);
 }

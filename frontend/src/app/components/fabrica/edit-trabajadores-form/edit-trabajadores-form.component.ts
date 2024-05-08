@@ -71,4 +71,24 @@ export class EditTrabajadoresFormComponent {
       });
     }
   }
+
+  borrarTrabajador() {
+    if(confirm("¿Estás seguro que deseas eliminar el trabajador?")) {
+      console.log("Eliminando el trabajador...");
+    
+      this.apiService.eliminarTrabajador(this.trabajador.id).pipe(
+        finalize(() => {
+          console.log("Fin de eliminar trabajador.");
+        })
+      ).subscribe({
+        next: (response) => {
+          console.log("Respuesta: ", response);
+          this.trabajadoresService.eliminarTrabajador(this.trabajador.id);
+        },
+        error: (error) => {
+          alert("Error: " + error); 
+        }
+      });
+    }
+  }
 }

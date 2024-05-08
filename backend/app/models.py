@@ -285,7 +285,7 @@ class FabricaModel:
             sql = "SELECT DISTINCT sector FROM skills WHERE tipo = %s "
             cursor.execute(sql, ('hard',))
             resultados = cursor.fetchall()
-            return resultados
+            return [sector[0] for sector in resultados] 
         except Exception as ex:
             print(f"Error al obtener los sectores: {ex}")
             return None
@@ -661,7 +661,7 @@ class TareaModel:
     def get_soft_skills():
         try:
             cursor = get_db_connection().cursor()
-            sql = "SELECT nombre from skills WHERE tipo ='soft'"
+            sql = "SELECT nombre,id from skills WHERE tipo ='soft'"
             cursor.execute(sql)
             soft_skills = cursor.fetchall()
             return [skill[0] for skill in soft_skills]
@@ -673,7 +673,7 @@ class TareaModel:
     def get_hard_skills(sector):
         try:
             cursor = get_db_connection().cursor()
-            sql = "SELECT nombre FROM skills WHERE tipo = 'hard' AND sector = %s"
+            sql = "SELECT nombre, id FROM skills WHERE tipo = 'hard' AND sector = %s"
             cursor.execute(sql,(sector,))
             hard_skills = cursor.fetchall()
             return [skill[0] for skill in hard_skills]

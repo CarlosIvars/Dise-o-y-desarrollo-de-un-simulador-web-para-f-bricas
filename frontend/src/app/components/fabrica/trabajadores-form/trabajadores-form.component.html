@@ -22,14 +22,11 @@
                     <input type="text" [(ngModel)]="coste_h" name="coste_h" placeholder="Salario">
                     <div class="unidad">€ / h</div>
                 </div>
-                <fieldset *ngIf="preferenciasList.length > 0">
-                    <legend>Preferencias:</legend>
-                    <ng-container *ngFor="let preferencia of preferenciasList">
-                        <input type="checkbox" [name]="preferencia.id">
-                        <label [for]="preferencia.id">{{ preferencia.nombre }}</label><br>
-                    </ng-container>
-                </fieldset>
-                <!--input type="text" [(ngModel)]="preferencias" name="preferencias" placeholder="Preferencias"-->
+
+                <select [(ngModel)]="preferencias" name="preferencias" placeholder="Salario">
+                    <option *ngFor="let tarea of tareas" [value]="tarea.id">{{ tarea.nombre }}</option>
+                </select>
+
                 <fieldset *ngIf="hard_skills.length > 0">
                     <legend>Hard skills:</legend>
                     <ng-container *ngFor="let skill of hard_skills">

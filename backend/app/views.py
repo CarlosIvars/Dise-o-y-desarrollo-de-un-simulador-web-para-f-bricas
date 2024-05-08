@@ -13,6 +13,11 @@ from datetime import date
 #'Bearer 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'
 @app.route('/')
 def init():
+    sectores = FabricaModel.get_sectores()
+    if sectores:
+        return jsonify({'mensaje': 'Sectores encontrados correctamente','sectores' : sectores}), 200
+    else: 
+        return jsonify({'Error al devolver los sectores'}), 400
     resultado = TareaModel.skills_matching(1)
     print(resultado)
     

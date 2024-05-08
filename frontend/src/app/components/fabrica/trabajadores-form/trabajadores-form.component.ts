@@ -27,14 +27,14 @@ export class TrabajadoresFormComponent {
   preferencias: string = "";
   skills: string = "";
 
-  preferenciasList: Tarea[] = [];
+  tareas: Tarea[] = [];
   private tareasSub?: Subscription;
   
   constructor(private apiService: ApiService, private trabajadoresService: TrabajadoresService, private tareasService: TareasService) { }
 
   ngOnInit(): void {
     this.tareasSub = this.tareasService.tareas$.subscribe(tareas => {
-      this.preferenciasList = tareas;
+      this.tareas = tareas;
     });
   }
 

@@ -67,4 +67,24 @@ export class EditMaquinasFormComponent {
       });
     }
   }
+
+  borrarMaquina() {
+    if(confirm("¿Estás seguro que deseas eliminar la máquina?")) {
+      console.log("Eliminando la máquina...");
+    
+      this.apiService.eliminarMaquina(this.maquina.id).pipe(
+        finalize(() => {
+          console.log("Fin de eliminar maquina.");
+        })
+      ).subscribe({
+        next: (response) => {
+          console.log("Respuesta: ", response);
+          this.maquinasService.eliminarMaquina(this.maquina.id);
+        },
+        error: (error) => {
+          alert("Error: " + error); 
+        }
+      });
+    }
+  }
 }
