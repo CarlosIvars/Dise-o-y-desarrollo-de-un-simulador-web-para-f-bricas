@@ -20,15 +20,6 @@ from deep_translator import GoogleTranslator
 #'Bearer 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'
 @app.route('/')
 def init():
-    df = pd.read_csv('./skills/onet_skills_data.csv')
-    print(df)
-    sectores = FabricaModel.get_sectores()
-    if sectores:
-        return jsonify({'mensaje': 'Sectores encontrados correctamente','sectores' : sectores}), 200
-    else: 
-        return jsonify({'Error al devolver los sectores'}), 400
-    resultado = TareaModel.skills_matching(1)
-    print(resultado)
     
     skills_matching = {
     'Tarea1': ['Humano1', 'Humano2', 'Humano3', 'Humano4'],
@@ -255,7 +246,6 @@ def seleccionar_fabrica():
     trabajadores = RecursosModel.get_humanos_fabrica(fabrica_id)
     maquinas = RecursosModel.get_maquinas_farbica(fabrica_id)
     subtasks = TareaModel.get_subtasks(fabrica_id)
-    print(session   )
     return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica, 'trabajadores' : trabajadores, 'maquinas': maquinas, 'subtasks' : subtasks}), 200
 
 @app.route('/delete_fabrica', methods=['DELETE'])
@@ -314,6 +304,7 @@ def add_trabajador():
         return jsonify({'error': 'Fabrica no encontrada'}), 404
     if not data or not all(key in data for key in ['nombre', 'apellidos', 'fecha_nacimiento', 'fatiga', 'coste_h', 'preferencias', 'skills']):
         return jsonify({'error': 'Datos incompletos'}), 400
+    print(data)
     nombre = data.get('nombre')
     apellidos = data.get('apellidos')
     fecha_nacimiento = data.get('fecha_nacimiento')
@@ -321,6 +312,7 @@ def add_trabajador():
     coste_h = data.get('coste_h')
     preferencias = data.get('preferencias')
     skills = data.get('skills')
+    print(skills)
     trabajador = RecursosModel.add_trabajador(fabrica_id, nombre, apellidos, fecha_nacimiento, fatiga, coste_h, preferencias, skills)
     
     if trabajador:

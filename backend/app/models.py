@@ -313,7 +313,15 @@ class RecursosModel:
             cursor = get_db_connection().cursor()
             sql = "SELECT * FROM Trabajadores WHERE fabrica_id = %s"
             cursor.execute(sql, (id_fabrica,))
-            return cursor.fetchall()
+            rows = cursor.fetchall()
+            trabajadores = []
+            for row in rows: 
+                sql = "SELECT skill_id FROM skills_trabajadores WHERE trabajador_id = %s"
+                cursor.execute(sql, (row[0],))
+                skills = cursor.fetchall() 
+                trabajador = row + ([skill[0] for skill in skills ],)
+                trabajadores.append(trabajador)
+            return tuple(trabajadores)            
         except Exception as ex:
             print(f"Error al obtener los IDs de los trabajadores: {ex}")
             return []
@@ -324,7 +332,15 @@ class RecursosModel:
             cursor = get_db_connection().cursor()
             sql = "SELECT * FROM Maquinas WHERE fabrica_id = %s"
             cursor.execute(sql, (id_fabrica,))
-            return cursor.fetchall()
+            rows = cursor.fetchall()
+            maquinas = []
+            for row in rows: 
+                sql = "SELECT skill_id FROM skills_maquinas WHERE maquina_id = %s"
+                cursor.execute(sql, (row[0],))
+                skills = cursor.fetchall() 
+                maquina = row + ([skill[0] for skill in skills ],)
+                maquinas.append(maquina)    
+            return tuple(maquinas)
         except Exception as ex:
             print(f"Error al obtener los IDs de las máquinas: {ex}")
             return []
