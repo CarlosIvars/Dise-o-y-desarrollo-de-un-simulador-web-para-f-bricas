@@ -696,7 +696,7 @@ class TareaModel:
             sql = "SELECT nombre,id from skills WHERE tipo ='soft'"
             cursor.execute(sql)
             soft_skills = cursor.fetchall()
-            return [skill[0] for skill in soft_skills]
+            return [skill for skill in soft_skills]
         except Exception as ex:
             print(f"Error al obtener las soft skills: {ex}")
             return[]
@@ -708,7 +708,7 @@ class TareaModel:
             sql = "SELECT nombre, id FROM skills WHERE tipo = 'hard' AND sector = %s"
             cursor.execute(sql,(sector,))
             hard_skills = cursor.fetchall()
-            return [skill[0] for skill in hard_skills]
+            return [skill for skill in hard_skills]
         except Exception as ex:
             print(f"Error al obtener las hard skills: {ex}")
             return[]
