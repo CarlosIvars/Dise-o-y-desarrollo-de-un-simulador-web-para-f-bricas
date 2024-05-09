@@ -748,31 +748,37 @@ soft_skills = [X], hard_skills = [X]
 
 Dado un listado de habilidades como este: = soft_skills {soft_skills} y hard_skills {hard_skills}, y una descripcion de una tarea:{descripcion}, quiero que me devuelvas una lista SOLO con las habilidades proporcionadas que mejor se ajusten para la tarea.
 Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], hard_skills = [X].'''
-        url = "https://api.openai.com/v1/completions"
+        url = "https://api.openai.com/v1/chat/completions"
         headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + configuracion_desarrollo.CHATGPT_API_KEY
         }
         data = {
-            "prompt": prompt,
-            "max_tokens": 300,
-            "model": "gpt-3.5-turbo"
+            "model": "gpt-3.5-turbo",
+            "messages": [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            "max_tokens": 300
         }
 
         response = requests.post(url, headers=headers, json=data)
         respuesta_json = response.json()
 
         print(respuesta_json)  # Imprime la respuesta JSON en la consola para ver los datos
-        habilidades = []
+        habilidades = {'soft_skills': [], 'hard_skills': []}
         if 'choices' in respuesta_json and len(respuesta_json['choices']) > 0:
             for choice in respuesta_json['choices']:
-                habilidades.extend(choice['text'].split(','))
-
-        print(habilidades)  # Imprime la respuesta JSON en la consola para ver los datos
-        
-        # Devuelve la respuesta JSON como salida de la ruta
+                mensaje = choice['message']['content']
+                soft_skills_list = re.findall(r"soft_skills = \[(.*?)\]", mensaje)[0]
+                hard_skills_list = re.findall(r"hard_skills = \[(.*?)\]", mensaje)[0]
+                soft_skills = [skill.strip().strip("'") for skill in soft_skills_list.split(',')]
+                hard_skills = [skill.strip().strip("'") for skill in hard_skills_list.split(',')]
+                habilidades['soft_skills'].extend(soft_skills)
+                habilidades['hard_skills'].extend(hard_skills)
+        print(habilidades)
         return habilidades
-    
+
     @staticmethod
     def get_subtask(subtask_id,fabrica_id):
         try:
@@ -794,7 +800,29 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
         except Exception as ex:
             print(f"Error al obtener subtasks: {ex}")
             return None
+        
+    @staticmethod
+    def get_skill_id(skill, sector = None):
+        try:
+            skill = skill.strip("'")
+            cursor = get_db_connection().cursor()
+            sql = "SELECT id FROM skills WHERE nombre = %s"
+            params = (skill,)
 
+            if sector is not None:
+                sql += " AND sector = %s"
+                params += (sector,)
+
+            cursor.execute(sql,  params)
+            result = cursor.fetchone()
+            if result:
+                return result[0]
+            else:
+                return None
+        except Exception as ex:
+            print(f"Error al obtener el ID de la habilidad: {ex}")
+            return None
+        
     @staticmethod
     def add_subtask(nombre, duracion, beneficio,coste, descripcion, fabrica_id, sector):
         # guardar los datos en la base de datos
@@ -810,10 +838,16 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             sector = "robotica colaborativa"
             habilidades = TareaModel.obtener_skills_chatGPT(sector, descripcion)
             id_subtask = cursor.lastrowid
-            for habilidad in habilidades:
-                sql_h = ''' INSERT INTO skills_subtasks (subtask_id, skill_id) VALUES (%s,%s)'''
-                cursor.execute(sql_h, (id_subtask, habilidad))
-            conexion.connection.commit()
+            
+            for tipo in ['soft_skills', 'hard_skills']:
+                for habilidad in habilidades[tipo]:
+                    if tipo == 'soft_skills':
+                        skill_id = TareaModel.get_skill_id(habilidad)
+                    else: 
+                        skill_id = TareaModel.get_skill_id(habilidad,sector)
+                    sql_h = ''' INSERT INTO skills_subtasks (subtask_id, skill_id) VALUES (%s,%s)'''
+                    cursor.execute(sql_h, (id_subtask, skill_id))
+                conexion.connection.commit()
 
             sql_select = "SELECT * FROM Subtasks WHERE id = %s"
             cursor.execute(sql_select, (id_subtask,))
