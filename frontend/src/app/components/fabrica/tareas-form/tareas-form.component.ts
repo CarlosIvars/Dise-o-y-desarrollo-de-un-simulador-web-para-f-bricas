@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { Subscription, finalize } from 'rxjs';
 import { TareasService } from '../../../services/tareas.service';
@@ -11,6 +11,7 @@ import { Tarea } from '../../../interfaces/interfaces';
   styleUrl: './tareas-form.component.css'
 })
 export class TareasFormComponent {
+  @Input() sector_fabrica = "";
   @Output() close = new EventEmitter();
 
   cargando: boolean = false;
@@ -19,6 +20,7 @@ export class TareasFormComponent {
   nombre: string = "";
   duracion!: number;
   beneficio!: number;
+  coste!: number;
   descripcion: string = "";
   subtask_dependencia: string = "";
 
@@ -31,6 +33,7 @@ export class TareasFormComponent {
     this.tareasSub = this.tareasService.tareas$.subscribe(tareas => {
       this.tareas = tareas;
     });
+    this.sector = this.sector_fabrica;
   }
 
   ngOnDestroy(): void {
@@ -50,7 +53,7 @@ export class TareasFormComponent {
       console.log("Creando tarea...");
       this.cargando = true;
 
-      this.apiService.crearTarea(this.sector, this.nombre, this.duracion, this.beneficio, this.descripcion, this.subtask_dependencia).pipe(
+      this.apiService.crearTarea(this.sector, this.nombre, this.duracion, this.beneficio, this.coste, this.descripcion, this.subtask_dependencia).pipe(
         finalize(() => {
           this.cargando = false; 
           this.cerrarModal();
@@ -59,7 +62,7 @@ export class TareasFormComponent {
       ).subscribe({
         next: (response) => {
           console.log("Respuesta: ", response);
-          this.tareasService.anyadirTarea(new TareaImpl(5, this.nombre, 10, 12, 50, 0, "Desc"));
+          this.tareasService.anyadirTarea(new TareaImpl(5, this.nombre, 10, 12, 50, 10, 0, "Desc"));
         },
         error: (error) => {
           alert("Error: " + error); 

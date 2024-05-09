@@ -5,7 +5,7 @@ export class TareaImpl implements Tarea {
     private tareaPadre: Tarea | undefined;
     isWorking: boolean;
 
-    constructor(public id: number, public nombre: string, public cantidad: number, public duracion: number, public precioVenta: number, public tiempoActual: number, public descripcion: string) {
+    constructor(public id: number, public nombre: string, public cantidad: number, public duracion: number, public beneficio: number, public coste: number, public tiempoActual: number, public descripcion: string) {
         this.isWorking = false;
     }
 

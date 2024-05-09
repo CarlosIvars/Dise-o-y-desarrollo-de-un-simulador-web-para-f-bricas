@@ -17,6 +17,14 @@ export class EditTareasFormComponent {
 
   @Input() tarea!: Tarea;
 
+  sector: string = "";
+  nombre: string = "";
+  duracion!: number;
+  beneficio!: number;
+  coste!: number;
+  descripcion: string = "";
+  subtask_dependencia: string = "";
+
   constructor(private apiService: ApiService, private tareasService: TareasService) { }
 
   cerrarModal(): void {
@@ -25,12 +33,21 @@ export class EditTareasFormComponent {
     }
   }
 
+  ngOnInit(): void {
+    this.nombre = this.tarea.nombre;
+    this.duracion = this.tarea.duracion;
+    this.beneficio = this.tarea.beneficio;
+    this.coste = this.tarea.coste;
+    this.descripcion = this.tarea.nombre;
+    this.subtask_dependencia = this.tarea.getTareaPadre()?.id != undefined ? "" + this.tarea.getTareaPadre()?.id : "";
+  }
+
   modificarTarea(): void {
     if(!this.cargando){
       console.log("Modificando la tarea...");
       this.cargando = true;
 
-      this.apiService.modificarTarea(this.tarea.id, this.tarea.nombre, this.tarea.duracion, this.tarea.precioVenta, this.tarea.descripcion).pipe(
+      this.apiService.modificarTarea(this.tarea.id, this.tarea.nombre, this.tarea.duracion, this.tarea.beneficio, this.tarea.descripcion).pipe(
         finalize(() => {
           this.cargando = false; 
           this.cerrarModal();
@@ -47,10 +64,11 @@ export class EditTareasFormComponent {
             const duracion = response.subtask[2];
             const beneficio = response.subtask[3];
             const descripcion = response.subtask[4];
+            const coste = 0;
 
             //Si tenemos todos los datos añadimos la tarea
             if(id != undefined && nombre != undefined && duracion != undefined && beneficio != undefined && descripcion != undefined) {
-              this.tareasService.actualizarTarea(new TareaImpl(id, nombre, 0, duracion, beneficio, 0, descripcion));
+              this.tareasService.actualizarTarea(new TareaImpl(id, nombre, 0, duracion, beneficio, coste, 0, descripcion));
             } else {
               console.log("Omitiendo la modificacion de la tarea por falta de datos...");
             }

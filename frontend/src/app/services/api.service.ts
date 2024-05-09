@@ -120,7 +120,7 @@ export class ApiService {
     return this.http.delete<any>(`${environment.apiUrlBase}/delete_trabajador`, httpOptions);
   }
 
-  crearMaquina(nombre: string, fatiga: string, coste_h: number, skills: string) {
+  crearMaquina(nombre: string, fatiga: number, coste_h: number, skills: string) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -154,7 +154,7 @@ export class ApiService {
     return this.http.delete<any>(`${environment.apiUrlBase}/delete_maquina`, httpOptions);
   }
 
-  crearTarea(sector: string, nombre: string, duracion: number, beneficio: number, descripcion: string, subtask_dependencia: string) {
+  crearTarea(sector: string, nombre: string, duracion: number, beneficio: number, coste: number, descripcion: string, subtask_dependencia: string) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -162,7 +162,7 @@ export class ApiService {
       withCredentials: true
     };
 
-    return this.http.post<any>(`${environment.apiUrlBase}/add_subtask`, {sector, nombre, duracion, beneficio, descripcion, subtask_dependencia}, httpOptions);
+    return this.http.post<any>(`${environment.apiUrlBase}/add_subtask`, {sector, nombre, duracion, beneficio, coste, descripcion, subtask_dependencia}, httpOptions);
   }
 
   modificarTarea(id: number, nombre: string, duracion: number, beneficio: number, descripcion: string) {

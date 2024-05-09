@@ -5,11 +5,18 @@
             <div class="header-close-icon" (click)="cerrarModal()">X</div>
         </div>
         <div class="modal-body">
-            <form>
-                <input type="text" [(ngModel)]="tarea.nombre" name="nombre" placeholder="Nombre">
-                <input type="text" [(ngModel)]="tarea.duracion" name="duracion" placeholder="Duración">
-                <input type="text" [(ngModel)]="tarea.precioVenta" name="precioVenta" placeholder="Precio de venta">
-                <input type="text" [(ngModel)]="tarea.descripcion" name="descripcion" placeholder="Descripción">
+            <form>                
+                <input type="text" [value]="tarea.id">
+                <input type="text" [(ngModel)]="sector" name="sector" placeholder="Sector">
+                <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
+                <input type="text" [(ngModel)]="duracion" name="duracion" placeholder="Duración">
+                <input type="text" [(ngModel)]="beneficio" name="beneficio" placeholder="Beneficio">
+                <input type="text" [(ngModel)]="coste" name="coste" placeholder="Coste">
+                <textarea [(ngModel)]="descripcion" name="descripcion" placeholder="Descripción"></textarea>
+                <!--select *ngIf="tareas.length > 0" [(ngModel)]="subtask_dependencia" name="subtask_dependencia">
+                    <option value="">Sin tarea padre</option>
+                    <option *ngFor="let tarea of tareas" [value]="tarea.id">{{tarea.nombre}}</option>
+                </select-->
             </form>
         </div>
         <div class="modal-footer">

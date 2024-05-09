@@ -80,6 +80,7 @@ export class EditMaquinasFormComponent {
         next: (response) => {
           console.log("Respuesta: ", response);
           this.maquinasService.eliminarMaquina(this.maquina.id);
+          this.close.emit();
         },
         error: (error) => {
           alert("Error: " + error); 

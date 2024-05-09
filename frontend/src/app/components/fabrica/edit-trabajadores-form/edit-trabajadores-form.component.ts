@@ -11,15 +11,34 @@ import { TrabajadorImpl } from '../../../clases/trabajador.class';
   styleUrl: './edit-trabajadores-form.component.css'
 })
 export class EditTrabajadoresFormComponent {
+  @Input() trabajador!: Trabajador;
   @Output() close = new EventEmitter();
 
   cargando: boolean = false;
 
-  @Input() trabajador!: Trabajador;
+  nombre: string = "";
+  apellidos: string = "";
+  fecha_nacimiento: string = "";
+  fatiga: number = 0;
+  coste_h!: number;
+  preferencias!: number;
+  skills: string = "";
 
   nuevas_habilidades: string = "";
 
   constructor(private apiService: ApiService, private trabajadoresService: TrabajadoresService) { }
+
+  ngOnInit() {
+    if(this.trabajador != undefined) {
+      this.nombre = this.trabajador.nombre;
+      this.apellidos = this.trabajador.apellidos;
+      this.fecha_nacimiento = this.trabajador.fecha_nacimiento;
+      this.fatiga = this.trabajador.fatiga;
+      this.coste_h = this.trabajador.coste_h;
+      this.preferencias = this.trabajador.preferencias_trabajo;
+      //this.skills = this.trabajador.skills;
+    }
+  }
 
   cerrarModal(): void {
     if(!this.cargando) {
@@ -32,7 +51,7 @@ export class EditTrabajadoresFormComponent {
       console.log("Modificando el trabajador...");
       this.cargando = true;
 
-      this.apiService.modificarTrabajador(this.trabajador.id, this.trabajador.nombre, this.trabajador.apellidos, this.trabajador.fecha_nacimiento, this.trabajador.fatiga, this.trabajador.coste_h, this.trabajador.preferencias_trabajo, this.trabajador.trabajos_apto, this.nuevas_habilidades).pipe(
+      this.apiService.modificarTrabajador(this.trabajador.id, this.nombre, this.apellidos, this.fecha_nacimiento, this.fatiga, this.coste_h, this.preferencias, this.trabajador.trabajos_apto, this.nuevas_habilidades).pipe(
         finalize(() => {
           this.cargando = false; 
           this.cerrarModal();
@@ -84,6 +103,7 @@ export class EditTrabajadoresFormComponent {
         next: (response) => {
           console.log("Respuesta: ", response);
           this.trabajadoresService.eliminarTrabajador(this.trabajador.id);
+          this.close.emit();
         },
         error: (error) => {
           alert("Error: " + error); 

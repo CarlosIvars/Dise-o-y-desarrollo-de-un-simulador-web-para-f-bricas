@@ -37,7 +37,8 @@ export interface Tarea {
     duracion: number,
     tiempoActual: number,
     isWorking: boolean,
-    precioVenta: number,
+    beneficio: number,
+    coste: number,
     descripcion: string,
 
     getTrabajador(): Trabajador | undefined,
