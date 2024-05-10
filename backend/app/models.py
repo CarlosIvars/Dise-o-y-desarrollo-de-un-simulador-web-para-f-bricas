@@ -351,7 +351,15 @@ class RecursosModel:
             cursor = get_db_connection().cursor()
             sql = "SELECT *  FROM Trabajadores WHERE codigo = %s"
             cursor.execute(sql, (codigo,))
-            return cursor.fetchone()
+            trabajador = cursor.fetchone()
+            if trabajador is None:
+                print("No se encontro el trabajador con el codigo")
+                return None
+            sql = "SELECT skill_id FROM skills_trabajadores WHERE trabajador_id = %s"
+            cursor.execute(sql, (trabajador[0],))
+            skills = cursor.fetchall()
+            trabajador_skills = trabajador + ([skill[0] for skill in skills],)
+            return trabajador_skills
         except Exception as ex:
             print(f"Error al obtener el trabajador: {ex}")
             return None
@@ -362,7 +370,15 @@ class RecursosModel:
             cursor = get_db_connection().cursor()
             sql = "SELECT * FROM Maquinas WHERE codigo = %s"
             cursor.execute(sql, (codigo,))
-            return cursor.fetchone()
+            maquina = cursor.fetchone()
+            if maquina is None:
+                print("No se encontro la maquina con el codigo")
+                return None
+            sql = "SELECT skill_id FROM skills_maquinas WHERE maquina_id = %s"
+            cursor.execute(sql, (maquina[0],))
+            skills = cursor.fetchall()
+            maquina_skills = maquina + ([skill[0] for skill in skills],)
+            return maquina_skills
         except Exception as ex:
             print(f"Error al obtener la maquina: {ex}")
             return None
@@ -380,10 +396,10 @@ class RecursosModel:
             conexion.connection.commit()
 
             last_id = id_maquina
-            sql_select = "SELECT * FROM Maquinas WHERE id = %s"
+            sql_select = "SELECT codigo FROM Maquinas WHERE id = %s"
             cursor.execute(sql_select, (last_id,))
             maquina = cursor.fetchone()
-            return maquina
+            return RecursosModel.get_maquina(maquina)
             
         except Exception as ex:
             print(f"Error al insertar en la base de datos: {ex}")
@@ -403,10 +419,10 @@ class RecursosModel:
             conexion.connection.commit()
 
             last_id = id_trabajador
-            sql_select = "SELECT * FROM Trabajadores WHERE id = %s"
+            sql_select = "SELECT codigo FROM Trabajadores WHERE id = %s"
             cursor.execute(sql_select, (last_id,))
-            trabajador = cursor.fetchone()
-            return trabajador
+            codigo = cursor.fetchone()
+            return RecursosModel.get_trabajador(codigo)
 
         except Exception as ex:
             print(f"Error al insertar en la base de datos: {ex}")
@@ -447,24 +463,20 @@ class RecursosModel:
 
             # Actualizar tabla Trabajador
             if update_values_trabajador:
-                sql_trabajador = "UPDATE Trabajador SET " + ", ".join([f"{field} = %s" for field, _ in update_values_trabajador]) + " WHERE id = %s"
+                sql_trabajador = "UPDATE Trabajadores SET " + ", ".join([f"{field} = %s" for field, _ in update_values_trabajador]) + " WHERE codigo = %s"
                 values_trabajador = [value for _, value in update_values_trabajador]
                 values_trabajador.append(trabajador_id)
                 cursor.execute(sql_trabajador, tuple(values_trabajador))
 
+            trabajador = RecursosModel.get_trabajador(trabajador_id)
             # Actualizar habilidades del trabajador
             if nuevas_habilidades is not None:
                 # Eliminar habilidades existentes del trabajador
-                cursor.execute("DELETE FROM skills_trabajadores WHERE trabajador_id = %s", (trabajador_id,))
+                cursor.execute("DELETE FROM skills_trabajadores WHERE trabajador_id = %s", (trabajador[0],))
                 # Insertar nuevas habilidades
                 for skill_id in nuevas_habilidades:
-                    cursor.execute("INSERT INTO skills_trabajadores (trabajador_id, skill_id) VALUES (%s, %s)", (trabajador_id, skill_id))
-
-            conexion.connection.commit()
-            cursor.execute("SELECT * FROM Trabajador WHERE id = %s", (trabajador_id,))
-            trabajador_actualizado = cursor.fetchone()
-            print("Información del trabajador actualizada exitosamente")
-            return trabajador_actualizado
+                    cursor.execute("INSERT INTO skills_trabajadores (trabajador_id, skill_id) VALUES (%s, %s)", (trabajador[0], skill_id))
+            return RecursosModel.get_trabajador(trabajador_id)
         except Exception as ex:
             print(f"Error al actualizar información del trabajador: {ex}")
             return None
@@ -497,24 +509,19 @@ class RecursosModel:
 
             # Actualizar tabla Maquina
             if update_values_maquina:
-                sql_maquina = "UPDATE Maquinas SET " + ", ".join([f"{field} = %s" for field, _ in update_values_maquina]) + " WHERE id = %s"
+                sql_maquina = "UPDATE Maquinas SET " + ", ".join([f"{field} = %s" for field, _ in update_values_maquina]) + " WHERE codigo = %s"
                 values_maquina = [value for _, value in update_values_maquina]
                 values_maquina.append(maquina_id)
                 cursor.execute(sql_maquina, tuple(values_maquina))
-
+            maquina = RecursosModel.get_maquina(maquina_id)
             # Actualizar tabla skills_maquinas
             if habilidades is not None:
                 # Eliminar habilidades existentes de la máquina
-                cursor.execute("DELETE FROM skills_maquinas WHERE maquina_id = %s", (maquina_id,))
+                cursor.execute("DELETE FROM skills_maquinas WHERE maquina_id = %s", (maquina[0],))
                 # Insertar nuevas habilidades
                 for skill_id in habilidades:
-                    cursor.execute("INSERT INTO skills_maquinas (maquina_id, skill_id) VALUES (%s, %s)", (maquina_id, skill_id))
-
-            conexion.connection.commit()
-            print("Información de la máquina actualizada exitosamente")
-            cursor.execute("SELECT * FROM Maquinas WHERE id = %s", (maquina_id,))
-            maquina_actualizada = cursor.fetchone()
-            return maquina_actualizada
+                    cursor.execute("INSERT INTO skills_maquinas (maquina_id, skill_id) VALUES (%s, %s)", (maquina[0], skill_id))
+            return RecursosModel.get_maquina(maquina_id)
 
         except Exception as ex:
             print(f"Error al actualizar información de la máquina: {ex}")

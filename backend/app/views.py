@@ -20,7 +20,8 @@ from deep_translator import GoogleTranslator
 #'Bearer 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'
 @app.route('/')
 def init():
-    
+    t =RecursosModel.get_trabajador("H_1")
+    print(t)
     skills_matching = {
     'Tarea1': ['Humano1', 'Humano2', 'Humano3', 'Humano4'],
     'Tarea2': ['Humano1', 'Humano4', 'Humano5', 'Humano6'],
@@ -392,7 +393,7 @@ def update_trabajador():
         if not data:
             return jsonify({'error': 'No se proporcionó trabajador'}), 400
         
-        trabajador_id = data.get('id')
+        trabajador_id = data.get('trabajador_id')
         nombre = data.get('nombre')
         apellidos = data.get('apellidos')
         fecha_nacimiento = data.get('fecha_nacimiento')
@@ -401,7 +402,6 @@ def update_trabajador():
         preferencias_trabajo = data.get('preferencia_trabajo')
         trabajos_apto = data.get('trabajos_apto')
         nuevas_habilidades = data.get('nuevas_habilidades')
-
         trabajador = RecursosModel.update_trabajador(trabajador_id, nombre, apellidos, fecha_nacimiento, trabajos_apto, fatiga, coste_h, preferencias_trabajo, nuevas_habilidades)
         return jsonify({'mensaje': 'Trabajador actualizado', 'trabajador' : trabajador}), 200
     except Exception as ex:
