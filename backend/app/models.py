@@ -794,7 +794,15 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             cursor = get_db_connection().cursor()
             sql =  "SELECT * FROM Subtasks WHERE id = %s AND fabrica_id= %s"
             cursor.execute(sql, (subtask_id,fabrica_id))
-            return cursor.fetchone()
+            subtask = cursor.fetchone()
+            if subtask is None:
+                print("No se encontro el trabajador con el codigo")
+                return None
+            sql = "SELECT skill_id FROM skills_trabajadores WHERE trabajador_id = %s"
+            cursor.execute(sql, (subtask[0],))
+            skills = cursor.fetchall()
+            subtask_skills = subtask + ([skill[0] for skill in skills],)
+            return subtask_skills
         except Exception as ex:
             print(f"Error al obtener subtask: {ex}")
             return None
