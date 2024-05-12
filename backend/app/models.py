@@ -798,7 +798,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             if subtask is None:
                 print("No se encontro el trabajador con el codigo")
                 return None
-            sql = "SELECT skill_id FROM skills_trabajadores WHERE trabajador_id = %s"
+            sql = "SELECT skill_id FROM skills_subtasks WHERE subtask_id = %s"
             cursor.execute(sql, (subtask[0],))
             skills = cursor.fetchall()
             subtask_skills = subtask + ([skill[0] for skill in skills],)
@@ -813,7 +813,20 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             cursor = get_db_connection().cursor()
             sql =  "SELECT * FROM Subtasks WHERE fabrica_id= %s"
             cursor.execute(sql, (fabrica_id,))
-            return cursor.fetchall()
+            subtasks= cursor.fetchall()
+            if subtasks is None:
+                print("No se encontraron subtasks para la fábrica")
+                return None
+
+            subtasks_with_skills = []
+            for subtask in subtasks:
+                sql_skills = "SELECT skill_id FROM skills_subtasks WHERE subtask_id = %s"
+                cursor.execute(sql_skills, (subtask[0],))
+                skills = cursor.fetchall()
+                skills_list = [skill[0] for skill in skills]
+                subtasks_with_skills.append(subtask + (skills_list,))
+
+            return tuple(subtasks_with_skills)
         except Exception as ex:
             print(f"Error al obtener subtasks: {ex}")
             return None
