@@ -749,6 +749,8 @@ class TareaModel:
     def obtener_skills_chatGPT(sector,descripcion):
         soft_skills = TareaModel.get_soft_skills()
         hard_skills = TareaModel.get_hard_skills(sector)
+        soft_skills = [skill[0] for skill in soft_skills]
+        hard_skills = [skill[0] for skill in hard_skills]
         configuracion_desarrollo = config['development']()
         prompt = f'''El formato que quiero que me devuelvas la respuesta es el siguiente, donde la X representa un placeholder:
 soft_skills = [X], hard_skills = [X]
@@ -963,7 +965,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             return False
 
     @staticmethod
-    def dependencias_subtasks(tarea_ids):
+    def get_dependencias_subtasks(tarea_ids):
         try: 
             cursor = get_db_connection().cursor()
 

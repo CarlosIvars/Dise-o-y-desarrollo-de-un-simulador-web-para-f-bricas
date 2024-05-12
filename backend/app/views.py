@@ -247,7 +247,8 @@ def seleccionar_fabrica():
     trabajadores = RecursosModel.get_humanos_fabrica(fabrica_id)
     maquinas = RecursosModel.get_maquinas_farbica(fabrica_id)
     subtasks = TareaModel.get_subtasks(fabrica_id)
-    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica, 'trabajadores' : trabajadores, 'maquinas': maquinas, 'subtasks' : subtasks}), 200
+    dependencias = TareaModel.get_dependencias_subtasks([subtask[0] for subtask in subtasks])
+    return jsonify({'mensaje': 'Fábrica seleccionada exitosamente', 'fabrica_id': fabrica, 'trabajadores' : trabajadores, 'maquinas': maquinas, 'subtasks' : subtasks, 'dependencias': dependencias}), 200
 
 @app.route('/delete_fabrica', methods=['DELETE'])
 def delete_fabrica():
@@ -441,7 +442,7 @@ def add_subtask():
             return jsonify({'error': 'Fabrica no encontrada'}), 404
         if not data or not all(key in data for key in ['nombre','duracion', 'beneficio','coste', 'descripcion','subtask_dependencia']):
             return jsonify({'error': 'Datos incompletos'}), 400
-        
+     
         sector = session.get('sector')
         nombre = data.get('nombre')
         duracion = data.get('duracion')
@@ -450,10 +451,9 @@ def add_subtask():
         descripcion = data.get('descripcion')
         subtask_dependencia = data.get('subtask_dependencia')
         subtask= TareaModel.add_subtask(nombre, duracion, beneficio, coste, descripcion, fabrica_id, sector)
-        
         if subtask:        
             if subtask_dependencia:
-                TareaModel.add_dependencias_subtasks(subtask['id'],subtask_dependencia)
+                TareaModel.add_dependencias_subtasks(subtask[0],subtask_dependencia)
             
             return jsonify({'mensaje': 'Subtask añadida con exitoso', 'subtask' : subtask}), 201
         else:
@@ -543,7 +543,7 @@ def algoritmo_genetico():
     fatigas = RecursosModel.fatiga_recursos(fabrica_id)
     costes = RecursosModel.coste_recursos(fabrica_id)
     beneficios = TareaModel.beneficio_subtasks(fabrica_id)
-    dependencias = TareaModel.dependencias_subtasks(skills_matching)
+    dependencias = TareaModel.get_dependencias_subtasks(skills_matching)
     
     # Parámetros para el algoritmo genético
     num_individuos_seleccion= 50
