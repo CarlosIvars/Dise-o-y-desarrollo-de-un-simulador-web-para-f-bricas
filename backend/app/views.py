@@ -455,7 +455,7 @@ def add_subtask():
             if subtask_dependencia:
                 TareaModel.add_dependencias_subtasks(subtask[0],subtask_dependencia)
             
-            return jsonify({'mensaje': 'Subtask añadida con exitoso', 'subtask' : subtask}), 201
+            return jsonify({'mensaje': 'Subtask añadida con exitoso', 'subtask' : subtask, 'dependencia' : subtask_dependencia}), 201
         else:
             return jsonify({'mensaje': 'Subtask no se pudo añadir correctamente'}), 500
     except Exception as ex:
