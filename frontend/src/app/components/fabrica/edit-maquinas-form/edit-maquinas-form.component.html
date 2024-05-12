@@ -6,10 +6,27 @@
         </div>
         <div class="modal-body">
             <form>
-                <input type="text" [(ngModel)]="maquina.nombre" name="nombre" placeholder="Nombre">
-                <input type="text" [(ngModel)]="maquina.fatiga" name="fatiga" placeholder="Fatiga">
-                <input type="text" [(ngModel)]="maquina.coste_h" name="coste_h" placeholder="Coste por horas">
-                <input type="text" [(ngModel)]="nuevas_habilidades" name="nuevas_habilidades" placeholder="Nuevas habilidades">
+                <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
+
+                <div>
+                    <div class="input-title">
+                        Fatiga:
+                    </div>
+                    <div class="slider-container">
+                        <input disabled="disabled" type="range" min="0" max="100" [(ngModel)]="fatiga" name="fatiga">
+                        <p>{{fatiga}}%</p>
+                    </div>    
+                </div>
+
+                <input type="text" [(ngModel)]="coste_h" name="coste_h" placeholder="Coste por horas">
+
+                <fieldset *ngIf="hard_skills.length > 0">
+                    <legend>Hard skills:</legend>
+                    <ng-container *ngFor="let skill of hard_skills">
+                        <input type="checkbox" (change)="checkSkill(skill.id)" [checked]="maquina.skills.includes(skill.id)">
+                        <label>{{ skill.nombre }}</label><br>
+                    </ng-container>
+                </fieldset>
             </form>
         </div>
         <div class="modal-footer">

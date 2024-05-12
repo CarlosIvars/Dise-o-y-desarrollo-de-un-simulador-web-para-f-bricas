@@ -12,7 +12,8 @@
 }
 
 .trabajador-card .img {
-    padding: 10px;
+    font-size: 28px;
+    padding: 5px 4px;
 }
 
 .trabajador-card .info .nombre {

@@ -114,9 +114,10 @@ header{
 }
 
 #cabeceraDer{
-    padding: 8px;
     border: 1px solid black;
-    border-radius: 30px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    cursor: pointer;
 }
 
 /* Ventanas modales */

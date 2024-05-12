@@ -90,7 +90,7 @@ export class TimerService {
           // Buscamos en los padres para ver si puede inicarse
           if(this.puedeIniciarTarea(tarea)) {
             console.log(`Iniciando tarea ${tarea.nombre} ...`);
-            let tareaPadre = tarea.getTareaPadre();
+            let tareaPadre = tarea.tareaPadre;
             if(tareaPadre != undefined) {
               tareaPadre.cantidad--;
             }
@@ -144,7 +144,7 @@ export class TimerService {
   }
 
   puedeIniciarTarea(tarea: Tarea): boolean {
-    var tareaPadre = tarea.getTareaPadre();
+    var tareaPadre = tarea.tareaPadre;
 
     if(tareaPadre == undefined){
       return true;

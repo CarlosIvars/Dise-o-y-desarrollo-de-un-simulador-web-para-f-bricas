@@ -3,20 +3,18 @@ import { ApiService } from '../../../services/api.service';
 import { Subscription, finalize } from 'rxjs';
 import { TareasService } from '../../../services/tareas.service';
 import { TareaImpl } from '../../../clases/tarea.class';
-import { Tarea } from '../../../interfaces/interfaces';
+import { Skill, Tarea } from '../../../interfaces/interfaces';
 
 @Component({
   selector: 'app-tareas-form',
   templateUrl: './tareas-form.component.html',
   styleUrl: './tareas-form.component.css'
 })
-export class TareasFormComponent {
-  @Input() sector_fabrica = "";
+export class TareasFormComponent {  
   @Output() close = new EventEmitter();
 
   cargando: boolean = false;
 
-  sector: string = "";
   nombre: string = "";
   duracion!: number;
   beneficio!: number;
@@ -33,7 +31,6 @@ export class TareasFormComponent {
     this.tareasSub = this.tareasService.tareas$.subscribe(tareas => {
       this.tareas = tareas;
     });
-    this.sector = this.sector_fabrica;
   }
 
   ngOnDestroy(): void {
@@ -53,7 +50,7 @@ export class TareasFormComponent {
       console.log("Creando tarea...");
       this.cargando = true;
 
-      this.apiService.crearTarea(this.sector, this.nombre, this.duracion, this.beneficio, this.coste, this.descripcion, this.subtask_dependencia).pipe(
+      this.apiService.crearTarea(this.nombre, this.duracion, this.beneficio, this.coste, this.descripcion, this.subtask_dependencia).pipe(
         finalize(() => {
           this.cargando = false; 
           this.cerrarModal();
@@ -62,7 +59,40 @@ export class TareasFormComponent {
       ).subscribe({
         next: (response) => {
           console.log("Respuesta: ", response);
-          this.tareasService.anyadirTarea(new TareaImpl(5, this.nombre, 10, 12, 50, 10, 0, "Desc"));
+
+          if(response.subtask != null && response.subtask != undefined) {
+            const id = response.subtask[0];
+            const nombre = response.subtask[1];
+            const duracion = response.subtask[2];
+            const beneficio = response.subtask[3];
+            const descripcion = response.subtask[4];
+            //const fabrica_id = response.tarea[5];
+            const coste = response.subtask[6];
+            const skills = response.subtask[7];
+
+            //Si tenemos todos los datos añadimos la tarea
+            if(id != undefined && nombre != undefined && duracion != undefined && beneficio != undefined && descripcion != undefined && coste != undefined && skills != undefined) {
+              const tareaHija = new TareaImpl(id, nombre, 0, duracion, beneficio, coste, 0, descripcion, skills);
+              this.tareasService.anyadirTarea(tareaHija);
+
+              debugger;
+              if(response.dependencia != null && response.dependencia != undefined) {
+                const tareaPadre = this.tareas.find(tarea => tarea.id == response.dependencia);
+              
+                if (tareaHija && tareaPadre) {
+                  tareaHija.tareaPadre = tareaPadre;
+                  tareaPadre.tareasHijas.push(tareaHija);
+                  this.tareasService.actualizarTarea(tareaHija);
+                  this.tareasService.actualizarTarea(tareaPadre);
+                }
+              }
+            } else {
+              console.log("Datos recibidos insuficientes para crear el trabajador...");
+            }
+
+          } else {
+            console.error("No se ha recibido los datos esperados...")
+          }
         },
         error: (error) => {
           alert("Error: " + error); 

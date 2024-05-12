@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Tarea, Trabajador } from '../interfaces/interfaces';
 import { BehaviorSubject } from 'rxjs';
 import { TrabajadoresService } from './trabajadores.service';
-import { TareaImpl } from '../clases/tarea.class';
 
 @Injectable({
   providedIn: 'root'
@@ -34,11 +33,38 @@ export class TareasService {
   }
 
   eliminarTarea(id: number) {
+    const tareas_const = this.tareasSubject.getValue();
+    
+    // Eliminar la tarea del array tareas
+    let tareas = tareas_const.filter(tarea => tarea.id !== id);
+
+    // Iterar sobre las tareas restantes
+    tareas.forEach(tarea => {
+      
+      // Eliminar la referencia a la tareaPadre
+      if (tarea.tareaPadre != undefined && tarea.tareaPadre.id === id) {
+        tarea.tareaPadre = undefined; 
+      }
+
+      // Filtrar y actualizar las tareasHijas de cada tarea
+      tarea.tareasHijas.filter(hija => hija.id !== id)
+    });
+
+    this.actualizarTareas(tareas);
+  }
+
+  modificarTarea(id: number, nombre: string, duracion: number, beneficio: number, descripcion: string, coste: number, skills: number[]) {
     const tareas = this.tareasSubject.getValue();
     const index = tareas.findIndex(t => t.id === id);
     if (index !== -1) {
-      tareas.splice(index, 1);
-      this.actualizarTareas(tareas);
+      const tarea = tareas[index];
+      tarea.nombre = nombre;
+      tarea.duracion = duracion;
+      tarea.beneficio = beneficio;
+      tarea.descripcion = descripcion;
+      tarea.coste = coste;
+      tarea.skills = skills;
+      this.actualizarTarea(tarea);
     }
   }
 

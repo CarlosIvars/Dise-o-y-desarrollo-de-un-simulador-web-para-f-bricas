@@ -3,6 +3,7 @@ import { ApiService } from '../../../services/api.service';
 import { finalize } from 'rxjs';
 import { MaquinasService } from '../../../services/maquinas.service';
 import { MaquinaImpl } from '../../../clases/maquina.class';
+import { Skill } from '../../../interfaces/interfaces';
 
 @Component({
   selector: 'app-maquinas-form',
@@ -10,7 +11,7 @@ import { MaquinaImpl } from '../../../clases/maquina.class';
   styleUrl: './maquinas-form.component.css'
 })
 export class MaquinasFormComponent {
-  @Input() hard_skills = [];
+  @Input() hard_skills: Skill[] = [];
 
   @Output() close = new EventEmitter();
 
@@ -19,7 +20,7 @@ export class MaquinasFormComponent {
   nombre: string = "";
   fatiga: number = 0;
   coste_h!: number;
-  skills: string = "";
+  skills: number[] = [];
 
   constructor(private apiService: ApiService, private maquinasService: MaquinasService) {}
 
@@ -36,7 +37,6 @@ export class MaquinasFormComponent {
 
       this.apiService.crearMaquina(this.nombre, this.fatiga, this.coste_h, this.skills).pipe(
         finalize(() => {
-          //this.maquinasService.anyadirMaquina(new MaquinaImpl(3, this.nombre, "ROL", this.coste_h, "000"));  
           this.cargando = false; 
           this.cerrarModal();
           console.log("Fin de crear maquina.");
@@ -52,8 +52,10 @@ export class MaquinasFormComponent {
               const coste_h = response.maquina[4];
               //const fabrica_id = response.maquina[5];
               //const trabajo_id = response.maquina[6];
-              if(alfanumeric_id != undefined && nombre != undefined && fatiga != undefined && coste_h != undefined) {
-                this.maquinasService.anyadirMaquina(new MaquinaImpl(alfanumeric_id, nombre,fatiga, coste_h));
+              const skills = response.maquina[7];
+
+              if(alfanumeric_id != undefined && nombre != undefined && fatiga != undefined && coste_h != undefined && skills != undefined) {
+                this.maquinasService.anyadirMaquina(new MaquinaImpl(alfanumeric_id, nombre,fatiga, coste_h, skills));
               }
             }
         },
@@ -61,6 +63,17 @@ export class MaquinasFormComponent {
           alert("Error: " + error); 
         }
       });
+    }
+  }
+
+  checkSkill(id: number) {
+    const index = this.skills.indexOf(id);
+    if (index !== -1) {
+      // Si el valor ya está presente, lo quitamos
+      this.skills.splice(index, 1);
+    } else {
+      // Si el valor no está presente, lo agregamos
+      this.skills.push(id);
     }
   }
 }

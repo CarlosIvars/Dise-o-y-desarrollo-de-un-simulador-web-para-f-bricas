@@ -20,14 +20,16 @@ export interface Trabajador {
     fatiga: number,
     coste_h: number,
     preferencias_trabajo: number,
-    activo: boolean
+    activo: boolean,
+    skills: number[]
 }
 
 export interface Maquina {
     id: string,
     nombre: string,
     fatiga: number,
-    coste_h: number
+    coste_h: number,
+    skills: number[]
 }
 
 export interface Tarea {
@@ -40,11 +42,16 @@ export interface Tarea {
     beneficio: number,
     coste: number,
     descripcion: string,
+    skills: number[],
+    tareaPadre: Tarea | undefined,
+    tareasHijas: Tarea[]
 
     getTrabajador(): Trabajador | undefined,
     setTrabajador(trabajador: Trabajador): void,
     removeTrabajador(): void
+}
 
-    getTareaPadre(): Tarea | undefined,
-    setTareaPadre(tarea: Tarea): void
+export interface Skill {
+    id: number,
+    nombre: string
 }

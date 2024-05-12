@@ -9,6 +9,7 @@
                 <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
                 <input type="text" [(ngModel)]="apellidos" name="apellidos" placeholder="Apellidos">
                 <input type="date" [(ngModel)]="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento">
+                
                 <div>
                     <div class="input-title">
                         Fatiga inicial:
@@ -18,30 +19,33 @@
                         <p>{{fatiga}}%</p>
                     </div>    
                 </div>
+
                 <div class="input-container">
                     <input type="text" [(ngModel)]="coste_h" name="coste_h" placeholder="Salario">
                     <div class="unidad">€ / h</div>
                 </div>
 
-                <select [(ngModel)]="preferencias" name="preferencias" placeholder="Salario">
-                    <option *ngFor="let tarea of tareas" [value]="tarea.id">{{ tarea.nombre }}</option>
-                </select>
+                <fieldset *ngIf="tareas.length > 0">
+                    <legend>Tarea de preferencia:</legend>
+                    <select [(ngModel)]="preferencias" name="preferencias" placeholder="Salario">
+                        <option *ngFor="let tarea of tareas" [value]="tarea.id">{{ tarea.nombre }}</option>
+                    </select>
+                </fieldset>
 
                 <fieldset *ngIf="hard_skills.length > 0">
                     <legend>Hard skills:</legend>
                     <ng-container *ngFor="let skill of hard_skills">
-                        <input type="checkbox" [name]="skill">
-                        <label [for]="skill">{{ skill }}</label><br>
+                        <input type="checkbox" (change)="checkSkill(skill.id)">
+                        <label>{{ skill.nombre }}</label><br>
                     </ng-container>
                 </fieldset>
                 <fieldset *ngIf="soft_skills.length > 0">
                     <legend>Soft skills:</legend>
                     <ng-container *ngFor="let skill of soft_skills">
-                        <input type="checkbox" [name]="skill">
-                        <label [for]="skill">{{ skill }}</label><br>
+                        <input type="checkbox" (change)="checkSkill(skill.id)">
+                        <label>{{ skill.nombre }}</label><br>
                     </ng-container>
                 </fieldset>
-                <!--input type="text" [(ngModel)]="skills" name="skills" placeholder="Skills"-->
             </form>
         </div>
         <div class="modal-footer">

@@ -3,3 +3,13 @@ form {
     flex-direction: column;
     gap: 10px;
 }
+
+textarea {
+    min-height: 50px;
+    max-height: 200px;
+    resize: vertical;
+}
+
+textarea:resize {
+    width: auto;
+}

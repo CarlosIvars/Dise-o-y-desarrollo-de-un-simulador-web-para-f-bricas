@@ -84,7 +84,9 @@ export class ApiService {
     return this.http.delete<any>(`${environment.apiUrlBase}/delete_fabrica`, httpOptions);
   }
 
-  crearTrabajador(nombre: string, apellidos: string, fecha_nacimiento: string, fatiga: number, coste_h: number, preferencias: string, skills: string) {
+  crearTrabajador(nombre: string, apellidos: string, fecha_nacimiento: string, fatiga: number, coste_h: number, preferencias: string, skills: number[]) {
+    console.log({nombre, apellidos, fecha_nacimiento, fatiga, coste_h, preferencias, skills});
+    
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -96,7 +98,7 @@ export class ApiService {
     return this.http.post<any>(`${environment.apiUrlBase}/add_trabajador`, {nombre, apellidos, fecha_nacimiento, fatiga, coste_h, preferencias, skills}, httpOptions);
   }
 
-  modificarTrabajador(trabajador_id: string, nombre: string, apellidos: string, fecha_nacimiento: string, fatiga: number, coste_h: number, preferencias_trabajo: number, trabajos_apto: number, nuevas_habilidades: string) {
+  modificarTrabajador(trabajador_id: string, nombre: string, apellidos: string, fecha_nacimiento: string, fatiga: number, coste_h: number, preferencias_trabajo: number, trabajos_apto: number, nuevas_habilidades: number[]) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -104,6 +106,8 @@ export class ApiService {
       withCredentials: true
 
     };
+
+    console.log({trabajador_id, nombre, apellidos, fecha_nacimiento, fatiga, coste_h, preferencias_trabajo, trabajos_apto, nuevas_habilidades});
 
     return this.http.patch<any>(`${environment.apiUrlBase}/update_trabajador`, {trabajador_id, nombre, apellidos, fecha_nacimiento, fatiga, coste_h, preferencias_trabajo, trabajos_apto, nuevas_habilidades}, httpOptions);
   }
@@ -120,24 +124,28 @@ export class ApiService {
     return this.http.delete<any>(`${environment.apiUrlBase}/delete_trabajador`, httpOptions);
   }
 
-  crearMaquina(nombre: string, fatiga: number, coste_h: number, skills: string) {
+  crearMaquina(nombre: string, fatiga: number, coste_h: number, skills: number[]) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
       }),
       withCredentials: true
     };
+
+    console.log({nombre, fatiga, coste_h, skills});
 
     return this.http.post<any>(`${environment.apiUrlBase}/add_maquina`, {nombre, fatiga, coste_h, skills}, httpOptions);
   }
 
-  modificarMaquina(id: string, nombre: string, coste_h: number, fatiga: number, nuevas_habilidades: string) {
+  modificarMaquina(id: string, nombre: string, coste_h: number, fatiga: number, nuevas_habilidades: number[]) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
       }),
       withCredentials: true
     };
+
+    console.log({id, nombre, fatiga, coste_h, nuevas_habilidades});
 
     return this.http.patch<any>(`${environment.apiUrlBase}/update_maquina`, {id, nombre, fatiga, coste_h, nuevas_habilidades}, httpOptions);
   }
@@ -154,7 +162,7 @@ export class ApiService {
     return this.http.delete<any>(`${environment.apiUrlBase}/delete_maquina`, httpOptions);
   }
 
-  crearTarea(sector: string, nombre: string, duracion: number, beneficio: number, coste: number, descripcion: string, subtask_dependencia: string) {
+  crearTarea( nombre: string, duracion: number, beneficio: number, coste: number, descripcion: string, subtask_dependencia: string) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -162,10 +170,12 @@ export class ApiService {
       withCredentials: true
     };
 
-    return this.http.post<any>(`${environment.apiUrlBase}/add_subtask`, {sector, nombre, duracion, beneficio, coste, descripcion, subtask_dependencia}, httpOptions);
+    console.log({nombre, duracion, beneficio, coste, descripcion, subtask_dependencia});
+
+    return this.http.post<any>(`${environment.apiUrlBase}/add_subtask`, {nombre, duracion, beneficio, coste, descripcion, subtask_dependencia}, httpOptions);
   }
 
-  modificarTarea(id: number, nombre: string, duracion: number, beneficio: number, descripcion: string) {
+  modificarTarea(id: number, nombre: string, duracion: number, beneficio: number, coste: number, descripcion: string, skills: number[]) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -173,7 +183,9 @@ export class ApiService {
       withCredentials: true
     };
 
-    return this.http.patch<any>(`${environment.apiUrlBase}/update_subtask`, {id, nombre, duracion, beneficio, descripcion}, httpOptions);
+    console.log({id, nombre, duracion, beneficio, coste, descripcion, skills});
+
+    return this.http.patch<any>(`${environment.apiUrlBase}/update_subtask`, {id, nombre, duracion, beneficio, coste, descripcion, skills}, httpOptions);
   }
 
   eliminarTarea(tarea_id: number) {

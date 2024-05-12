@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { Fabrica, Trabajador, Maquina, Tarea } from '../../interfaces/interfaces';
+import { Fabrica, Trabajador, Maquina, Tarea, Skill } from '../../interfaces/interfaces';
 import { FabricaService } from '../../services/fabrica.service';
 import { Subscription, combineLatestWith, finalize } from 'rxjs';
 import { TareasService } from '../../services/tareas.service';
@@ -38,8 +38,8 @@ export class FabricaComponent {
   tareas: Tarea[] = [];
   private tareasSub?: Subscription;
 
-  hard_skills = [];
-  soft_skills = [];
+  hard_skills: Skill[] = [];
+  soft_skills: Skill[] = [];
 
   cargando = true;
 
@@ -86,7 +86,6 @@ export class FabricaComponent {
     });
 
     this.iniciarFabrica(this.fabrica_id);
-    this.getSkills();
 
     this.cambiarVelocidadEjecucion();
   }
@@ -199,8 +198,9 @@ export class FabricaComponent {
           this.maquinasService.actualizarMaquinas(maquinas);
           this.tareasService.actualizarTareas(tareas);
 
-          this.cargando = false;
           console.log("Fin de cargar el contenido de la fabrica.");
+
+          this.getSkills();
         })
       ).subscribe({
         next: (response) => {
@@ -236,10 +236,11 @@ export class FabricaComponent {
                     const preferencias_trabajo = trabajador[8];
                     //const fabrica_id = trabajador[9];
                     //const trabajo_id = trabajador[10];
+                    const skills = trabajador[11];
 
                     //Si tenemos todos los datos añadimos el trabajador
-                    if(alfanumeric_id != undefined && nombre != undefined && apellidos != undefined && trabajados_apto != undefined && fatiga != undefined && coste_h != undefined && preferencias_trabajo != undefined) {
-                      trabajadores.push(new TrabajadorImpl(alfanumeric_id, nombre, apellidos, fecha_nacimiento, trabajados_apto, fatiga, coste_h, preferencias_trabajo));
+                    if(alfanumeric_id != undefined && nombre != undefined && apellidos != undefined && trabajados_apto != undefined && fatiga != undefined && coste_h != undefined && preferencias_trabajo != undefined && skills != undefined) {
+                      trabajadores.push(new TrabajadorImpl(alfanumeric_id, nombre, apellidos, fecha_nacimiento, trabajados_apto, fatiga, coste_h, preferencias_trabajo, skills));
                     } else {
                       console.error("Omitiendo la generacion del trabajador por falta de datos...");
                     }
@@ -258,10 +259,11 @@ export class FabricaComponent {
                     const coste_h = maquina[4];
                     //const fabrica_id = maquina[5];
                     //const trabajo_id = maquina[6];
+                    const skills = maquina[7];
 
                     //Si tenemos todos los datos añadimos la maquina
-                    if(alfanumeric_id != undefined && nombre != undefined && fatiga != undefined && coste_h != undefined) {
-                      maquinas.push(new MaquinaImpl(alfanumeric_id, nombre,fatiga, coste_h));
+                    if(alfanumeric_id != undefined && nombre != undefined && fatiga != undefined && coste_h != undefined && skills != undefined) {
+                      maquinas.push(new MaquinaImpl(alfanumeric_id, nombre,fatiga, coste_h, skills));
                     } else {
                       console.log("Omitiendo la generacion de la maquina por falta de datos...");
                     }
@@ -279,17 +281,32 @@ export class FabricaComponent {
                     const duracion = tarea[2];
                     const beneficio = tarea[3];
                     const descripcion = tarea[4];
-                    const coste = 0
+                    //const fabrica_id = tarea[5];
+                    const coste = tarea[6];
+                    const skills = tarea[7];
 
                     //Si tenemos todos los datos añadimos la tarea
-                    if(id != undefined && nombre != undefined && duracion != undefined && beneficio != undefined && descripcion != undefined) {
-                      tareas.push(new TareaImpl(id, nombre, 0, duracion, beneficio, coste, 0, descripcion));
+                    if(id != undefined && nombre != undefined && duracion != undefined && beneficio != undefined && descripcion != undefined && coste != undefined && skills != undefined) {
+                      tareas.push(new TareaImpl(id, nombre, 0, duracion, beneficio, coste, 0, descripcion, skills));
                     } else {
                       console.log("Omitiendo la generacion de la tarea por falta de datos...");
                     }
                   }
                 } else {
                   console.error("No se han podido recuperar las tareas de la fábrica seleccionada.");
+                }
+
+                //Comprobamos si tenemos los datos para las dependencias
+                if(response.dependencias != null && response.dependencias != undefined) {
+                  for( const [idTareaHija, idTareaPadre] of Object.entries(response.dependencias)) {
+                    const tareaHija = tareas.find(tarea => tarea.id === parseInt(idTareaHija));
+                    const tareaPadre = tareas.find(tarea => tarea.id === idTareaPadre);
+                  
+                    if (tareaHija && tareaPadre) {
+                      tareaHija.tareaPadre = tareaPadre;
+                      tareaPadre.tareasHijas.push(tareaHija);
+                    }
+                  };
                 }
 
               } else {
@@ -327,6 +344,7 @@ export class FabricaComponent {
     this.apiService.getSkills().pipe(
       finalize(() => {
         console.log("Fin de recuperar las skills.");
+        this.cargando = false;
       })
     ).subscribe({
       next: (response) => {
@@ -335,8 +353,12 @@ export class FabricaComponent {
         try{
           const { hard_skills, soft_skills } = response;
           if(hard_skills != undefined && soft_skills != undefined) {
-            this.hard_skills = hard_skills;
-            this.soft_skills = soft_skills;
+            for(let skill of hard_skills) {
+              this.hard_skills.push({nombre: skill[0], id: skill[1]});
+            }
+            for(let skill of soft_skills) {
+              this.soft_skills.push({nombre: skill[0], id: skill[1]});
+            }
           } else {
             alert("No se pudo recuperar los datos de las skills.");
           }

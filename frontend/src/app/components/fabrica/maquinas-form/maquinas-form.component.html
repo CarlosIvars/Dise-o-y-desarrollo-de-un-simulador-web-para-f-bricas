@@ -9,7 +9,7 @@
                 <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
                 <div>
                     <div class="input-title">
-                        Fatiga:
+                        Fatiga inicial:
                     </div>
                     <div class="slider-container">
                         <input type="range" min="0" max="100" [(ngModel)]="fatiga" name="fatiga">
@@ -17,14 +17,14 @@
                     </div>    
                 </div>                
                 <input type="text" [(ngModel)]="coste_h" name="coste_h" placeholder="Coste por horas">
+                
                 <fieldset *ngIf="hard_skills.length > 0">
                     <legend>Hard skills:</legend>
                     <ng-container *ngFor="let skill of hard_skills">
-                        <input type="checkbox" [name]="skill">
-                        <label [for]="skill">{{ skill }}</label><br>
+                        <input type="checkbox" (change)="checkSkill(skill.id)">
+                        <label>{{ skill.nombre }}</label><br>
                     </ng-container>
                 </fieldset>
-                <!--input type="text" [(ngModel)]="skills" name="skills" placeholder="Skills"-->
             </form>
         </div>
         <div class="modal-footer">
