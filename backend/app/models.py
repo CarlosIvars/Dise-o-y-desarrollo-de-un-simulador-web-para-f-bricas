@@ -751,6 +751,8 @@ class TareaModel:
         hard_skills = TareaModel.get_hard_skills(sector)
         soft_skills = [skill[0] for skill in soft_skills]
         hard_skills = [skill[0] for skill in hard_skills]
+        print(soft_skills)
+        print(hard_skills)
         configuracion_desarrollo = config['development']()
         prompt = f'''El formato que quiero que me devuelvas la respuesta es el siguiente, donde la X representa un placeholder:
 soft_skills = [X], hard_skills = [X]
@@ -890,7 +892,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             cursor = get_db_connection().cursor()
 
             # Luego, eliminar la subtarea de la tabla de subtasks
-            sql_subtask = "DELETE FROM Subtasks WHERE codigo = %s AND fabrica_id = %s"
+            sql_subtask = "DELETE FROM Subtasks WHERE id = %s AND fabrica_id = %s"
             cursor.execute(sql_subtask, (id,fabrica_id,))
 
             conexion.connection.commit()
