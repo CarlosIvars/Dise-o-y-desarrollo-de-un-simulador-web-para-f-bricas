@@ -878,11 +878,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
                     sql_h = ''' INSERT INTO skills_subtasks (subtask_id, skill_id) VALUES (%s,%s)'''
                     cursor.execute(sql_h, (id_subtask, skill_id))
                 conexion.connection.commit()
-
-            sql_select = "SELECT * FROM Subtasks WHERE id = %s"
-            cursor.execute(sql_select, (id_subtask,))
-            subtask = cursor.fetchone()
-            return subtask
+            return TareaModel.get_subtask(id_subtask,fabrica_id)
 
         except Exception as ex:
             print(f"Error al insertar subtarea en la base de datos: {ex}")
