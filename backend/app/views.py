@@ -500,9 +500,8 @@ def update_subtask():
         beneficio = data.get('beneficio')
         coste = data.get('coste')
         descripcion = data.get('descripcion')
-        if descripcion :
-            nuevas_habilidades = TareaModel.obtener_skills_chatGPT(descripcion)
-        subtask =TareaModel.update_subtask(fabrica_id, subtask_id, nombre, duracion, beneficio, coste, descripcion,  nuevas_habilidades)
+        nuevas_skills = data.get('skills')
+        subtask =TareaModel.update_subtask(fabrica_id, subtask_id, nombre, duracion, beneficio, coste, descripcion,  nuevas_skills)
         return jsonify({'mensaje': 'Subtask actualizado', 'subtask' : subtask}), 200
     except Exception as ex:
         app.logger.error(f'Error al actualizar subtask: {ex}')
