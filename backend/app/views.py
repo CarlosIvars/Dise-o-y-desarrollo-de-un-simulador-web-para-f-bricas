@@ -20,7 +20,7 @@ from deep_translator import GoogleTranslator
 #'Bearer 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'
 @app.route('/')
 def init():
-    t =RecursosModel.get_trabajador("H_1")
+    t =TareaModel.get_hard_skills('Apoyo sanitario')
     print(t)
     skills_matching = {
     'Tarea1': ['Humano1', 'Humano2', 'Humano3', 'Humano4'],

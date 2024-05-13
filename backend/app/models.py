@@ -751,8 +751,6 @@ class TareaModel:
         hard_skills = TareaModel.get_hard_skills(sector)
         soft_skills = [skill[0] for skill in soft_skills]
         hard_skills = [skill[0] for skill in hard_skills]
-        print(soft_skills)
-        print(hard_skills)
         configuracion_desarrollo = config['development']()
         prompt = f'''El formato que quiero que me devuelvas la respuesta es el siguiente, donde la X representa un placeholder:
 soft_skills = [X], hard_skills = [X]
@@ -776,7 +774,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
         response = requests.post(url, headers=headers, json=data)
         respuesta_json = response.json()
 
-        print(respuesta_json)  # Imprime la respuesta JSON en la consola para ver los datos
+        #print(respuesta_json)  # Imprime la respuesta JSON en la consola para ver los datos
         habilidades = {'soft_skills': [], 'hard_skills': []}
         if 'choices' in respuesta_json and len(respuesta_json['choices']) > 0:
             for choice in respuesta_json['choices']:
@@ -787,7 +785,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
                 hard_skills = [skill.strip().strip("'") for skill in hard_skills_list.split(',')]
                 habilidades['soft_skills'].extend(soft_skills)
                 habilidades['hard_skills'].extend(hard_skills)
-        print(habilidades)
+        #print(habilidades)
         return habilidades
 
     @staticmethod
@@ -867,7 +865,6 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             sql = '''INSERT INTO Subtasks(nombre, duracion, beneficio, coste, descripcion, fabrica_id) VALUES(%s, %s, %s, %s, %s, %s)'''
             cursor.execute(sql, (nombre, duracion, beneficio,coste, descripcion, fabrica_id))
             #parte tabla skills_subtasks
-            sector = "robotica colaborativa"
             habilidades = TareaModel.obtener_skills_chatGPT(sector, descripcion)
             id_subtask = cursor.lastrowid
             
