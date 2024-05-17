@@ -23,6 +23,9 @@ import { EditTrabajadoresFormComponent } from './components/fabrica/edit-trabaja
 import { EditMaquinasFormComponent } from './components/fabrica/edit-maquinas-form/edit-maquinas-form.component';
 import { EditTareasFormComponent } from './components/fabrica/edit-tareas-form/edit-tareas-form.component';
 import { EditFabricaFormComponent } from './components/zona-personal/edit-fabrica-form/edit-fabrica-form.component';
+import { NgxGraphModule } from '@swimlane/ngx-graph';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ArbolDeTareasComponent } from './components/fabrica/arbol-de-tareas/arbol-de-tareas.component';
 
 @NgModule({
   declarations: [
@@ -42,12 +45,15 @@ import { EditFabricaFormComponent } from './components/zona-personal/edit-fabric
     EditTrabajadoresFormComponent,
     EditMaquinasFormComponent,
     EditTareasFormComponent,
-    EditFabricaFormComponent
+    EditFabricaFormComponent,
+    ArbolDeTareasComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    NgxGraphModule,
+    BrowserAnimationsModule
   ],
   providers: [provideHttpClient(withInterceptors([errorHandlerInterceptor]))],
   bootstrap: [AppComponent]

@@ -75,7 +75,6 @@ export class TareasFormComponent {
               const tareaHija = new TareaImpl(id, nombre, 0, duracion, beneficio, coste, 0, descripcion, skills);
               this.tareasService.anyadirTarea(tareaHija);
 
-              debugger;
               if(response.dependencia != null && response.dependencia != undefined) {
                 const tareaPadre = this.tareas.find(tarea => tarea.id == response.dependencia);
               

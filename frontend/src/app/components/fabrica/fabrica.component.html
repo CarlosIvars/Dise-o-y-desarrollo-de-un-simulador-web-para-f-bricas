@@ -36,8 +36,9 @@
             </div>
         </div>
         <div id="seccion-principal">
-            <button (click)="abrirTareasForm()" style="margin: 5px; float: right;" >Añadir tarea</button>
-            <app-tarea-card *ngFor="let tarea of tareas" [tarea]="tarea" (editarTareaForm)="abrirEditTareasForm($event)"></app-tarea-card>
+            <button (click)="abrirTareasForm()" style="position: absolute; right: 0px; margin: 5px;" >Añadir tarea</button>
+            <app-arbol-de-tareas style="display: block; height: 100%;" (editarTareaForm)="abrirEditTareasForm($event)"></app-arbol-de-tareas>
+            <!--app-tarea-card *ngFor="let tarea of tareas" [tarea]="tarea" (editarTareaForm)="abrirEditTareasForm($event)"></app-tarea-card-->
         </div>
         <div class="barra-lateral" id="bl-derecha">
             <p>Barra lateral derecha.</p>

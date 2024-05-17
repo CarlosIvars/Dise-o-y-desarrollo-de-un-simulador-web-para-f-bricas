@@ -1,0 +1,43 @@
+<button (click)="centerGraph()">Centrar vista</button>
+<ngx-graph style="display: block; height: 100%;" class="chart-container" [nodes]="nodes" [links]="links" [center$]="center$" [zoomToFit$]="zoomToFit$" [layoutSettings]="layoutSettings" [showMiniMap]="true" [miniMapPosition]="minimapPosition" layout="dagreCluster">
+  <ng-template #defsTemplate>
+    <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+      <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+    </svg:marker>
+  </ng-template>
+
+  <ng-template #nodeTemplate let-node>
+    <svg:g class="node">
+      <!--svg:rect
+        [attr.width]="node.dimension.width"
+        [attr.height]="node.dimension.height"
+        [attr.fill]="node.data.color"
+      />
+      <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
+        {{node.label}}
+      </svg:text-->
+      <svg:foreignObject width="300" height="70">
+        <xhtml:div xmlns="http://www.w3.org/1999/xhtml">
+            <app-tarea-card [tarea]="node.tarea" (editarTareaForm)="abrirEditTareasForm($event)"></app-tarea-card>
+            <!--div style="background-color: lightcoral;">Hola</div-->
+        </xhtml:div>
+      </svg:foreignObject>
+    </svg:g>
+  </ng-template>
+
+  <ng-template #linkTemplate let-link>
+    <svg:g class="edge">
+      <svg:path class="line" stroke-width="2" marker-end="url(#arrow)"></svg:path>
+      <svg:text class="edge-label" text-anchor="middle">
+        <textPath
+          class="text-path"
+          [attr.href]="'#' + link.id"
+          [style.dominant-baseline]="link.dominantBaseline"
+          startOffset="50%"
+        >
+          {{link.label}}
+        </textPath>
+      </svg:text>
+    </svg:g>
+  </ng-template>
+</ngx-graph>

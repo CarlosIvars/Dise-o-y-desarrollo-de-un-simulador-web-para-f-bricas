@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { Fabrica, Trabajador, Maquina, Tarea, Skill } from '../../interfaces/interfaces';
 import { FabricaService } from '../../services/fabrica.service';
-import { Subscription, combineLatestWith, finalize } from 'rxjs';
+import { Subscription, finalize } from 'rxjs';
 import { TareasService } from '../../services/tareas.service';
 import { TrabajadoresService } from '../../services/trabajadores.service';
 import { TimerService } from '../../services/timer.service';
