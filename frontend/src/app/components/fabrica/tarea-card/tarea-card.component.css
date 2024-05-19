@@ -40,3 +40,17 @@
 .tarea:hover .editar:hover {
     background-color: rgb(235, 233, 233);
 }
+
+.tarea .drag-activated {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 7px;
+    border: 1px dashed black;
+}

@@ -1,10 +1,18 @@
 <div class="tarea">
     <div class="titulo">{{tarea.nombre}} => {{tarea.beneficio}}€</div>
     <div class="tiempo">{{formatearDecimales(tarea.tiempoActual)}} / {{tarea.duracion}}</div>
-    <div class="asignado" (drop)="drop($event, tarea)" (dragover)="allowDrop($event)">{{tarea.getTrabajador()?.nombre}}</div>
+    <div class="asignado">{{tarea.getAsignable()?.nombre}}</div>
     <div class="cantidad">{{tarea.cantidad}}</div>
 
     <div class="editar" (click)="editarTarea()">
         <i class="bi bi-three-dots"></i>
+    </div>
+
+    <div *ngIf="tarea.isDragging && tarea.skillsMatched > 0" class="drag-activated" (drop)="drop($event, tarea)" (dragover)="allowDrop($event)">
+        {{tarea.skillsMatched}}/{{tarea.skills.length}} skills
+    </div>
+
+    <div *ngIf="tarea.isDragging && tarea.skillsMatched == 0" class="drag-activated">
+        No coincide ninguna skill
     </div>
 </div>

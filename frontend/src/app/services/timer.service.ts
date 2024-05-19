@@ -79,8 +79,8 @@ export class TimerService {
       for (const tarea of this.tareas) {
 
         // Comprobamos si tiene un trabajador asignado
-        if(tarea.getTrabajador() == undefined) {
-          console.log(`Tarea ${tarea.nombre} sin trabajador asignado...`);
+        if(tarea.getAsignable() == undefined) {
+          console.log(`Tarea ${tarea.nombre} sin trabajador o maquina asignado...`);
           continue;
         }
         
@@ -104,8 +104,8 @@ export class TimerService {
       for (const tarea of this.tareas) {
 
         // Comprobamos si tiene un trabajador asignado
-        if(tarea.getTrabajador() == undefined) {
-          console.log(`Tarea ${tarea.nombre} sin trabajador asignado...`);
+        if(tarea.getAsignable() == undefined) {
+          console.log(`Tarea ${tarea.nombre} sin trabajador o maquina asignado...`);
           continue;
         }
         

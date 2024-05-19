@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Tarea, Trabajador } from '../interfaces/interfaces';
+import { Asignable, Maquina, Tarea, Trabajador } from '../interfaces/interfaces';
 import { BehaviorSubject } from 'rxjs';
 import { TrabajadoresService } from './trabajadores.service';
+import { TrabajadorImpl } from '../clases/trabajador.class';
+import { MaquinaImpl } from '../clases/maquina.class';
+import { MaquinasService } from './maquinas.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +14,7 @@ export class TareasService {
   private tareasSubject = new BehaviorSubject<Tarea[]>([]);
   tareas$ = this.tareasSubject.asObservable();
 
-  constructor(private trabajadoresService: TrabajadoresService) { }
+  constructor(private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService) { }
 
   actualizarTareas(tareas: Tarea[]) {
     this.tareasSubject.next(tareas);
@@ -68,30 +71,70 @@ export class TareasService {
     }
   }
 
-  asignarTrabajadorATarea(tarea: Tarea, trabajador: Trabajador) {
-    // Dejamos libre el actual trabajador de la tarea...
-    const trabajadorViejo = tarea.getTrabajador();
-    if(trabajadorViejo != undefined){
-      trabajadorViejo.activo = false;
-      this.trabajadoresService.actualizarTrabajador(trabajadorViejo);
-    }
-
-    //Eliminamos el nuevo trabajador de todas las tareas
+  startDrag(asignable: Asignable) {
     const tareas = this.tareasSubject.getValue();
     for(const tarea of tareas) {
-      const tareaTrabajador = tarea.getTrabajador();
-      if(tareaTrabajador != undefined && tareaTrabajador.id === trabajador.id) {
-        tarea.removeTrabajador();
+      tarea.isDragging = true;
+
+      let skillsMatched = 0;
+
+      for (let i = 0; i < asignable.skills.length; i++) {
+        if (tarea.skills.includes(asignable.skills[i])) {
+          skillsMatched++;
+        }
+      }
+
+      tarea.skillsMatched = skillsMatched;
+    }
+
+    this.actualizarTareas(tareas);
+  }
+
+  stopDrag() {
+    const tareas = this.tareasSubject.getValue();
+    for(const tarea of tareas) {
+      tarea.isDragging = false;
+      tarea.skillsMatched = 0;
+    }
+    this.actualizarTareas(tareas);
+  }
+
+  asignarATarea(tarea: Tarea, nuevo_asignable: Asignable) {
+    // Ponemos inactivo el asignable actual de la tarea...
+    const asignable_actual = tarea.getAsignable();
+    if(asignable_actual != undefined){
+      asignable_actual.activo = false;
+      if(this.trabajadoresService.isTrabajador(asignable_actual)) {
+        this.trabajadoresService.actualizarTrabajador(asignable_actual);
+      } else if ( this.maquinasService.isMaquina(asignable_actual)) {
+        this.maquinasService.actualizarMaquina(asignable_actual);
+      }
+    }
+
+    // Se recorren las tareas para quitar el drag y cambiar el asignable
+    const tareas = this.tareasSubject.getValue();
+    for(const tarea of tareas) {
+      tarea.isDragging = false;
+      tarea.skillsMatched = 0;
+
+      const tarea_asignable = tarea.getAsignable();
+      if(tarea_asignable != undefined && tarea_asignable.id === nuevo_asignable.id) {
+        tarea.removeAsignable();
       }
     }
     this.actualizarTareas(tareas);
     
     // Añadimos el nuevo trabajador a la tarea
-    tarea.setTrabajador(trabajador);
+    tarea.setAsignable(nuevo_asignable);
     this.actualizarTarea(tarea);
 
     // Marcamos el trabajador como activo
-    trabajador.activo = true;
-    this.trabajadoresService.actualizarTrabajador(trabajador);
+    nuevo_asignable.activo = true;
+
+    if(this.trabajadoresService.isTrabajador(nuevo_asignable)) {
+      this.trabajadoresService.actualizarTrabajador(nuevo_asignable);
+    } else if (this.maquinasService.isMaquina(nuevo_asignable)) {
+      this.maquinasService.actualizarMaquina(nuevo_asignable);
+    }
   }
 }

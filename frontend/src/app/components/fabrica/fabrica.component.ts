@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 
 import { Fabrica, Trabajador, Maquina, Tarea, Skill } from '../../interfaces/interfaces';
 import { FabricaService } from '../../services/fabrica.service';

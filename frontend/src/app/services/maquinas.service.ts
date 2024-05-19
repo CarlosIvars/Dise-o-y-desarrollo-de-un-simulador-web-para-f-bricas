@@ -40,4 +40,15 @@ export class MaquinasService {
       this.actualizarMaquinas(maquinas);
     }
   }
+
+  isMaquina(obj: any): obj is Maquina {
+    return obj &&
+      typeof obj.id === 'string' &&
+      typeof obj.nombre === 'string' &&
+      typeof obj.fatiga === 'number' &&
+      typeof obj.coste_h === 'number' &&
+      Array.isArray(obj.skills) &&
+      obj.skills.every((skill: any) => typeof skill === 'number') &&
+      typeof obj.activo === 'boolean';
+  }
 }

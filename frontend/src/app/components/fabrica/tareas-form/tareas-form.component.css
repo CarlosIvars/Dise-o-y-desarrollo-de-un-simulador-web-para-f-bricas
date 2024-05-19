@@ -1,10 +1,10 @@
 form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
 
 textarea {
+    width: 100%;
     min-height: 50px;
     max-height: 200px;
     resize: vertical;

@@ -39,7 +39,6 @@ export class ArbolDeTareasComponent {
       this.nodes = [];
       this.links = [];
       for(let tarea of tareas) {
-        debugger;
         this.nodes.push({id: "" + tarea.id, label: "tarea_" + tarea.id, tarea});
         if(tarea.tareaPadre != undefined) {
           this.links.push({id: "link_" + tarea.id, source: "" + tarea.tareaPadre.id, target: "" + tarea.id});

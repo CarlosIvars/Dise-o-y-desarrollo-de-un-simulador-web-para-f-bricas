@@ -40,4 +40,19 @@ export class TrabajadoresService {
       this.actualizarTrabajadores(trabajadores);
     }
   }
+
+  isTrabajador(obj: any): obj is Trabajador {
+    return obj &&
+      typeof obj.id === 'string' &&
+      typeof obj.nombre === 'string' &&
+      typeof obj.apellidos === 'string' &&
+      typeof obj.fecha_nacimiento === 'string' &&
+      typeof obj.trabajos_apto === 'number' &&
+      typeof obj.fatiga === 'number' &&
+      typeof obj.coste_h === 'number' &&
+      typeof obj.preferencias_trabajo === 'number' &&
+      typeof obj.activo === 'boolean' &&
+      Array.isArray(obj.skills) &&
+      obj.skills.every((skill: any) => typeof skill === 'number');
+  }
 }

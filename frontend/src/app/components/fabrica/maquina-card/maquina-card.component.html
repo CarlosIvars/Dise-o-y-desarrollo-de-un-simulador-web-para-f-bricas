@@ -1,5 +1,5 @@
 <div class="maquina-card">
-    <div class="img"><i class="bi bi-motherboard-fill"></i></div>
+    <div class="img" draggable="true" (dragstart)="drag($event, maquina)" (dragend)="dragEnd($event)"><i class="bi bi-motherboard-fill"></i></div>
     <div class="info">
         <div class="nombre">{{maquina.nombre}}</div>
     </div>

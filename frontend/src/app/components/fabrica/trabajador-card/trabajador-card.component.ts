@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Trabajador } from '../../../interfaces/interfaces';
+import { Asignable, Trabajador } from '../../../interfaces/interfaces';
 import { ApiService } from '../../../services/api.service';
-import { finalize } from 'rxjs';
 import { TrabajadoresService } from '../../../services/trabajadores.service';
+import { TareasService } from '../../../services/tareas.service';
 
 @Component({
   selector: 'app-trabajador-card',
@@ -14,10 +14,22 @@ export class TrabajadorCardComponent {
 
   @Output() editarTrabajadorForm = new EventEmitter<Trabajador>();
 
-  constructor(private apiService: ApiService, private trabajadoresService: TrabajadoresService) { }
+  constructor(private apiService: ApiService, private trabajadoresService: TrabajadoresService, private tareasService: TareasService) { }
 
-  drag(ev: DragEvent, trabajador: Trabajador) {
-    ev.dataTransfer?.setData('application/json', JSON.stringify(trabajador));
+  drag(ev: DragEvent, asignable: Asignable) {
+    this.tareasService.startDrag(asignable);
+    ev.dataTransfer?.setData('application/json', JSON.stringify(asignable));
+  }
+
+  dragEnd(ev: DragEvent) {
+    ev.preventDefault();
+    // Verificar si ev.target no es nulo y es un Element antes de usar closest()
+    if (ev.target instanceof Element) {
+      // Verificar si el elemento se soltó fuera de las áreas de destino (tareas y máquinas)
+      if (!ev.target.closest('.tareas') && !ev.target.closest('.maquinas')) {
+        this.tareasService.stopDrag();
+      }
+    }
   }
 
   editarTrabajador() {
