@@ -6,14 +6,26 @@
         </div>
         <div class="modal-body">
             <form>
-                <input type="text" [(ngModel)]="nombre_fabrica" name="nombre_fabrica" placeholder="Nombre de la fábrica">
-                <div class="input-container">
-                    <input type="text" [(ngModel)]="capital_inicial" name="capital_inicial" placeholder="Capital inicial">
-                    <div class="unidad">€</div>
+                <div class="form-group">
+                    <label class="form-label">Nombre de la fábrica:</label>
+                    <input type="text" [(ngModel)]="nombre_fabrica" name="nombre_fabrica" placeholder="Nombre">
                 </div>
-                <select [(ngModel)]="sector" name="sector">
-                    <option *ngFor="let sector of sectores" [value]="sector">{{ sector }}</option>
-                </select>
+                <div class="form-group">
+                    <label class="form-label">Capital inicial:</label>
+                    <div class="input-container">
+                        <input type="text" [(ngModel)]="capital_inicial" name="capital_inicial" placeholder="Capital inicial">
+                        <div class="unidad">€</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sector:</label>
+                    <select [(ngModel)]="sector" name="sector">
+                        <option *ngFor="let sector of sectores" [value]="sector">{{ sector }}</option>
+                    </select>
+                </div>
+
+                
+                
             </form>
         </div>
         <div class="modal-footer">

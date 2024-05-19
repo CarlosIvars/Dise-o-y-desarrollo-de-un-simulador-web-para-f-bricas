@@ -6,17 +6,21 @@
         </div>
         <div class="modal-body">
             <form>
-                <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
-                <div>
-                    <div class="input-title">
-                        Fatiga inicial:
-                    </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre:</label>
+                    <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fatiga inicial:</label>
                     <div class="slider-container">
                         <input type="range" min="0" max="100" [(ngModel)]="fatiga" name="fatiga">
                         <p>{{fatiga}}%</p>
-                    </div>    
-                </div>                
-                <input type="text" [(ngModel)]="coste_h" name="coste_h" placeholder="Coste por horas">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Coste por horas:</label>
+                    <input type="text" [(ngModel)]="coste_h" name="coste_h" placeholder="Coste por horas">
+                </div>
                 
                 <fieldset *ngIf="hard_skills.length > 0">
                     <legend>Hard skills:</legend>

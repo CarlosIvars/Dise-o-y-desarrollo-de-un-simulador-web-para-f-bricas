@@ -11,6 +11,15 @@ export interface Fabrica {
     sector: string
 }
 
+export interface Asignable {
+    id: string,
+    nombre: string,
+    fatiga: number,
+    coste_h: number,
+    skills: number[],
+    activo: boolean,
+}
+
 export interface Trabajador {
     id: string,
     nombre: string,
@@ -29,7 +38,8 @@ export interface Maquina {
     nombre: string,
     fatiga: number,
     coste_h: number,
-    skills: number[]
+    skills: number[],
+    activo: boolean,
 }
 
 export interface Tarea {
@@ -44,11 +54,13 @@ export interface Tarea {
     descripcion: string,
     skills: number[],
     tareaPadre: Tarea | undefined,
-    tareasHijas: Tarea[]
+    tareasHijas: Tarea[],
+    isDragging: boolean,
+    skillsMatched: number
 
-    getTrabajador(): Trabajador | undefined,
-    setTrabajador(trabajador: Trabajador): void,
-    removeTrabajador(): void
+    getAsignable(): Asignable | undefined,
+    setAsignable(asignable: Asignable): void,
+    removeAsignable(): void
 }
 
 export interface Skill {

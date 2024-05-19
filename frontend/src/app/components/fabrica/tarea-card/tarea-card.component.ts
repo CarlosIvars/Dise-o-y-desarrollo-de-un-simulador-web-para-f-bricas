@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Tarea, Trabajador } from '../../../interfaces/interfaces';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Asignable, Tarea, Trabajador } from '../../../interfaces/interfaces';
 import { TareasService } from '../../../services/tareas.service';
 import { ApiService } from '../../../services/api.service';
 import { finalize } from 'rxjs';
@@ -13,7 +13,7 @@ export class TareaCardComponent {
   @Input() tarea: Tarea = {} as Tarea;
   @Output() editarTareaForm = new EventEmitter<Tarea>();
 
-  constructor(private apiService: ApiService, private tareaServce: TareasService) {}
+  constructor(private apiService: ApiService, private tareasService: TareasService) {}
 
   editarTarea() {
     this.editarTareaForm.emit(this.tarea);
@@ -23,8 +23,8 @@ export class TareaCardComponent {
     ev.preventDefault();
     const data = ev.dataTransfer?.getData('application/json');
     if (data) {
-      const trabajador: Trabajador = JSON.parse(data);
-      this.tareaServce.asignarTrabajadorATarea(tarea, trabajador);
+      const asignable: Asignable = JSON.parse(data);
+      this.tareasService.asignarATarea(tarea, asignable);
     }
   }
 

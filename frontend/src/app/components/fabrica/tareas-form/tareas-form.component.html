@@ -6,15 +6,33 @@
         </div>
         <div class="modal-body">
             <form>
-                <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
-                <input type="text" [(ngModel)]="duracion" name="duracion" placeholder="Duración">
-                <input type="text" [(ngModel)]="beneficio" name="beneficio" placeholder="Beneficio">
-                <input type="text" [(ngModel)]="coste" name="coste" placeholder="Coste">
-                <textarea [(ngModel)]="descripcion" name="descripcion" placeholder="Descripción"></textarea>
-                <select *ngIf="tareas.length > 0" [(ngModel)]="subtask_dependencia" name="subtask_dependencia">
-                    <option value="">Sin tarea padre</option>
-                    <option *ngFor="let tarea of tareas" [value]="tarea.id">{{tarea.nombre}}</option>
-                </select>
+                <div class="form-group">
+                    <label class="form-label">Nombre del la tarea:</label>
+                    <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Duración:</label>
+                    <input type="text" [(ngModel)]="duracion" name="duracion" placeholder="Duración">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Beneficio:</label>
+                    <input type="text" [(ngModel)]="beneficio" name="beneficio" placeholder="Beneficio">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Coste:</label>
+                    <input type="text" [(ngModel)]="coste" name="coste" placeholder="Coste">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descripción:</label>
+                    <textarea [(ngModel)]="descripcion" name="descripcion" placeholder="Descripción"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tarea padre:</label>
+                    <select *ngIf="tareas.length > 0" [(ngModel)]="subtask_dependencia" name="subtask_dependencia">
+                        <option value="">Sin tarea padre</option>
+                        <option *ngFor="let tarea of tareas" [value]="tarea.id">{{tarea.nombre}}</option>
+                    </select>
+                </div>
             </form>
         </div>
         <div class="modal-footer">

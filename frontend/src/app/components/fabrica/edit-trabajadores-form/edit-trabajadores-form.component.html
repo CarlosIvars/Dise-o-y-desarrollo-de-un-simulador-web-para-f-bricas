@@ -6,29 +6,36 @@
         </div>
         <div class="modal-body">
             <form>
-                <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
-                <input type="text" [(ngModel)]="apellidos" name="apellidos" placeholder="Apellidos">
-                <input type="date" [(ngModel)]="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento">
-                
-                <div>
-                    <div class="input-title">
-                        Fatiga:
-                    </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre del trabajador:</label>
+                    <input type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Apellidos:</label>
+                    <input type="text" [(ngModel)]="apellidos" name="apellidos" placeholder="Apellidos">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fecha de nacimiento:</label>
+                    <input type="date" [(ngModel)]="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fatiga:</label>
                     <div class="slider-container">
                         <input disabled="disabled" type="range" min="0" max="100" [(ngModel)]="fatiga" name="fatiga">
                         <p>{{fatiga}}%</p>
                     </div>    
                 </div>
-
-                <input type="text" [(ngModel)]="coste_h" name="coste_h" placeholder="Coste por horas">
-                
-                <fieldset>
-                    <legend>Tarea de preferencia:</legend>
+                <div class="form-group">
+                    <label class="form-label">Salario (€ / hora):</label>
+                    <input type="text" [(ngModel)]="coste_h" name="coste_h" placeholder="Salario">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tarea de preferencia:</label>
                     <select [(ngModel)]="preferencias" name="preferencias">
                         <option value="0" selected="selected">Sin tarea de preferencia.</option>
                         <option *ngFor="let tarea of tareas" [value]="tarea.id">{{ tarea.nombre }}</option>
                     </select>
-                </fieldset>
+                </div>
 
                 <fieldset *ngIf="hard_skills.length > 0">
                     <legend>Hard skills:</legend>

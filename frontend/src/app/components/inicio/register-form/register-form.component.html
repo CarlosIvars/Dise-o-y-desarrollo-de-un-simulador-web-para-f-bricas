@@ -6,10 +6,22 @@
         </div>
         <div class="modal-body">
             <form>
-                <input type="text" [(ngModel)]="username" name="username" placeholder="Nombre de usuario">
-                <input type="text" [(ngModel)]="name" name="name" placeholder="Nombre">
-                <input type="text" [(ngModel)]="surname" name="surname" placeholder="Apellidos">
-                <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña">
+                <div class="form-group">
+                    <label class="form-label">Nombre de usuario:</label>
+                    <input type="text" [(ngModel)]="username" name="username" placeholder="Nombre de usuario">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nombre:</label>
+                    <input type="text" [(ngModel)]="name" name="name" placeholder="Nombre">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Apellidos:</label>
+                    <input type="text" [(ngModel)]="surname" name="surname" placeholder="Apellidos">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña:</label>
+                    <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña">
+                </div>
             </form>
             <div style="display: flex; align-items: center; gap: 5px; margin-top: 10px;">
                 <div>¿Ya tienes cuenta?</div>
