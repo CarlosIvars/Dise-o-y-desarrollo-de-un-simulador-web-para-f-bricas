@@ -11,6 +11,7 @@ import pandas as pd
 import json
 import ast
 from config import config
+from data_generator.data_generator import *
 from ml_models.AG.genetic_algorithm import *
 from datetime import date
 from bs4 import BeautifulSoup 
@@ -20,8 +21,9 @@ from deep_translator import GoogleTranslator
 #'Bearer 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'
 @app.route('/')
 def init():
-    t =TareaModel.get_hard_skills('Apoyo sanitario')
-    print(t)
+    #generate_data()
+    #t =TareaModel.get_hard_skills('Apoyo sanitario')
+    #print(t)
     skills_matching = {
     'Tarea1': ['Humano1', 'Humano2', 'Humano3', 'Humano4'],
     'Tarea2': ['Humano1', 'Humano4', 'Humano5', 'Humano6'],
@@ -87,8 +89,8 @@ def init():
 
     # Ejecutar el algoritmo genético
     mejor_individuo = run_genetic_algorithm(skills_matching,dependencias, num_generations, num_individuals,k,beneficios, costes, fatigas)
-    print("valores mejor individuo:",evaluate_individual(mejor_individuo,beneficios,costes, fatigas,dependencias))
-    print("El mejor individuo encontrado es:", mejor_individuo)
+    #print("valores mejor individuo:",evaluate_individual(mejor_individuo,beneficios,costes, fatigas,dependencias))
+    #print("El mejor individuo encontrado es:", mejor_individuo)
 
     #soft_skills = TareaModel.get_soft_skills();
     #print(soft_skills)
