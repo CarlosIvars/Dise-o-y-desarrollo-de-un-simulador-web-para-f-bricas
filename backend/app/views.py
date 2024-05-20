@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash
 from flask import *
 from .forms import *
 from .models import *
-from skills import *
+from onet import *
 from ml_models import *
 import numpy as np
 import pandas as pd

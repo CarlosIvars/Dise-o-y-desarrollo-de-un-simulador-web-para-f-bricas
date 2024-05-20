@@ -22,7 +22,7 @@ def generate_trabajadores(num,sector,fabrica_id):
             'fecha_nacimiento': fake.date_of_birth(minimum_age=18, maximum_age=65),
             'fatiga': fake.random_int(min=0, max=100),
             'coste_h': fake.random_number(digits=2),
-            'preferencias': None,
+            'preferencias': 0,
             'skills': combined_skills
         }
         RecursosModel.add_trabajador(fabrica_id, trabajador['nombre'], trabajador['apellidos'],
@@ -65,7 +65,7 @@ def generate_factories(num):
             'capital_inicial': fake.random_number(digits=7),
             'sector': fake.random_int(min=0, max = 26)
         }
-        user_id = 12  # Ajusta el rango de usuarios existentes
+        user_id = 13  # Ajusta el rango de usuarios existentes
         fabrica = FabricaModel.add_fabrica(factory['nombre_fabrica'], user_id, factory['capital_inicial'], sectores[factory['sector']])
         print("Generamos Fabricas")
         try:
