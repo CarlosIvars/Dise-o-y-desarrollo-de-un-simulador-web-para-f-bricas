@@ -6,7 +6,12 @@
     <div id="cabeceraDer" (click)="cerrarSesion()">{{userName}}</div>
 </header>
 <div id="content">
-    <h2>Bienvenido de nuevo!</h2>
+    <div id="content-header">
+        <h2>Tus fábricas:</h2>
+        <div>
+            <button (click)="abrirCrearFabrica()">Nueva fábrica</button>
+        </div>
+    </div>
     <div *ngIf="!cargando" id="fabricasGrid">
         <div *ngFor="let fabrica of fabricas" class="fabrica" (click)="abrirFabrica(fabrica.id)">
             <div class="cuerpo">

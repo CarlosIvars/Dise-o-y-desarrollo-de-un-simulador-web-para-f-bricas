@@ -7,13 +7,15 @@ export class TareaImpl implements Tarea {
     isWorking: boolean;
     isDragging: boolean;
     skillsMatched: number;
+    duracion: number;
 
-    constructor(public id: number, public nombre: string, public cantidad: number, public duracion: number, public beneficio: number, public coste: number, public tiempoActual: number, public descripcion: string, public skills: number[]) {
+    constructor(public id: number, public nombre: string, public cantidad: number, public tiempoBase: number, public beneficio: number, public coste: number, public tiempoActual: number, public descripcion: string, public skills: number[]) {
         this.isWorking = false;
         this.tareaPadre = undefined;
         this.tareasHijas = [];
         this.isDragging = false;
         this.skillsMatched = 0;
+        this.duracion = 0;
     }
 
     // Getter y setter para el trabajador

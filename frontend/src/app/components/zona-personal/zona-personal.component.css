@@ -1,9 +1,11 @@
 #content {
-    margin: 0 10%;
+    margin: 1% 10%;
 }
 
-#content h2 {
-    margin: 60px 0 40px 0;
+#content #content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #fabricasGrid {
@@ -28,6 +30,13 @@
     flex-direction: column;
     justify-content: space-between;
 }
+
+.fabrica .cuerpo > * {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 
 .fabrica .cuerpo .nombreFabrica{
     font-size: 20px;

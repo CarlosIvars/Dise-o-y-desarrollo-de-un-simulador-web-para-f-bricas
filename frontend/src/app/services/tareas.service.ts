@@ -56,13 +56,13 @@ export class TareasService {
     this.actualizarTareas(tareas);
   }
 
-  modificarTarea(id: number, nombre: string, duracion: number, beneficio: number, descripcion: string, coste: number, skills: number[]) {
+  modificarTarea(id: number, nombre: string, tiempoBase: number, beneficio: number, descripcion: string, coste: number, skills: number[]) {
     const tareas = this.tareasSubject.getValue();
     const index = tareas.findIndex(t => t.id === id);
     if (index !== -1) {
       const tarea = tareas[index];
       tarea.nombre = nombre;
-      tarea.duracion = duracion;
+      tarea.tiempoBase = tiempoBase;
       tarea.beneficio = beneficio;
       tarea.descripcion = descripcion;
       tarea.coste = coste;
@@ -99,6 +99,8 @@ export class TareasService {
     this.actualizarTareas(tareas);
   }
 
+  //TODO: crear metodo desasignar
+
   asignarATarea(tarea: Tarea, nuevo_asignable: Asignable) {
     // Ponemos inactivo el asignable actual de la tarea...
     const asignable_actual = tarea.getAsignable();
@@ -124,8 +126,9 @@ export class TareasService {
     }
     this.actualizarTareas(tareas);
     
-    // Añadimos el nuevo trabajador a la tarea
+    // Añadimos el nuevo trabajador a la tarea y calculamos su duracion
     tarea.setAsignable(nuevo_asignable);
+    tarea.duracion = tarea.tiempoBase + this.calcularDuracion(tarea, nuevo_asignable);
     this.actualizarTarea(tarea);
 
     // Marcamos el trabajador como activo
@@ -136,5 +139,44 @@ export class TareasService {
     } else if (this.maquinasService.isMaquina(nuevo_asignable)) {
       this.maquinasService.actualizarMaquina(nuevo_asignable);
     }
+  }
+
+  desasignarATarea(tarea: Tarea) { 
+    const asignable = tarea.getAsignable();
+    if(asignable != undefined) {
+      asignable.activo = false;
+
+      tarea.duracion = 0;
+      tarea.isWorking = false;
+      tarea.tiempoActual = 0;
+      tarea.removeAsignable();
+
+      this.actualizarTarea(tarea);
+      if(this.trabajadoresService.isTrabajador(asignable)) {
+        this.trabajadoresService.actualizarTrabajador(asignable);
+      } else if (this.maquinasService.isMaquina(asignable)) {
+        this.maquinasService.actualizarMaquina(asignable);
+      }
+    }
+  }
+
+  calcularDuracion(tarea: Tarea, asignable: Asignable) {
+    let skillsMatched = 0;
+    for (let i = 0; i < asignable.skills.length; i++) {
+      if (tarea.skills.includes(asignable.skills[i])) {
+        skillsMatched++;
+      }
+    }
+
+    let D = tarea.tiempoBase;
+    let M = skillsMatched / tarea.skills.length;
+    const k = 0.5; // 1 para que la nueva duracion sea mayor
+    let F = asignable.fatiga / 100;
+    let H = (F - 0.5) > 0 ? 1 : 0;
+    let S = 1; //Cambiar por el factor_duracion
+
+    const duracion = (D * (1 - M) * (1 + (Math.exp(k * (F - 0.5)) - 1) * H) * S);
+    
+    return Math.round(duracion);
   }
 }

@@ -21,7 +21,7 @@ export class EditTareasFormComponent {
   @Input() tarea!: Tarea;
 
   nombre: string = "";
-  duracion!: number;
+  tiempoBase!: number;
   beneficio!: number;
   coste!: number;
   descripcion: string = "";
@@ -39,7 +39,7 @@ export class EditTareasFormComponent {
     });
 
     this.nombre = this.tarea.nombre;
-    this.duracion = this.tarea.duracion;
+    this.tiempoBase = this.tarea.tiempoBase;
     this.beneficio = this.tarea.beneficio;
     this.coste = this.tarea.coste;
     this.descripcion = this.tarea.descripcion;
@@ -64,7 +64,7 @@ export class EditTareasFormComponent {
       console.log("Modificando la tarea...");
       this.cargando = true;
 
-      this.apiService.modificarTarea(this.tarea.id, this.nombre, this.duracion, this.beneficio, this.coste, this.descripcion, this.skills).pipe(
+      this.apiService.modificarTarea(this.tarea.id, this.nombre, this.tiempoBase, this.beneficio, this.coste, this.descripcion, this.skills).pipe(
         finalize(() => {
           this.cargando = false; 
           this.cerrarModal();
