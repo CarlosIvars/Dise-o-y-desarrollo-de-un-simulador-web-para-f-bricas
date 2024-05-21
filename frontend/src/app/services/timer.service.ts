@@ -156,5 +156,34 @@ export class TimerService {
       }
     }
   }
+  //Codigo realizado por Carlos//
+  
+  /*
+  restarCosteInicial(tarea: Tarea) {
+    if (this.fabrica.capital >= tarea.costeInicial) {
+      this.fabrica.capital -= tarea.costeInicial;
+    } else {
+      console.log(`No hay suficiente capital para iniciar la tarea ${tarea.nombre}`);
+    }
+  }
+
+  //este es el descanso para cuando la fabrica termina las 8h, para cuando el trabajador este descansando en tiempo de ejecucion debemos modificar t
+  reducirFatigaTrabajadores() {
+    if (!this.fabrica) return;
+
+    const tau_r = 10; // Por ejemplo, puedes ajustar esto según sea necesario
+    const t = 16; // Tiempo transcurrido en horas (puedes ajustar según el intervalo de tiempo que desees usar)
+    
+    this.tareas.forEach(tarea => {
+      const trabajador = ;//cargar trabajador
+      if (trabajador) {
+        const D0 = 0; // fatiga inicial deseada que tenga el trabajador
+        const Dl = trabajador.fatiga || 0;
+        trabajador.fatiga = Dl - Math.exp(-t / tau_r) * (Dl - D0);
+        console.log(`Fatiga del trabajador ${trabajador.nombre} reducida a ${trabajador.fatiga}`);
+      }
+    });
+  }
+*/
 
 }
