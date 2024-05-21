@@ -37,6 +37,12 @@
     left: 40px;
 }
 
+.tarea .fatiga{
+    position: absolute;
+    bottom: 5px;
+    left: 100px;
+}
+
 .tarea:hover .editar:hover {
     background-color: rgb(235, 233, 233);
 }

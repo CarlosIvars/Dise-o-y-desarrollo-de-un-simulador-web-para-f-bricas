@@ -161,7 +161,7 @@ export class TimerService {
           }
 
           // Aumentamos la fatiga del trabajador/maquina y lo actualizamos
-          asignable.fatiga = this.aumentarFatiga(asignable);
+          asignable.fatiga += this.aumentarFatiga(asignable);
           if(this.trabajadoresService.isTrabajador(asignable)) {
             this.trabajadoresService.actualizarTrabajador(asignable);
           } else if(this.maquinasService.isMaquina(asignable)) {
