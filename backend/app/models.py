@@ -237,11 +237,18 @@ class FabricaModel:
             return None
 
     @staticmethod
-    def add_historial(fecha,costes, beneficios, asignaciones,fabrica_id):
+    def add_historial(fecha,costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id):
         try: 
             cursor = get_db_connection().cursor()
-            sql = '''INSERT INTO historial(fecha, costes, beneficios, asignaciones, fabrica_id) VALUES(%s, %s, %s, %s, %s)'''
-            cursor.execute(sql, (fecha, costes, beneficios, asignaciones, fabrica_id))
+
+            trabajadores = json.dumps(trabajadores)
+            maquinas = json.dumps(maquinas)
+            subtasks = json.dumps(subtasks)
+            asignaciones = json.dumps(asignaciones)
+            tiempo_trabajado = json.dumps(tiempo_trabajado)
+
+            sql = '''INSERT INTO historial(fecha, costes, beneficios,capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id) VALUES(%s, %s, %s, %s, %s, %s,%s, %s, %s, %s)'''
+            cursor.execute(sql, (fecha, costes, beneficios,capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado,fabrica_id))
             conexion.connection.commit()
 
             last_id = cursor.lastrowid
@@ -443,7 +450,8 @@ class RecursosModel:
     @staticmethod
     def update_trabajador(trabajador_id, nombre=None, apellidos=None, fecha_nacimiento=None, trabajos_apto=None, fatiga=None, coste_h=None, preferencias_trabajo=None, nuevas_habilidades=None):
         try:
-            cursor = get_db_connection().cursor()
+            connection = get_db_connection()
+            cursor = connection.cursor()
             update_values_trabajador = []
 
             if nombre is not None:
@@ -476,6 +484,7 @@ class RecursosModel:
                 # Insertar nuevas habilidades
                 for skill_id in nuevas_habilidades:
                     cursor.execute("INSERT INTO skills_trabajadores (trabajador_id, skill_id) VALUES (%s, %s)", (trabajador[0], skill_id))
+            connection.commit()        
             return RecursosModel.get_trabajador(trabajador_id)
         except Exception as ex:
             print(f"Error al actualizar información del trabajador: {ex}")
@@ -496,7 +505,8 @@ class RecursosModel:
     @staticmethod
     def update_maquina(maquina_id, nombre=None, fatiga=None, coste_h=None, habilidades=None):
         try:
-            cursor = get_db_connection().cursor()
+            connection = get_db_connection()
+            cursor = connection.cursor()
             update_values_maquina = []
             update_values_habilidades = []
 
@@ -521,6 +531,7 @@ class RecursosModel:
                 # Insertar nuevas habilidades
                 for skill_id in habilidades:
                     cursor.execute("INSERT INTO skills_maquinas (maquina_id, skill_id) VALUES (%s, %s)", (maquina[0], skill_id))
+            connection.commit()
             return RecursosModel.get_maquina(maquina_id)
 
         except Exception as ex:
@@ -900,7 +911,8 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
     @staticmethod
     def update_subtask(fabrica_id, subtask_id, nombre=None, duracion=None, beneficio=None,coste = None, descripcion=None,  nuevas_habilidades=None):
         try:
-            cursor = get_db_connection().cursor()
+            connection = get_db_connection()
+            cursor = connection.cursor()
             update_values_subtask = []
 
             if nombre is not None:
@@ -927,8 +939,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
                 # Insertar nuevas habilidades
                 for skill_id in nuevas_habilidades:
                     cursor.execute("INSERT INTO skills_subtasks (subtask_id, skill_id) VALUES (%s, %s)", (subtask_id, skill_id))
-
-            conexion.connection.commit()
+            connection.commit()
             print("Información de la subtask actualizada exitosamente")
             sql_select = "SELECT * FROM Subtasks WHERE id = %s AND fabrica_id = %s"
             cursor.execute( sql_select, (subtask_id, fabrica_id))

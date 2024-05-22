@@ -17,6 +17,7 @@ from datetime import date
 from bs4 import BeautifulSoup 
 from collections import Counter
 from deep_translator import GoogleTranslator
+from datetime import datetime
 
 #'Bearer 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'
 @app.route('/')
@@ -572,6 +573,7 @@ def algoritmo_genetico():
 def añadir_historial():
     try:
         fabrica_id = session.get('fabrica')
+        fabrica_id = 1
         if not fabrica_id:
             return jsonify({'error': 'Fabrica no encontrada'}), 401
         
@@ -579,11 +581,21 @@ def añadir_historial():
         if not data:
             return jsonify({'error': 'No se proporcionó informacion para guardar en el historial'}), 400
         
-        fecha = data.get('fecha') #date.today()
-        coste = data.get('coste')
+        current_time = datetime.now()
+        
+        print(data)
+
+        fecha = current_time.strftime('%Y-%m-%d %H:%M:%S')
+        costes = data.get('costes')
         beneficios = data.get('beneficios')
+        capital = data.get('capital')
+        trabajadores = data.get('trabajadores')
+        maquinas = data.get('maquinas')
+        subtasks = data.get('subtasks')
         asignaciones = data.get('asignaciones')
-        result = FabricaModel.add_historial(fecha,coste,beneficios,json.dumps(asignaciones),fabrica_id)
+        tiempo_trabajado = data.get('tiempo_trabajado')
+
+        result = FabricaModel.add_historial(fecha,costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id)
 
        
         return jsonify({'mensaje': 'Historial actualizado' , 'historial' : result}), 200
