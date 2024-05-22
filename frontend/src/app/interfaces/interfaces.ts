@@ -60,7 +60,9 @@ export interface Tarea {
     tareaPadre: Tarea | undefined,
     tareasHijas: Tarea[],
     isDragging: boolean,
-    skillsMatched: number
+    skillsMatched: number,
+    factorFatiga: number,
+    factorDuracion: number
 
     getAsignable(): Asignable | undefined,
     setAsignable(asignable: Asignable): void,

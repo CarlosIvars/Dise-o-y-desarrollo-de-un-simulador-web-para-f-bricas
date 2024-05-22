@@ -8,6 +8,8 @@ export class TareaImpl implements Tarea {
     isDragging: boolean;
     skillsMatched: number;
     duracion: number;
+    factorFatiga: number;
+    factorDuracion: number;
 
     constructor(public id: number, public nombre: string, public cantidad: number, public tiempoBase: number, public beneficio: number, public coste: number, public tiempoActual: number, public descripcion: string, public skills: number[]) {
         this.isWorking = false;
@@ -16,6 +18,8 @@ export class TareaImpl implements Tarea {
         this.isDragging = false;
         this.skillsMatched = 0;
         this.duracion = 0;
+        this.factorFatiga = 1;
+        this.factorDuracion = 1;
     }
 
     // Getter y setter para el trabajador

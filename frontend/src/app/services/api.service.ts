@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+import { Maquina, Tarea, Trabajador } from '../interfaces/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -226,5 +227,26 @@ export class ApiService {
       withCredentials: true
     };
     return this.http.get<any>(`${environment.apiUrlBase}/alg_genetico`, httpOptions);
+  }
+
+  addHistorial(costes: number, beneficios: number, capital: number, trabajadores: Trabajador[], maquinas: Maquina[], subtasks: Tarea[], tiempo_trabajado: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true
+    };
+
+    const asignaciones: Record<number, number> = {};
+    for(const tarea of subtasks) {
+      const tareaPadre = tarea.tareaPadre;
+      if(tareaPadre != undefined) {
+        asignaciones[tareaPadre.id] = tarea.id;
+      }
+    }
+
+    console.log({costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado});
+
+    return this.http.post<any>(`${environment.apiUrlBase}/add_historial`, {costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado}, httpOptions);
   }
 }

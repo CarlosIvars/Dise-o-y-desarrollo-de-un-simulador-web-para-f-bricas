@@ -1,9 +1,16 @@
 <div class="trabajador-card" [ngClass]="{ 'inactivo': trabajador.activo }">
-    <div class="img" draggable="true" (dragstart)="drag($event, trabajador)" (dragend)="dragEnd($event)"><i class="bi bi-person-standing"></i></div>
-    <div class="info">
-        <div class="nombre">{{trabajador.nombre}}</div>
-        <div class="puesto">{{trabajador.apellidos}}</div>
+    <div class="left-side">
+        <div class="img" draggable="true" (dragstart)="drag($event, trabajador)" (dragend)="dragEnd($event)"><i class="bi bi-person-standing"></i></div>
+        <div class="info">
+            <div class="nombre">{{trabajador.nombre}}</div>
+            <div class="puesto">{{trabajador.apellidos}}</div>
+        </div>
     </div>
+    
+    <div class="right-side">
+        Fatiga: {{trabajador.fatiga}}%
+    </div>
+
     <div class="editar" (click)="editarTrabajador()">
         <i class="bi bi-three-dots"></i>
     </div>

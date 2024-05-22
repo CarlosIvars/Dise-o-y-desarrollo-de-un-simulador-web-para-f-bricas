@@ -16,7 +16,7 @@
       <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
         {{node.label}}
       </svg:text-->
-      <svg:foreignObject width="300" height="70">
+      <svg:foreignObject width="300" height="120">
         <xhtml:div xmlns="http://www.w3.org/1999/xhtml">
             <app-tarea-card [tarea]="node.tarea" (editarTareaForm)="abrirEditTareasForm($event)"></app-tarea-card>
             <!--div style="background-color: lightcoral;">Hola</div-->

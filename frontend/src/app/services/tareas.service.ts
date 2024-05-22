@@ -121,14 +121,14 @@ export class TareasService {
 
       const tarea_asignable = tarea.getAsignable();
       if(tarea_asignable != undefined && tarea_asignable.id === nuevo_asignable.id) {
-        tarea.removeAsignable();
+        this.desasignarATarea(tarea);
       }
     }
     this.actualizarTareas(tareas);
     
     // Añadimos el nuevo trabajador a la tarea y calculamos su duracion
     tarea.setAsignable(nuevo_asignable);
-    tarea.duracion = tarea.tiempoBase + this.calcularDuracion(tarea, nuevo_asignable);
+    tarea.duracion = Math.round(tarea.tiempoBase + this.calcularDuracion(tarea, nuevo_asignable));
     this.actualizarTarea(tarea);
 
     // Marcamos el trabajador como activo
@@ -173,7 +173,7 @@ export class TareasService {
     const k = 0.5; // 1 para que la nueva duracion sea mayor
     let F = asignable.fatiga / 100;
     let H = (F - 0.5) > 0 ? 1 : 0;
-    let S = 1; //Cambiar por el factor_duracion
+    let S = tarea.factorDuracion;
 
     const duracion = (D * (1 - M) * (1 + (Math.exp(k * (F - 0.5)) - 1) * H) * S);
     

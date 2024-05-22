@@ -1,13 +1,34 @@
 <div class="tarea">
     <div class="titulo">{{tarea.nombre}} => {{tarea.beneficio}}€</div>
     <div class="tiempo">{{formatearDecimales(tarea.tiempoActual)}} / {{tarea.duracion}}</div>
-    <div class="asignado">{{tarea.getAsignable()?.nombre}}</div>
+    <div class="asignado">
+        <ng-container *ngIf="tarea.getAsignable() as asignable">
+            <i *ngIf="isTrabajador()" class="bi bi-person-standing" [title]="asignable.nombre" (click)="desasignarATarea()"></i>
+            <i *ngIf="!isTrabajador() && isMaquina()" class="bi bi-motherboard-fill" [title]="asignable.nombre" (click)="desasignarATarea()"></i>
+        </ng-container>
+    </div>
     <div class="cantidad">{{tarea.cantidad}}</div>
-    <div *ngIf="tarea.getAsignable()" class="fatiga">Fatiga: {{tarea.getAsignable()?.fatiga}}</div>
+    <div *ngIf="tarea.getAsignable()" class="fatiga">Fatiga: {{tarea.getAsignable()?.fatiga}}%</div>
 
     <div class="editar" (click)="editarTarea()">
         <i class="bi bi-three-dots"></i>
     </div>
+
+    <div style="display: flex;">
+        <div class="form-group" style="margin-top: 5px; width: fit-content;">
+            <label class="form-label">Factor de fatiga: x{{tarea.factorFatiga}}</label>
+            <div class="slider-container">
+                <input type="range" min="0.5" max="2" step="0.1" [(ngModel)]="tarea.factorFatiga" (mousedown)="$event.stopPropagation()">
+            </div>    
+        </div>
+    
+        <div class="form-group" style="margin-top: 5px; width: fit-content;">
+            <label class="form-label">Factor duración: x{{tarea.factorDuracion}}</label>
+            <div class="slider-container">
+                <input type="range" min="0.5" max="2" step="0.1" [(ngModel)]="tarea.factorDuracion" (change)="cambiarDuracion(tarea)" (mousedown)="$event.stopPropagation()">
+            </div>    
+        </div>
+    </div>    
 
     <div *ngIf="tarea.isDragging && tarea.skillsMatched > 0" class="drag-activated" (drop)="drop($event, tarea)" (dragover)="allowDrop($event)">
         {{tarea.skillsMatched}}/{{tarea.skills.length}} skills

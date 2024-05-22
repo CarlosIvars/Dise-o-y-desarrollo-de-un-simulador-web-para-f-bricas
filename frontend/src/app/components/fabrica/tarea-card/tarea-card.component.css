@@ -1,7 +1,7 @@
 .tarea {
     border: 1px solid lightgray;
     width: 300px;
-    height: 70px;
+    height: 120px;
     background-color: white;
     border-radius: 7px;
     padding: 5px;
@@ -26,21 +26,21 @@
 
 .tarea .cantidad{
     position: absolute;
-    bottom: 5px;
+    top: 45px;
     right: 5px;
     font-weight: bold;
 }
 
 .tarea .editar{
     position: absolute;
-    bottom: 5px;
+    top: 45px;
     left: 40px;
 }
 
 .tarea .fatiga{
     position: absolute;
-    bottom: 5px;
-    left: 100px;
+    top: 35px;
+    left: 70px;
 }
 
 .tarea:hover .editar:hover {

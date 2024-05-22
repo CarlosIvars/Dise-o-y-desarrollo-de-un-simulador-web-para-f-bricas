@@ -5,10 +5,20 @@
     align-items: center;
     position: relative;
     cursor: pointer;
+    justify-content: space-between;
 }
 
 .trabajador-card.inactivo {
     background-color: gray;
+}
+
+.trabajador-card .left-side{
+    display: flex;
+    align-items: center;
+}
+
+.trabajador-card .right-side{
+    padding: 7px;
 }
 
 .trabajador-card .img {

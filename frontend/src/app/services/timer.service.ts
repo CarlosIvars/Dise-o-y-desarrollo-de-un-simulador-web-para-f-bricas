@@ -161,7 +161,7 @@ export class TimerService {
           }
 
           // Aumentamos la fatiga del trabajador/maquina y lo actualizamos
-          asignable.fatiga += this.aumentarFatiga(asignable);
+          asignable.fatiga += this.aumentarFatiga(tarea);
           if(this.trabajadoresService.isTrabajador(asignable)) {
             this.trabajadoresService.actualizarTrabajador(asignable);
           } else if(this.maquinasService.isMaquina(asignable)) {
@@ -245,6 +245,12 @@ export class TimerService {
       if(tareaPadre != undefined) {
         tareaPadre.cantidad--;
       }
+      
+      //Volvemos a calcular la duracion
+      const asignable = tarea.getAsignable();
+      if(asignable != undefined) {
+        tarea.duracion = Math.round(tarea.tiempoBase + this.tareasService.calcularDuracion(tarea, asignable));
+      }
 
       // Restamos el coste de la tarea
       this.fabrica.capital -= tarea.coste;
@@ -265,7 +271,17 @@ export class TimerService {
     return Math.round(coste);
   }
 
-  aumentarFatiga(asignable: Asignable) {
+  aumentarFatiga(tarea: Tarea) {
+    const asignable = tarea.getAsignable();
+
+    let skills_tarea = tarea.skills;
+    let skills_asignable = asignable?.skills;
+    let tarea_preferencia = null;
+    if(this.trabajadoresService.isTrabajador(asignable)) {
+      tarea_preferencia = asignable.preferencias_trabajo
+    }
+    let factor_fatiga = tarea.factorFatiga;
+
     // TODO:
     return 1;
   }

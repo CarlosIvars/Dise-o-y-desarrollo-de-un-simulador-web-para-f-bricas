@@ -5,10 +5,20 @@
     align-items: center;
     position: relative;
     cursor: pointer;
+    justify-content: space-between;
 }
 
 .maquina-card .img {
     padding: 10px;
+}
+
+.maquina-card .left-side{
+    display: flex;
+    align-items: center;
+}
+
+.maquina-card .right-side{
+    padding: 7px;
 }
 
 .maquina-card .info .nombre {
