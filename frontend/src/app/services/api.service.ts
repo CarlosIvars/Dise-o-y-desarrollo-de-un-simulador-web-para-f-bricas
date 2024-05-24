@@ -229,7 +229,7 @@ export class ApiService {
     return this.http.get<any>(`${environment.apiUrlBase}/alg_genetico`, httpOptions);
   }
 
-  addHistorial(costes: number, beneficios: number, capital: number, trabajadores: Trabajador[], maquinas: Maquina[], subtasks: Tarea[], tiempo_trabajado: number) {
+  addHistorial(costes: number, beneficios: number, capital: number, trabajadores: Trabajador[], maquinas: Maquina[], subtasks: Tarea[]) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -237,16 +237,74 @@ export class ApiService {
       withCredentials: true
     };
 
-    const asignaciones: Record<number, number> = {};
+    const trabajadores_formated = [];
+    for(const trabajador of trabajadores) {
+      const trabajador_formated = {
+        id: trabajador.id, 
+        nombre: trabajador.nombre, 
+        apellidos: trabajador.apellidos, 
+        fecha_nacimiento: trabajador.fecha_nacimiento,
+        trabajos_apto: trabajador.trabajos_apto,
+        fatiga: trabajador.fatiga,
+        coste_h: trabajador.coste_h,
+        preferencias_trabajo: trabajador.preferencias_trabajo,
+        activo: trabajador.activo,
+        fatigado: trabajador.fatigado,
+        skills: trabajador.skills,
+        tiempo_fatigado: trabajador.tiempo_fatigado
+      };
+      trabajadores_formated.push(trabajador_formated);
+    }
+
+    const maquinas_formated = [];
+    for(const maquina of maquinas) {
+      const maquina_formated = {
+        id: maquina.id.replace("M_", ""), 
+        nombre: maquina.nombre,
+        fatiga: maquina.fatiga,
+        coste_h: maquina.coste_h,
+        skills: maquina.skills,
+        activo: maquina.activo,
+        fatigado: maquina.fatigado,
+        tiempo_fatigado: maquina.tiempo_fatigado
+      }
+      maquinas_formated.push(maquina_formated);
+    }
+
+    const subtasks_formated = [];
     for(const tarea of subtasks) {
-      const tareaPadre = tarea.tareaPadre;
-      if(tareaPadre != undefined) {
-        asignaciones[tareaPadre.id] = tarea.id;
+      const tarea_formated = {
+        id: tarea.id,
+        nombre: tarea.nombre,
+        cantidad: tarea.cantidad, //Numero de "cajas"
+        tiempoBase: tarea.tiempoBase,
+        duracion: tarea.duracion, //Duracion calculada mediante la formula
+        tiempoActual: tarea.tiempoActual, // Tiempo que ya se ha procesado en la tarea
+        isWorking: tarea.isWorking,
+        beneficio: tarea.beneficio,
+        coste: tarea.coste,
+        descripcion: tarea.descripcion,
+        skills: tarea.skills,
+        factorFatiga: tarea.factorFatiga, 
+        factorDuracion: tarea.factorDuracion //Tener en cuenta que puede no ser el que se ha usado para calcular la duracion porque se ha cambiado a posteriori
+      }
+      subtasks_formated.push(tarea_formated);
+    }
+
+    const asignaciones = [];
+    for(const tarea of subtasks) {
+      const asignable = tarea.getAsignable();
+      if(asignable != undefined) {
+        const asignacion = {
+          asignable_id: asignable.id,
+          tarea_id: tarea.id
+        }
+        asignaciones.push(asignacion);
       }
     }
 
-    console.log({costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado});
+    console.log({costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones});
 
-    return this.http.post<any>(`${environment.apiUrlBase}/add_historial`, {costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado}, httpOptions);
+    return this.http.post<any>(`${environment.apiUrlBase}/add_historial`, {costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones}, httpOptions);
   }
 }

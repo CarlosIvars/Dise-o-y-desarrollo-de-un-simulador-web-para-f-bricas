@@ -13,6 +13,7 @@ import { FabricaImpl } from '../../clases/fabrica.class';
 import { TrabajadorImpl } from '../../clases/trabajador.class';
 import { MaquinaImpl } from '../../clases/maquina.class';
 import { TareaImpl } from '../../clases/tarea.class';
+import { HistorialService } from '../../services/historial.service';
 
 @Component({
   selector: 'app-fabrica',
@@ -58,7 +59,7 @@ export class FabricaComponent {
   editTareasForm: boolean = false;
   tareaEditando!: Tarea;
 
-  constructor(private fabricaService: FabricaService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService, private tareasService: TareasService, private timerService: TimerService, private route: ActivatedRoute, private apiService: ApiService, private router: Router) {}
+  constructor(private fabricaService: FabricaService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService, private tareasService: TareasService, private timerService: TimerService, private route: ActivatedRoute, private apiService: ApiService, private router: Router, private historialService: HistorialService) {}
 
   ngOnInit(): void {
     this.fabrica_id = Number(this.route.snapshot.paramMap.get('id'));
@@ -409,5 +410,9 @@ export class FabricaComponent {
 
   cerrarSesion() {
     this.router.navigate(['/']);
+  }
+
+  guardarHistorial() {
+    this.historialService.guardar_historial();
   }
 }

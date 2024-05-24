@@ -171,6 +171,10 @@ export class TimerService {
           //Se comprueba si se ha fatigado el trabajador/maquina
           if(asignable.fatiga >= 100) {
             console.log(`Se ha fatigado el trabajador/maquina ${asignable.nombre}`);
+
+            //Variables de la fatiga
+            asignable.fatiga_de_partida = 100;
+            asignable.tiempo_fatigado = 0;
             asignable.fatigado = true;
 
             const salario_parcial = this.calcularSalario(tarea.tiempoActual, asignable.coste_h);
@@ -184,7 +188,7 @@ export class TimerService {
 
       for(const trabajador of this.trabajadores) {
         if(trabajador.fatigado) {
-          trabajador.fatiga = this.reducirFatiga(trabajador);
+          trabajador.fatiga = trabajador.fatiga_de_partida - this.reducirFatiga(trabajador);
           //TODO: revisar numero minimo de fatiga
           if(trabajador.fatiga <= 0) {
             trabajador.fatigado = false;
@@ -192,12 +196,12 @@ export class TimerService {
         }
       }
 
-      for(const maquiana of this.maquinas) {
-        if(maquiana.fatigado) {
-          maquiana.fatiga = this.reducirFatiga(maquiana);
+      for(const maquina of this.maquinas) {
+        if(maquina.fatigado) {
+          maquina.fatiga = maquina.fatiga_de_partida - this.reducirFatiga(maquina);
           //TODO: revisar numero minimo de fatiga
-          if(maquiana.fatiga <= 0) {
-            maquiana.fatigado = false;
+          if(maquina.fatiga <= 0) {
+            maquina.fatigado = false;
           }
         }
       }
@@ -287,7 +291,8 @@ export class TimerService {
   }
 
   reducirFatiga(asignable: Asignable) {
-    return this.reducirFatigaTiempo(asignable, (1/60));
+    asignable.tiempo_fatigado++;
+    return this.reducirFatigaTiempo(asignable, (asignable.tiempo_fatigado/60));
   }
 
   reducirFatigaDia(asignable: Asignable) {
@@ -296,20 +301,23 @@ export class TimerService {
 
   //este es el descanso para cuando la fabrica termina las 8h, para cuando el trabajador este descansando en tiempo de ejecucion debemos modificar t
   reducirFatigaTiempo(asignable: Asignable, t: number) {
-    const tau_r = 10; // Por ejemplo, puedes ajustar esto según sea necesario
+    const tau_r = 5; // Por ejemplo, puedes ajustar esto según sea necesario
 
     const D0 = 0; // fatiga inicial deseada que tenga el trabajador
-    const Dl = asignable.fatiga || 0;
+    const Dl = asignable.fatiga_de_partida || 0;
     const fatiga = Dl - Math.exp(-t / tau_r) * (Dl - D0);
     console.log(`Fatiga del trabajador ${asignable.nombre} reducida a ${fatiga}`);
 
-    return fatiga;
+    return parseFloat(fatiga.toFixed(2));
   }
 
   siguienteDia() {
+    debugger;
     for(const trabajador of this.trabajadores) {
       if(trabajador.fatigado) {
-        trabajador.fatiga = this.reducirFatigaDia(trabajador);
+        //trabajador.fatiga_de_partida -= this.reducirFatigaDia(trabajador);
+        trabajador.tiempo_fatigado +=  60 * 16 - 1;
+        trabajador.fatiga = trabajador.fatiga_de_partida - this.reducirFatiga(trabajador);
         //TODO: revisar numero minimo de fatiga
         if(trabajador.fatiga <= 0) {
           trabajador.fatigado = false;
@@ -317,12 +325,14 @@ export class TimerService {
       }
     }
 
-    for(const maquiana of this.maquinas) {
-      if(maquiana.fatigado) {
-        maquiana.fatiga = this.reducirFatigaDia(maquiana);
+    for(const maquina of this.maquinas) {
+      if(maquina.fatigado) {
+        //maquiana.fatiga_de_partida -= this.reducirFatigaDia(maquiana);
+        maquina.tiempo_fatigado +=  60 * 16 - 1;
+        maquina.fatiga = maquina.fatiga_de_partida - this.reducirFatiga(maquina);
         //TODO: revisar numero minimo de fatiga
-        if(maquiana.fatiga <= 0) {
-          maquiana.fatigado = false;
+        if(maquina.fatiga <= 0) {
+          maquina.fatigado = false;
         }
       }
     }
