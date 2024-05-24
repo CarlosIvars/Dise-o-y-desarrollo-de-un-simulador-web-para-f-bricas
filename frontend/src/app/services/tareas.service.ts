@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Asignable, Maquina, Tarea, Trabajador } from '../interfaces/interfaces';
+import { Asignable, Fabrica, Tarea } from '../interfaces/interfaces';
 import { BehaviorSubject } from 'rxjs';
 import { TrabajadoresService } from './trabajadores.service';
-import { TrabajadorImpl } from '../clases/trabajador.class';
-import { MaquinaImpl } from '../clases/maquina.class';
 import { MaquinasService } from './maquinas.service';
+import { FabricaService } from './fabrica.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,7 @@ export class TareasService {
   private tareasSubject = new BehaviorSubject<Tarea[]>([]);
   tareas$ = this.tareasSubject.asObservable();
 
-  constructor(private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService) { }
+  constructor(private fabricaService: FabricaService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService) { }
 
   actualizarTareas(tareas: Tarea[]) {
     this.tareasSubject.next(tareas);
@@ -101,7 +100,7 @@ export class TareasService {
 
   //TODO: crear metodo desasignar
 
-  asignarATarea(tarea: Tarea, nuevo_asignable: Asignable) {
+  asignarATarea(tarea: Tarea, nuevo_asignable: Asignable, fabrica: Fabrica) {
     // Ponemos inactivo el asignable actual de la tarea...
     const asignable_actual = tarea.getAsignable();
     if(asignable_actual != undefined){
@@ -121,7 +120,7 @@ export class TareasService {
 
       const tarea_asignable = tarea.getAsignable();
       if(tarea_asignable != undefined && tarea_asignable.id === nuevo_asignable.id) {
-        this.desasignarATarea(tarea);
+        this.desasignarATarea(tarea, fabrica);
       }
     }
     this.actualizarTareas(tareas);
@@ -141,10 +140,15 @@ export class TareasService {
     }
   }
 
-  desasignarATarea(tarea: Tarea) { 
+  desasignarATarea(tarea: Tarea, fabrica: Fabrica) { 
     const asignable = tarea.getAsignable();
     if(asignable != undefined) {
       asignable.activo = false;
+
+      const salario_parcial = this.calcularSalario(tarea.tiempoActual, asignable.coste_h);
+      fabrica.capital -= salario_parcial;
+      fabrica.coste -= salario_parcial;
+      this.fabricaService.actualizarFabrica(fabrica);
 
       tarea.duracion = 0;
       tarea.isWorking = false;
@@ -157,6 +161,7 @@ export class TareasService {
       } else if (this.maquinasService.isMaquina(asignable)) {
         this.maquinasService.actualizarMaquina(asignable);
       }
+
     }
   }
 
@@ -178,5 +183,12 @@ export class TareasService {
     const duracion = (D * (1 - M) * (1 + (Math.exp(k * (F - 0.5)) - 1) * H) * S);
     
     return Math.round(duracion);
+  }
+
+  calcularSalario(duracion: number, coste_h: number) {
+    const horas = duracion / 60;
+    const coste = horas * coste_h;
+
+    return Math.round(coste);
   }
 }

@@ -35,4 +35,8 @@ export class TrabajadorCardComponent {
   editarTrabajador() {
     this.editarTrabajadorForm.emit(this.trabajador);
   }
+
+  formatearDigitos(numero: number, decimales: number) {
+    return numero.toFixed(decimales);
+  } 
 }

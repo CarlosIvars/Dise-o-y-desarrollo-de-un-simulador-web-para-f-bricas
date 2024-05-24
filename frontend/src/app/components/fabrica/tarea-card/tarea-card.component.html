@@ -1,4 +1,4 @@
-<div class="tarea">
+<div class="tarea" [ngClass]="{ 'activa': tarea.isWorking }">
     <div class="titulo">{{tarea.nombre}} => {{tarea.beneficio}}€</div>
     <div class="tiempo">{{formatearDecimales(tarea.tiempoActual)}} / {{tarea.duracion}}</div>
     <div class="asignado">
@@ -8,7 +8,7 @@
         </ng-container>
     </div>
     <div class="cantidad">{{tarea.cantidad}}</div>
-    <div *ngIf="tarea.getAsignable()" class="fatiga">Fatiga: {{tarea.getAsignable()?.fatiga}}%</div>
+    <div *ngIf="tarea.getAsignable() as asignable" class="fatiga">Fatiga: {{formatearDigitos(asignable.fatiga, 2)}}%</div>
 
     <div class="editar" (click)="editarTarea()">
         <i class="bi bi-three-dots"></i>

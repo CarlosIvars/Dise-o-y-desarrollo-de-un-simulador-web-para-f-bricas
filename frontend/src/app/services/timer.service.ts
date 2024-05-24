@@ -5,6 +5,7 @@ import { FabricaService } from './fabrica.service';
 import { TareasService } from './tareas.service';
 import { MaquinasService } from './maquinas.service';
 import { TrabajadoresService } from './trabajadores.service';
+import { HistorialService } from './historial.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class TimerService {
   private maquinasSub?: Subscription;
 
   //Iniciamos los observables
-  constructor(private fabricaService: FabricaService, private tareasService: TareasService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService) { 
+  constructor(private fabricaService: FabricaService, private tareasService: TareasService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService, private historialService: HistorialService) { 
     
     this.fabricaSub = this.fabricaService.fabrica$.subscribe(fabrica => {
       this.fabrica = fabrica;
@@ -93,7 +94,6 @@ export class TimerService {
 
         // Comprobamos si tiene un trabajador asignado
         if(tarea.getAsignable() == undefined) {
-          console.log(`Tarea ${tarea.nombre} sin trabajador o maquina asignado...`);
           continue;
         }
         
@@ -132,7 +132,6 @@ export class TimerService {
         // Comprobamos si tiene un trabajador asignado
         const asignable = tarea.getAsignable();
         if(asignable == undefined) {
-          console.log(`Tarea ${tarea.nombre} sin trabajador o maquina asignado...`);
           continue;
         }
 
@@ -158,10 +157,14 @@ export class TimerService {
             tarea.isWorking = false;
             
             console.log(`Tarea ${tarea.nombre} procesada. (+${tarea.beneficio}€)`);
+            
+            //Hacemos captura
+            this.historialService.guardar_historial();
           }
 
           // Aumentamos la fatiga del trabajador/maquina y lo actualizamos
-          asignable.fatiga += this.aumentarFatiga(tarea);
+          asignable.tiempo_trabajando++;
+          asignable.fatiga = asignable.fatiga_inicial + this.aumentarFatiga(tarea, asignable, asignable.tiempo_trabajando);
           if(this.trabajadoresService.isTrabajador(asignable)) {
             this.trabajadoresService.actualizarTrabajador(asignable);
           } else if(this.maquinasService.isMaquina(asignable)) {
@@ -173,35 +176,38 @@ export class TimerService {
             console.log(`Se ha fatigado el trabajador/maquina ${asignable.nombre}`);
 
             //Variables de la fatiga
-            asignable.fatiga_de_partida = 100;
+            asignable.fatiga_de_partida = asignable.fatiga + 4;
             asignable.tiempo_fatigado = 0;
-            asignable.fatigado = true;
+            asignable.fatigado++;
 
-            const salario_parcial = this.calcularSalario(tarea.tiempoActual, asignable.coste_h);
-            this.fabrica.beneficio -+ salario_parcial;
-            this.fabrica.coste -= salario_parcial;
+            this.tareasService.desasignarATarea(tarea, this.fabrica); // Se encarga de actualizar a los services
 
-            this.tareasService.desasignarATarea(tarea); // Se encarga de actualizar a los services
+            console.log(`Trabajador/maquina ${asignable.nombre} fatigada`);
+            this.historialService.guardar_historial();
           }
         }
       }
 
       for(const trabajador of this.trabajadores) {
-        if(trabajador.fatigado) {
+        if(!trabajador.activo) {
           trabajador.fatiga = trabajador.fatiga_de_partida - this.reducirFatiga(trabajador);
           //TODO: revisar numero minimo de fatiga
           if(trabajador.fatiga <= 0) {
-            trabajador.fatigado = false;
+            trabajador.fatiga_inicial = 0;
+            trabajador.tiempo_trabajando = 0;
+            trabajador.fatiga = 0;
           }
         }
       }
 
       for(const maquina of this.maquinas) {
-        if(maquina.fatigado) {
+        if(!maquina.activo) {
           maquina.fatiga = maquina.fatiga_de_partida - this.reducirFatiga(maquina);
           //TODO: revisar numero minimo de fatiga
           if(maquina.fatiga <= 0) {
-            maquina.fatigado = false;
+            maquina.fatiga_inicial = 0;
+            maquina.tiempo_trabajando = 0;
+            maquina.fatiga = 0;
           }
         }
       }
@@ -265,6 +271,9 @@ export class TimerService {
       tarea.tiempoActual = 0;
 
       this.tareasService.actualizarTarea(tarea);
+
+      //Hacemos captura
+      this.historialService.guardar_historial();
     }
   }
  
@@ -275,20 +284,29 @@ export class TimerService {
     return Math.round(coste);
   }
 
-  aumentarFatiga(tarea: Tarea) {
-    const asignable = tarea.getAsignable();
+  aumentarFatiga(tarea: Tarea, asignable: Asignable, t: number) {
+    debugger;
     const tau = 300;
-    let skills_tarea = tarea.skills;
-    let skills_asignable = asignable?.skills;
-    let tarea_preferencia = null;
-    if(this.trabajadoresService.isTrabajador(asignable)) {
-      tarea_preferencia = asignable.preferencias_trabajo
-    }
-    let factor_fatiga = tarea.factorFatiga;
+    const fmax = 100;
 
-    // TODO:
-    //let fatiga = 100 * (1- Math.exp(-t/tau)) * (1+(1-M) * S -0.15 * P)
-    return 1;
+    let skillsMatched = 0;
+    for (let i = 0; i < asignable.skills.length; i++) {
+      if (tarea.skills.includes(asignable.skills[i])) {
+        skillsMatched++;
+      }
+    }
+
+    let M = skillsMatched / tarea.skills.length;
+    let S = tarea.factorFatiga;
+
+    let P = 0;
+    if(this.trabajadoresService.isTrabajador(asignable)) {
+      P = asignable.preferencias_trabajo == tarea.id ? 1 : 0;
+    }
+
+    let fatiga = fmax * (1- Math.exp(-t/tau)) * (1 + (1 - M) * S - 0.15 * P);
+
+    return Math.round(fatiga * 100) / 100;
   }
 
   reducirFatiga(asignable: Asignable) {
@@ -306,35 +324,40 @@ export class TimerService {
     const k = 4;
     const D0 = 0; // fatiga inicial deseada que tenga el trabajador
     const Dl = asignable.fatiga_de_partida || 0;
-    const fatiga = (Dl - Math.exp(-t / tau_r) * (Dl - D0))+ k;
+    const fatiga = (Dl - Math.exp(-t / tau_r) * (Dl - D0)) + k;
     console.log(`Fatiga del trabajador ${asignable.nombre} reducida a ${fatiga}`);
 
-    return parseFloat(fatiga.toFixed(2));
+    return Math.round(fatiga * 100) / 100;
   }
 
   siguienteDia() {
-    debugger;
+    alert("Día completado!");
+
+    console.log("Día completado.")
+    this.historialService.guardar_historial();
+
     for(const trabajador of this.trabajadores) {
-      if(trabajador.fatigado) {
-        //trabajador.fatiga_de_partida -= this.reducirFatigaDia(trabajador);
-        trabajador.tiempo_fatigado +=  60 * 16 - 1;
-        trabajador.fatiga = trabajador.fatiga_de_partida - this.reducirFatiga(trabajador);
-        //TODO: revisar numero minimo de fatiga
-        if(trabajador.fatiga <= 0) {
-          trabajador.fatigado = false;
-        }
+      //trabajador.fatiga_de_partida -= this.reducirFatigaDia(trabajador);
+      trabajador.tiempo_fatigado +=  60 * 16 - 1;
+      trabajador.fatiga = trabajador.fatiga_de_partida - this.reducirFatiga(trabajador);
+      //TODO: revisar numero minimo de fatiga
+      if(trabajador.fatiga <= 0) {
+        trabajador.fatiga_inicial = 0;
+        trabajador.tiempo_trabajando = 0;
+        trabajador.fatiga = 0;
       }
     }
 
     for(const maquina of this.maquinas) {
-      if(maquina.fatigado) {
-        //maquiana.fatiga_de_partida -= this.reducirFatigaDia(maquiana);
-        maquina.tiempo_fatigado +=  60 * 16 - 1;
-        maquina.fatiga = maquina.fatiga_de_partida - this.reducirFatiga(maquina);
-        //TODO: revisar numero minimo de fatiga
-        if(maquina.fatiga <= 0) {
-          maquina.fatigado = false;
-        }
+      debugger;
+      //maquiana.fatiga_de_partida -= this.reducirFatigaDia(maquiana);
+      maquina.tiempo_fatigado +=  60 * 16 - 1;
+      maquina.fatiga = maquina.fatiga_de_partida - this.reducirFatiga(maquina);
+      //TODO: revisar numero minimo de fatiga
+      if(maquina.fatiga <= 0) {
+        maquina.fatiga_inicial = 0;
+        maquina.tiempo_trabajando = 0;
+        maquina.fatiga = 0;
       }
     }
   }

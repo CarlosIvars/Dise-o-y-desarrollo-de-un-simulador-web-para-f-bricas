@@ -38,6 +38,7 @@ export class ZonaPersonalComponent {
   }
 
   abrirFabrica(id: number) {
+    debugger;
     this.router.navigate(['/fabrica', id]);
   }
 

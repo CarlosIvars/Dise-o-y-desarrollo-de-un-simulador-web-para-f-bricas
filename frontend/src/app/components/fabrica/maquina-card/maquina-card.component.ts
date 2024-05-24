@@ -35,4 +35,8 @@ export class MaquinaCardComponent {
   editarMaquina() {
     this.editarMaquinaForm.emit(this.maquina);
   }
+
+  formatearDigitos(numero: number, decimales: number) {
+    return numero.toFixed(decimales);
+  } 
 }

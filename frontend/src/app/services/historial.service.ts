@@ -44,7 +44,7 @@ export class HistorialService {
 
   guardar_historial() {
     if(this.fabrica != undefined) {
-      console.log("Guardando el historial...")
+      console.log("Guardando el historial...");
       this.apiService.addHistorial(this.fabrica.coste, this.fabrica.beneficio, this.fabrica.capital, this.trabajadores, this.maquinas, this.tareas).pipe(
         finalize(() => {
           console.log("Fin de guardar historial.");

@@ -8,6 +8,10 @@
     position: relative;
 }
 
+.tarea.activa {
+    background-color: lightblue;
+}
+
 .tarea .tiempo{
     position: absolute;
     top: 5px;

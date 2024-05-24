@@ -5,10 +5,10 @@
             {{fabrica.nombre}}
         </div>
         <div id="cabeceraCentro">
-            <div>Dinero: {{fabrica.capital}}€ Beneficio: {{fabrica.beneficio}}€</div>
+            <div>Dinero: {{fabrica.capital}}€ Beneficio: {{fabrica.beneficio}}€ Coste: {{fabrica.coste}}</div>
             <div>Día: {{fabrica.dia}} Hora: {{fabrica.hora}}:{{formatearMinutos(fabrica.minutos)}}</div>
             <div (click)="toggleFabricaEjecucion()">{{ fabrica.activa ? 'Pause' : 'Play' }} (x{{velocidadEjecucion}})</div>
-            <input type="range" [(ngModel)]="velocidadEjecucion" (change)="cambiarVelocidadEjecucion()" min="1" max="10" step="1">
+            <input type="range" [(ngModel)]="velocidadEjecucion" (change)="cambiarVelocidadEjecucion()" min="1" max="100" step="10">
         </div>
         <div id="cabeceraDer" (click)="cerrarSesion()">
             {{userName}}

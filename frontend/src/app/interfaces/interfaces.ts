@@ -18,9 +18,11 @@ export interface Asignable {
     coste_h: number,
     skills: number[],
     activo: boolean,
-    fatigado: boolean,
+    fatigado: number,
     tiempo_fatigado: number,
-    fatiga_de_partida: number
+    fatiga_de_partida: number,
+    tiempo_trabajando: number,
+    fatiga_inicial: number
 }
 
 export interface Trabajador {
@@ -33,10 +35,12 @@ export interface Trabajador {
     coste_h: number,
     preferencias_trabajo: number,
     activo: boolean,
-    fatigado: boolean,
+    fatigado: number,
     skills: number[],
     tiempo_fatigado: number,
-    fatiga_de_partida: number
+    fatiga_de_partida: number,
+    tiempo_trabajando: number,
+    fatiga_inicial: number
 }
 
 export interface Maquina {
@@ -46,9 +50,11 @@ export interface Maquina {
     coste_h: number,
     skills: number[],
     activo: boolean,
-    fatigado: boolean,
+    fatigado: number,
     tiempo_fatigado: number,
-    fatiga_de_partida: number
+    fatiga_de_partida: number,
+    tiempo_trabajando: number,
+    fatiga_inicial: number
 }
 
 export interface Tarea {
