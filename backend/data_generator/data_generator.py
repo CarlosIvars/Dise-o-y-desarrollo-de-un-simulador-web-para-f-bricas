@@ -1,8 +1,9 @@
 from faker import Faker
 import json
-from random import sample
+import pandas as pd
+from random import *
 from app.models import * 
-
+import random as rnd
 fake = Faker('es_ES')
 
 def select_random_skills(skills,n ):
@@ -42,19 +43,32 @@ def generate_maquinas(num, sector, fabrica_id):
         }
         RecursosModel.add_maquina(fabrica_id, maquina['nombre'], maquina['fatiga'], maquina['coste_h'], maquina['skills'])
 
-def generate_subtasks(num):
+def generate_subtasks(num, sector, fabrica_id):
+    csv_path = './onet/onet_tasks_data.csv'
+    df = pd.read_csv(csv_path)
+    tasks = df[df['Cluster'] == sector]
+    existing_subtasks = [subtask[0] for subtask in TareaModel.get_subtasks(fabrica_id)]
     for _ in range(num):
-        subtask = {
-            'nombre': fake.sentence(nb_words=3),
-            'duracion': fake.random_number(digits=2),
-            'beneficio': fake.random_number(digits=5),
-            'coste': fake.random_number(digits=4),
-            'descripcion': fake.sentence()
-        }
-        fabrica_id = fake.random_int(min=1, max=100)  # Ajusta el rango de fábricas existentes
-        sector = fake.word()  # Puedes usar una lógica para asignar sectores adecuados
-        TareaModel.add_subtask(subtask['nombre'], subtask['duracion'], subtask['beneficio'], subtask['coste'], 
-                               subtask['descripcion'], fabrica_id, sector)
+        try:
+            task_selec = tasks.sample(n = 1).iloc[0]
+            subtask = {
+                'nombre': task_selec['Task Name'],
+                'duracion': fake.random_number(digits=2),
+                'beneficio': fake.random_number(digits=3, fix_len=True),
+                'coste': fake.random_number(digits=2, fix_len=True),
+                'descripcion': task_selec['Task Description'],
+                
+            }
+            t =TareaModel.add_subtask(subtask['nombre'], subtask['duracion'], subtask['beneficio'], subtask['coste'], 
+                                subtask['descripcion'], fabrica_id, sector)
+            if existing_subtasks and rnd.choices([True, False], weights=[60, 40])[0]: 
+                parent_subtask_id = rnd.choice(existing_subtasks)
+                TareaModel.add_dependencias_subtasks(t[0], parent_subtask_id)
+            
+            # Add the new subtask to the existing subtasks list for future dependencies
+            existing_subtasks.append(t[0])
+        except Exception as e:
+            print('Error pero seguimos', e)
 
 def generate_factories(num):
     factories = []
@@ -65,12 +79,13 @@ def generate_factories(num):
             'capital_inicial': fake.random_number(digits=7),
             'sector': fake.random_int(min=0, max = 26)
         }
-        user_id = 13  # Ajusta el rango de usuarios existentes
+        user_id = 14  # Ajusta el rango de usuarios existentes
         fabrica = FabricaModel.add_fabrica(factory['nombre_fabrica'], user_id, factory['capital_inicial'], sectores[factory['sector']])
         print("Generamos Fabricas")
         try:
             generate_trabajadores(20, fabrica[7], fabrica[0])
             generate_maquinas(20, fabrica[7], fabrica[0])
+            generate_subtasks(20, fabrica[7], fabrica[0])
             #generate_subtasks(300)
         except Exception as ex:
             return {'error': f'Error al generar datos de la fabrica'}

@@ -58,6 +58,7 @@ from app import app
 from flask import jsonify
 import requests
 import re
+import unidecode
 from openai import OpenAI
 from config import config
 
@@ -846,6 +847,7 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
     def get_skill_id(skill, sector = None):
         try:
             skill = skill.strip("'")
+            skill_normalized = unidecode.unidecode(skill)
             cursor = get_db_connection().cursor()
             sql = "SELECT id FROM skills WHERE nombre = %s"
             params = (skill,)
@@ -854,8 +856,21 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
                 sql += " AND sector = %s"
                 params += (sector,)
 
-            cursor.execute(sql,  params)
+            cursor.execute(sql, params)
             result = cursor.fetchone()
+
+            if not result:
+                # Try with normalized skill name if the first query didn't return a result
+                sql = "SELECT id FROM skills WHERE nombre = %s"
+                params = (skill_normalized,)
+
+                if sector is not None:
+                    sql += " AND sector = %s"
+                    params += (sector,)
+
+                cursor.execute(sql, params)
+                result = cursor.fetchone()
+
             if result:
                 return result[0]
             else:
@@ -878,7 +893,6 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             #parte tabla skills_subtasks
             habilidades = TareaModel.obtener_skills_chatGPT(sector, descripcion)
             id_subtask = cursor.lastrowid
-            
             for tipo in ['soft_skills', 'hard_skills']:
                 for habilidad in habilidades[tipo]:
                     if tipo == 'soft_skills':

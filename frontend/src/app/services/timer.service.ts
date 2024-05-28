@@ -286,7 +286,7 @@ export class TimerService {
 
   aumentarFatiga(tarea: Tarea, asignable: Asignable, t: number) {
     debugger;
-    const tau = 300;
+    let tau = 300;
     const fmax = 100;
 
     let skillsMatched = 0;
@@ -301,7 +301,16 @@ export class TimerService {
 
     let P = 0;
     if(this.trabajadoresService.isTrabajador(asignable)) {
+      if(Math.random()<= 0.05){
+        return fmax;
+      }
+      tau = 300;
       P = asignable.preferencias_trabajo == tarea.id ? 1 : 0;
+    }else{
+      if(Math.random()<= 0.15){
+        return fmax;
+      }
+      tau = 500;
     }
 
     let fatiga = fmax * (1- Math.exp(-t/tau)) * (1 + (1 - M) * S - 0.15 * P);
@@ -320,7 +329,12 @@ export class TimerService {
 
   //este es el descanso para cuando la fabrica termina las 8h, para cuando el trabajador este descansando en tiempo de ejecucion debemos modificar t
   reducirFatigaTiempo(asignable: Asignable, t: number) {
-    const tau_r = 5; // Por ejemplo, puedes ajustar esto según sea necesario
+    let tau_r ;
+    if (this.trabajadoresService.isTrabajador(asignable)){
+       tau_r = 5; // Por ejemplo, puedes ajustar esto según sea necesario
+    }else{
+       tau_r = 9; // Por ejemplo, puedes ajustar esto según sea necesario
+    }
     const k = 4;
     const D0 = 0; // fatiga inicial deseada que tenga el trabajador
     const Dl = asignable.fatiga_de_partida || 0;
