@@ -593,8 +593,11 @@ class RecursosModel:
     @staticmethod
     def obtener_habilidades_recursos(fabrica_id):
         h_t = RecursosModel.get_habilidades_trabajadores(fabrica_id)
+
         h_m = RecursosModel.get_habilidades_maquinas(fabrica_id)
-        h_t.update(h_m)
+
+        habilidades_combinadas = {**h_t, **h_m}
+        return  habilidades_combinadas
 
     @staticmethod
     def calcular_fatiga_total(asignacion):
@@ -731,7 +734,7 @@ class TareaModel:
         except Exception as ex:
             print(f"Error al obtener las hard skills: {ex}")
             return[]
-    
+        
     @staticmethod
     def get_habilidades_subtareas(fabrica_id):
         try:
@@ -742,19 +745,21 @@ class TareaModel:
                     FROM Subtasks s 
                     LEFT JOIN skills_subtasks ss ON s.id = ss.subtask_id 
                     LEFT JOIN skills sk ON ss.skill_id = sk.id 
-                    WHERE s.id = %s 
+                    WHERE s.fabrica_id = %s 
                     GROUP BY s.id'''
             cursor.execute(sql, (fabrica_id,))
             habilidades_subtareas = {}
             for codigo, soft_skills, technical_skills in cursor.fetchall():
                 habilidades_subtareas[codigo] = {
                     'soft_skills': soft_skills.split(',') if soft_skills else [],
-                    'hard_skills': technical_skills.split(',') if technical_skills else []
+                    'technical_skills': technical_skills.split(',') if technical_skills else []
                 }
             return habilidades_subtareas
         except Exception as ex:
             print(f"Error al obtener habilidades de subtareas: {ex}")
             return {}
+
+
 
 
     @staticmethod
@@ -1037,9 +1042,9 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
                 for humano_id, habilidades_humano in recursos.items():
                     h_tecnicas_humano, h_interpersonales_humano = habilidades_humano
 
-                    if (set(h_tecnicas_accion).issubset(set(h_tecnicas_humano)) and
-                        set(h_interpersonales_accion).issubset(set(h_interpersonales_humano))):
-                        humanos_validos.append(humano_id)
+                    if (set(h_tecnicas_accion).intersection(set(h_tecnicas_humano)) or
+                        set(h_interpersonales_accion).intersection(set(h_interpersonales_humano))):
+                            humanos_validos.append(humano_id)
 
                 matching_skills[accion_id] = humanos_validos
              

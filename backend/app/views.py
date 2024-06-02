@@ -52,7 +52,7 @@ def init():
         'Tarea10': 140,
         'Tarea11' : 5000,
     }
-    costes = {
+    costes_humanos = {
         'Humano1': 50, 'Humano2': 45, 'Humano3': 55, 'Humano4': 40, 'Humano5': 60,
         'Humano6': 50, 'Humano7': 65, 'Humano8': 40, 'Humano9': 55, 'Humano10': 45,
         'Humano11': 60, 'Humano12': 50, 'Humano13': 55, 'Humano14': 65, 'Humano15': 40,
@@ -60,6 +60,20 @@ def init():
         'Humano21': 65, 'Humano22': 45, 'Humano23': 50, 'Humano24': 55, 'Humano25': 40,
         'Humano26': 60, 'Humano27': 65, 'Humano28': 45, 'Humano29': 55, 'Humano30': 50,
         'Humano31': 40, 'Humano32': 60, 'Humano33': 65
+    }
+    
+    costes_tareas= {
+        'Tarea1': 100,
+        'Tarea2': 150,
+        'Tarea3': 120,
+        'Tarea4': 130,
+        'Tarea5': 80,
+        'Tarea6': 200,
+        'Tarea7': 110,
+        'Tarea8': 90,
+        'Tarea9': 160,
+        'Tarea10': 140,
+        'Tarea11' : 5000,
     }
     fatigas = {
         'Humano1': 10, 'Humano2': 15, 'Humano3': 20, 'Humano4': 10, 'Humano5': 25,
@@ -528,7 +542,6 @@ def skills_matching():
     try:
         fabrica_id = session.get('fabrica')
         skills_matching = TareaModel.skills_matching(fabrica_id)
-        print(skills_matching)
         return jsonify({'skills_matching' : skills_matching}), 200
     
     except Exception as e:
@@ -543,10 +556,11 @@ def algoritmo_genetico():
     
     skills_matching = TareaModel.skills_matching(fabrica_id)
     fatigas = RecursosModel.fatiga_recursos(fabrica_id)
-    costes = RecursosModel.coste_recursos(fabrica_id)
+    costes_recursos = RecursosModel.coste_recursos(fabrica_id)
+    costes_subtareas = TareaModel.coste_subtasks(fabrica_id)
     beneficios = TareaModel.beneficio_subtasks(fabrica_id)
-    dependencias = TareaModel.get_dependencias_subtasks(skills_matching)
-    
+    skills_id = list(skills_matching.keys())
+    dependencias = TareaModel.get_dependencias_subtasks(skills_id)
     # Parámetros para el algoritmo genético
     num_individuos_seleccion= 50
     num_generations = 2000
@@ -554,8 +568,9 @@ def algoritmo_genetico():
 
     # Ejecutar el algoritmo genético
     mejor_individuo = run_genetic_algorithm(skills_matching,dependencias, num_generations, 
-                                            num_individuals,num_individuos_seleccion,beneficios, costes, fatigas)
-    puntuacion = evaluate_individual(mejor_individuo,beneficios,costes, fatigas,dependencias)
+                                            num_individuals,num_individuos_seleccion,beneficios, costes_recursos,costes_subtareas, fatigas)
+
+    puntuacion = evaluate_individual(mejor_individuo,beneficios,costes_recursos, costes_subtareas, fatigas,dependencias)
 
     print("valores mejor individuo:",puntuacion)
     print("El mejor individuo encontrado es:", mejor_individuo)
@@ -583,8 +598,6 @@ def añadir_historial():
         
         current_time = datetime.now()
         
-        print(data)
-
         fecha = current_time.strftime('%Y-%m-%d %H:%M:%S')
         costes = data.get('costes')
         beneficios = data.get('beneficios')
