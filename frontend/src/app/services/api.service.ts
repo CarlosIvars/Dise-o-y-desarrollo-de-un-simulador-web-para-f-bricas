@@ -229,6 +229,13 @@ export class ApiService {
     return this.http.get<any>(`${environment.apiUrlBase}/alg_genetico`, httpOptions);
   }
 
+  algoritmoGeneticoRL() {
+    const httpOptions = {
+      withCredentials: true
+    };
+    return this.http.get<any>(`${environment.apiUrlBase}/alg_genetico_RL`, httpOptions);
+  }
+
   addHistorial(costes: number, beneficios: number, capital: number, trabajadores: Trabajador[], maquinas: Maquina[], subtasks: Tarea[]) {
     const httpOptions = {
       headers: new HttpHeaders({

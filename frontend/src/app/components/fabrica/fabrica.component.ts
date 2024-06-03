@@ -400,7 +400,70 @@ export class FabricaComponent {
       })
     ).subscribe({
       next: (response) => {
-        console.log("Respuesta: ", response);
+        try{
+          console.log("Respuesta: ", response);
+          debugger;
+          if(response.mejor_individuo != null && response.mejor_individuo != undefined) {
+            for( const [idTarea, idAsignable] of Object.entries(response.mejor_individuo)) {
+              const tarea = this.tareas.find(tarea => tarea.id === parseInt(idTarea));
+
+              let asignable;
+              if((idAsignable + "").startsWith("H_")) {
+                asignable = this.trabajadores.find(trabajador => trabajador.id === idAsignable);
+              } else if((idAsignable + "").startsWith("M_")) {
+                asignable = this.maquinas.find(maquina => maquina.id === idAsignable);
+              }
+            
+              if (tarea && asignable && this.fabrica) {
+                this.tareasService.asignarATarea(tarea, asignable, this.fabrica);
+              } else {
+                console.error("No se ha podido asignar a tarea.")
+              }
+            };
+          }
+        } catch (error: any) {
+          alert("Error al procesar la respuesta: " + error.message);
+        }
+      },
+      error: (error) => {
+        alert("Error: " + error); 
+      }
+    });
+  }
+
+  algoritmoGeneticoRL() {
+    console.log("Realizando el algoritmo genetico RL...");
+  
+    this.apiService.algoritmoGeneticoRL().pipe(
+      finalize(() => {
+        console.log("Fin del algoritmo genetico RL.");
+      })
+    ).subscribe({
+      next: (response) => {
+        try{
+          console.log("Respuesta: ", response);
+          debugger;
+          if(response.mejor_individuo != null && response.mejor_individuo != undefined) {
+            for( const [idTarea, idAsignable] of Object.entries(response.mejor_individuo)) {
+              const tarea = this.tareas.find(tarea => tarea.id === parseInt(idTarea));
+
+              let asignable;
+              if((idAsignable + "").startsWith("H_")) {
+                asignable = this.trabajadores.find(trabajador => trabajador.id === idAsignable);
+              } else if((idAsignable + "").startsWith("M_")) {
+                asignable = this.maquinas.find(maquina => maquina.id === idAsignable);
+              }
+            
+              if (tarea && asignable && this.fabrica) {
+                this.tareasService.asignarATarea(tarea, asignable, this.fabrica);
+              } else {
+                console.error("No se ha podido asignar a tarea.")
+              }
+            };
+          }
+        } catch (error: any) {
+          alert("Error al procesar la respuesta: " + error.message);
+        }
       },
       error: (error) => {
         alert("Error: " + error); 

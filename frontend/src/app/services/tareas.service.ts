@@ -98,8 +98,6 @@ export class TareasService {
     this.actualizarTareas(tareas);
   }
 
-  //TODO: crear metodo desasignar
-
   asignarATarea(tarea: Tarea, nuevo_asignable: Asignable, fabrica: Fabrica) {
     // Ponemos inactivo el asignable actual de la tarea...
     const asignable_actual = tarea.getAsignable();

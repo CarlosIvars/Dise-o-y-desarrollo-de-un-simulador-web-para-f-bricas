@@ -285,7 +285,6 @@ export class TimerService {
   }
 
   aumentarFatiga(tarea: Tarea, asignable: Asignable, t: number) {
-    debugger;
     let tau = 300;
     const fmax = 100;
 
@@ -363,7 +362,6 @@ export class TimerService {
     }
 
     for(const maquina of this.maquinas) {
-      debugger;
       //maquiana.fatiga_de_partida -= this.reducirFatigaDia(maquiana);
       maquina.tiempo_fatigado +=  60 * 16 - 1;
       maquina.fatiga = maquina.fatiga_de_partida - this.reducirFatiga(maquina);
