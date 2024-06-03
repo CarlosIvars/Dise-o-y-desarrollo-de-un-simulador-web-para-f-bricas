@@ -13,7 +13,6 @@ import ast
 from config import config
 from data_generator.data_generator import *
 from ml_models.AG.genetic_algorithm import *
-from ml_models.AG_RL.genetic_algorithm_rl import *
 from datetime import date
 from bs4 import BeautifulSoup 
 from collections import Counter
@@ -584,43 +583,6 @@ def algoritmo_genetico():
     }
  
     return jsonify(resultado), 200
-'''
-@app.route('/alg_genetico_RL', methods = ['GET'])
-def algoritmo_genetico():
-    fabrica_id = session.get('fabrica')
-    if not fabrica_id:
-        return jsonify({'error': 'Fabrica no encontrada'}), 404
-    
-    skills_matching = TareaModel.skills_matching(fabrica_id)
-    fatigas = RecursosModel.fatiga_recursos(fabrica_id)
-    costes_recursos = RecursosModel.coste_recursos(fabrica_id)
-    costes_subtareas = TareaModel.coste_subtasks(fabrica_id)
-    beneficios = TareaModel.beneficio_subtasks(fabrica_id)
-    skills_id = list(skills_matching.keys())
-    dependencias = TareaModel.get_dependencias_subtasks(skills_id)
-    # Parámetros para el algoritmo genético
-    num_individuos_seleccion= 50
-    num_generations = 2000
-    num_individuals = 50
-
-    # Ejecutar el algoritmo genético
-    mejor_individuo = run_genetic_algorithm_with_rl(skills_matching, dependencias, num_generations, num_individuals, num_individuos_seleccion, beneficios, costes_recursos, costes_subtareas, fatigas)
-
-
-    puntuacion = evaluate_individual(mejor_individuo,beneficios,costes_recursos, costes_subtareas, fatigas,dependencias)
-
-    print("valores mejor individuo:",puntuacion)
-    print("El mejor individuo encontrado es:", mejor_individuo)
-
-    asignaciones = {subtask: recurso for subtask, recurso in mejor_individuo}
-
-    resultado = {
-        "puntuacion": puntuacion,
-        "mejor_individuo": asignaciones
-    }
- 
-    return jsonify(resultado), 200
-'''
 
 @app.route('/add_historial', methods = ['POST'])
 def añadir_historial():
