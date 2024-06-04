@@ -417,7 +417,7 @@ export class FabricaComponent {
               if (tarea && asignable && this.fabrica) {
                 this.tareasService.asignarATarea(tarea, asignable, this.fabrica);
               } else {
-                console.error("No se ha podido asignar a tarea.")
+                console.error("No se ha podido asignar a tarea.");
               }
             };
           }
@@ -457,7 +457,7 @@ export class FabricaComponent {
               if (tarea && asignable && this.fabrica) {
                 this.tareasService.asignarATarea(tarea, asignable, this.fabrica);
               } else {
-                console.error("No se ha podido asignar a tarea.")
+                console.error("No se ha podido asignar a tarea.");
               }
             };
           }

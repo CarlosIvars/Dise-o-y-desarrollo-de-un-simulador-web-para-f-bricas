@@ -12,10 +12,20 @@
     background-color: lightblue;
 }
 
+
+.tarea .parte-superior {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tarea .titulo {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 .tarea .tiempo{
-    position: absolute;
-    top: 5px;
-    right: 5px;
+    white-space: nowrap;
 }
 
 .tarea .asignado{

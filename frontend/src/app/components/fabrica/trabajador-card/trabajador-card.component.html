@@ -1,4 +1,4 @@
-<div class="trabajador-card" [ngClass]="{ 'inactivo': trabajador.activo }">
+<div class="trabajador-card" [ngClass]="{ 'activo': trabajador.activo }">
     <div class="left-side">
         <div class="img" draggable="true" (dragstart)="drag($event, trabajador)" (dragend)="dragEnd($event)"><i class="bi bi-person-standing"></i></div>
         <div class="info">

@@ -1,6 +1,8 @@
 <div class="tarea" [ngClass]="{ 'activa': tarea.isWorking }">
-    <div class="titulo">{{tarea.nombre}} => {{tarea.beneficio}}€</div>
-    <div class="tiempo">{{formatearDecimales(tarea.tiempoActual)}} / {{tarea.duracion}}</div>
+    <div class="parte-superior">
+        <div class="titulo" [title]="tarea.nombre">{{tarea.nombre}} => {{tarea.beneficio}}€</div>
+        <div class="tiempo">{{formatearDecimales(tarea.tiempoActual)}} / {{tarea.duracion}}</div>
+    </div>
     <div class="asignado">
         <ng-container *ngIf="tarea.getAsignable() as asignable">
             <i *ngIf="isTrabajador()" class="bi bi-person-standing" [title]="asignable.nombre" (click)="desasignarATarea()"></i>
