@@ -1,55 +1,89 @@
-"""
-Implementación del algoritmo genético utilizando la librería DEAP.
-"""
+import numpy as np
 from .problem_definition import *
-
+from collections import Counter
+import math
 def evaluate_population(population, beneficios, costes_humanos, costes_tareas, fatigas, dependencias):
-    """
-    Evalúa la aptitud de toda la población (lista de individuos) y devuelve una lista con la aptitud de cada individuo.
-    """
     return [evaluate_individual(individual, beneficios, costes_humanos, costes_tareas, fatigas, dependencias) for individual in population]
 
 def selection_operator(population, aptitudes, k):
-    """
-    Implementa el operador de selección para seleccionar individuos para la siguiente generación.
-
-    Args:
-    - population (list): Lista de individuos en la población.
-    - aptitudes (list): Lista de aptitudes correspondientes a cada individuo en la población.
-    - k (int): Número de individuos a seleccionar.
-
-    Returns:
-    - selected (list): Lista de individuos seleccionados.
-    """
     selected_indices = sorted(range(len(aptitudes)), key=lambda i: aptitudes[i], reverse=True)[:k]
     return [population[i] for i in selected_indices]
 
-def run_genetic_algorithm(skills_matching, dependencias, num_generations, num_individuals, k, beneficios, costes_humanos, costes_tareas, fatigas):
-    # Inicializar la población
-    population = initialize_population(skills_matching, num_individuals, dependencias, fatigas)
+def calculate_genetic_diversity(population):
+    if not population:
+        return 0
 
-    # Evaluar la población inicial
+    gene_frequencies = Counter()
+    num_genes = len(population[0])
+    population_size = len(population)
+
+    # Contar la frecuencia de cada gen en cada posición
+    for individual in population:
+        for i, gene in enumerate(individual):
+            gene_frequencies[(i, gene)] += 1
+
+    entropy = 0.0
+
+    # Calcular la entropía para cada posición de gen
+    for i in range(num_genes):
+        position_entropy = 0.0
+        genes_at_position = [gene for (pos, gene), count in gene_frequencies.items() if pos == i]
+        total_genes_at_position = sum(gene_frequencies[(i, gene)] for gene in genes_at_position)
+
+        for gene in genes_at_position:
+            frequency = gene_frequencies[(i, gene)] / total_genes_at_position
+            if frequency > 0:
+                position_entropy -= frequency * math.log(frequency)
+
+        entropy += position_entropy
+
+    # Normalizar la entropía por el número de posiciones de genes
+    entropy /= num_genes
+    return entropy
+
+def run_genetic_algorithm(skills_matching, dependencias, num_generations, num_individuals, k, beneficios, costes_humanos, costes_tareas, fatigas, crossover_rate=0.8, mutation_rate=0.2):
+    population = initialize_population(skills_matching, num_individuals, dependencias, fatigas)
     aptitudes = evaluate_population(population, beneficios, costes_humanos, costes_tareas, fatigas, dependencias)
+
+    best_fitnesses = []
+    average_fitnesses = []
+    genetic_diversity = []
     
-    # Ciclo de evolución
     for generation in range(num_generations):
-        # Seleccionar individuos para reproducción
         selected = selection_operator(population, aptitudes, k)
         
-        # Aplicar operadores genéticos (cruce y mutación)
         offspring = []
         for i in range(0, len(selected), 2):
-            if i + 1 < len(selected):  # Verificación para evitar IndexError
-                child1, child2 = crossover_operator(selected[i], selected[i+1], fatigas)
-                child1 = mutation_operator(child1, skills_matching, dependencias, fatigas)
-                child2 = mutation_operator(child2, skills_matching, dependencias, fatigas)
+            if i + 1 < len(selected):
+                if random.random() < crossover_rate:
+                    child1, child2 = crossover_operator(selected[i], selected[i+1], fatigas)
+                else:
+                    child1, child2 = selected[i], selected[i+1]
+                
+                if random.random() < mutation_rate:
+                    child1 = mutation_operator(child1, skills_matching, dependencias, fatigas)
+                if random.random() < mutation_rate:
+                    child2 = mutation_operator(child2, skills_matching, dependencias, fatigas)
+                
                 offspring.extend([child1, child2])
         
         population[:] = offspring
-
-        # Evaluar la nueva población
         aptitudes = evaluate_population(population, beneficios, costes_humanos, costes_tareas, fatigas, dependencias)
         
-    # Devolver el mejor individuo de la población final
+        best_fitness = max(aptitudes)
+        average_fitness = np.mean(aptitudes)
+        diversity = calculate_genetic_diversity(population)
+        
+        best_fitnesses.append(best_fitness)
+        average_fitnesses.append(average_fitness)
+        genetic_diversity.append(diversity)
+    
     best_individual = max(population, key=lambda ind: evaluate_individual(ind, beneficios, costes_humanos, costes_tareas, fatigas, dependencias))
-    return best_individual
+    
+    metrics = {
+        "best_fitnesses": best_fitnesses,
+        "average_fitnesses": average_fitnesses,
+        "genetic_diversity": genetic_diversity
+    }
+    
+    return best_individual, metrics

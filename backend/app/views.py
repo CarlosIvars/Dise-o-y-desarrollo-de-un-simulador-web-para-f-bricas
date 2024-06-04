@@ -18,6 +18,7 @@ from bs4 import BeautifulSoup
 from collections import Counter
 from deep_translator import GoogleTranslator
 from datetime import datetime
+from metricas import plot_metrics
 
 #'Bearer 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'
 @app.route('/')
@@ -567,9 +568,12 @@ def algoritmo_genetico():
     num_individuals = 50
 
     # Ejecutar el algoritmo genético
-    mejor_individuo = run_genetic_algorithm(skills_matching,dependencias, num_generations, 
+    mejor_individuo, metrics = run_genetic_algorithm(skills_matching,dependencias, num_generations, 
                                             num_individuals,num_individuos_seleccion,beneficios, costes_recursos,costes_subtareas, fatigas)
 
+
+    # Visualizar las métricas
+    plot_metrics(metrics)
     puntuacion = evaluate_individual(mejor_individuo,beneficios,costes_recursos, costes_subtareas, fatigas,dependencias)
 
     print("valores mejor individuo:",puntuacion)
