@@ -78,34 +78,28 @@ def crear_individuo(skills_matching, dependencias, fatigas):
 def crossover_operator(individual1, individual2, fatigas):
     size = min(len(individual1), len(individual2))
     cxpoint = random.randint(1, size - 1)
-    # Realiza el cruce
     individual1[cxpoint:], individual2[cxpoint:] = individual2[cxpoint:], individual1[cxpoint:]
 
-    # Verifica y corrige fatiga
+    # Corrige posibles duplicaciones de humanos
     for individual in (individual1, individual2):
+        humanos_asignados = set()
         for i, (subtask, humano) in enumerate(individual):
+            if humano in humanos_asignados:
+                individual[i] = (subtask, None)
+            elif humano is not None:
+                humanos_asignados.add(humano)
+                
+            # Verifica y corrige fatiga
             if humano is not None and fatigas[humano] >= 100:
                 individual[i] = (subtask, None)  # Asigna None o busca una alternativa válida
 
     return individual1, individual2
 
 def mutation_operator(individual, subtasks, dependencias, fatigas):
-    """
-    Aplica una mutación simple a un individuo.
-
-    Args:
-    - individual (list): El individuo a mutar.
-    - subtasks (dict): Diccionario que contiene las subtasks y los posibles humanos que pueden realizarlas.
-    
-    Returns:
-    - individual (list): El individuo mutado.
-    """
-    # Escoge una posición aleatoria en el individuo
     nuevo_individual = list(individual)
     subtask_a_mutar = random.choice(list(subtasks.keys()))
     humanos_posibles = {h for h in subtasks[subtask_a_mutar] if h not in [humano for _, humano in individual] and fatigas[h] < 100}
 
-    # Verificar que las dependencias de la subtask a mutar sean respetadas
     if any(dependencia for dependencia, valor in dependencias.items() if valor == subtask_a_mutar and dependencia not in [subtask for subtask, _ in individual]):
         return creator.Individual(nuevo_individual)  # No realizar la mutación si se violarían las dependencias
 
@@ -117,5 +111,13 @@ def mutation_operator(individual, subtasks, dependencias, fatigas):
                 break
     else:
         pass  # Si no hay humanos disponibles, considera no hacer la mutación o asignar None
+
+    # Corrige posibles duplicaciones de humanos después de la mutación
+    humanos_asignados = set()
+    for i, (subtask, humano) in enumerate(nuevo_individual):
+        if humano in humanos_asignados:
+            nuevo_individual[i] = (subtask, None)
+        elif humano is not None:
+            humanos_asignados.add(humano)
 
     return creator.Individual(nuevo_individual)
