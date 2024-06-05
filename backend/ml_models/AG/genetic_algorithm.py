@@ -41,7 +41,8 @@ def calculate_genetic_diversity(population):
     entropy /= num_genes
     return entropy
 
-def run_genetic_algorithm(skills_matching, dependencias, num_generations, num_individuals, k, beneficios, costes_humanos, costes_tareas, fatigas, crossover_rate=0.8, mutation_rate=0.2):
+def run_genetic_algorithm(skills_matching, dependencias, num_generations, num_individuals, k, beneficios, costes_humanos, costes_tareas, fatigas, crossover_rate=0.8, mutation_rate=0.05):    
+    
     population = initialize_population(skills_matching, num_individuals, dependencias, fatigas)
     aptitudes = evaluate_population(population, beneficios, costes_humanos, costes_tareas, fatigas, dependencias)
 
@@ -66,10 +67,10 @@ def run_genetic_algorithm(skills_matching, dependencias, num_generations, num_in
                     child2 = mutation_operator(child2, skills_matching, dependencias, fatigas)
                 
                 offspring.extend([child1, child2])
-        
         population[:] = offspring
         aptitudes = evaluate_population(population, beneficios, costes_humanos, costes_tareas, fatigas, dependencias)
-        
+        if generation == 0: 
+            print(aptitudes)
         best_fitness = max(aptitudes)
         average_fitness = np.mean(aptitudes)
         diversity = calculate_genetic_diversity(population)

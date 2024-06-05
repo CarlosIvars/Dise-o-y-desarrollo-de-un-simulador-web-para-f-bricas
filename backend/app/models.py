@@ -996,6 +996,20 @@ Por favor, devuélveme la respuesta siguiendo el formato: soft_skills = [X], har
             return None
 
     @staticmethod
+    def duracion_subtasks(fabrica_id):
+        try:
+            cursor = get_db_connection().cursor()
+            sql = "SELECT id, duracion FROM Subtasks WHERE fabrica_id = %s"
+            cursor.execute(sql, (fabrica_id,))
+            resultado = cursor.fetchall()
+            duraciones = {id: duracion for id, duracion in resultado}
+            return duraciones
+        except Exception as ex:
+            print(f"Error al obtener los beneficios: {ex}")
+            return None
+
+
+    @staticmethod
     def add_dependencias_subtasks(subtask_dependiente, subtask_dependencia):
         try:
             connection = get_db_connection()

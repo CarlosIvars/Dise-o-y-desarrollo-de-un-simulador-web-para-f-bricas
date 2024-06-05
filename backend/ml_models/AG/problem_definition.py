@@ -4,7 +4,7 @@ import random
 from deap import creator, base
 
 # Define el tipo de aptitud y el tipo de individuo
-creator.create("FitnessMax", base.Fitness, weights=(1.0,-1.0))
+creator.create("FitnessMax", base.Fitness, weights=(1.0))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
 def evaluate_individual(individual, beneficios, costes_recursos, costes_tareas, fatigas, dependencias):

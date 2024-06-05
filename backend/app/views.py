@@ -13,6 +13,7 @@ import ast
 from config import config
 from data_generator.data_generator import *
 from ml_models.AG.genetic_algorithm import *
+from ml_models.AG.ag import *
 from datetime import date
 from bs4 import BeautifulSoup 
 from collections import Counter
@@ -560,12 +561,14 @@ def algoritmo_genetico():
     costes_recursos = RecursosModel.coste_recursos(fabrica_id)
     costes_subtareas = TareaModel.coste_subtasks(fabrica_id)
     beneficios = TareaModel.beneficio_subtasks(fabrica_id)
+    duracion = TareaModel.duracion_subtasks(fabrica_id)
     skills_id = list(skills_matching.keys())
     dependencias = TareaModel.get_dependencias_subtasks(skills_id)
+    '''
     # Parámetros para el algoritmo genético
-    num_individuos_seleccion= 50
-    num_generations = 2000
-    num_individuals = 50
+    num_individuos_seleccion= 100
+    num_generations = 5000
+    num_individuals = 200
 
     # Ejecutar el algoritmo genético
     mejor_individuo, metrics = run_genetic_algorithm(skills_matching,dependencias, num_generations, 
@@ -585,7 +588,17 @@ def algoritmo_genetico():
         "puntuacion": puntuacion,
         "mejor_individuo": asignaciones
     }
- 
+    '''
+    recursos = {id : {'coste_hora' : costes_recursos[id], 'fatiga' : fatigas[id]} for id in costes_recursos}
+    subtareas = {id : {'coste_inicio': costes_subtareas[id], 'beneficio': beneficios[id],
+                       'duracion': duracion[id], 'skills_matching': skills_matching[id]} for id in costes_subtareas}
+    '''
+    print(recursos)
+    print('#####################################################################################################################')
+    print(subtareas)
+    '''
+    resultado,stats = genetic_algorithm_assignment(recursos, subtareas)
+
     return jsonify(resultado), 200
 
 @app.route('/add_historial', methods = ['POST'])
