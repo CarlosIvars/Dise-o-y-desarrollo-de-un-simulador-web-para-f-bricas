@@ -2,6 +2,7 @@ import numpy as np
 from deap import base, creator, tools
 import random
 import matplotlib.pyplot as plt
+import math
 
 def genetic_algorithm_assignment(humanos, tareas, N_POP=100, CXPB=0.5, MUTPB=0.2, NGEN=100):
     # Función de aptitud
@@ -12,18 +13,22 @@ def genetic_algorithm_assignment(humanos, tareas, N_POP=100, CXPB=0.5, MUTPB=0.2
         humanos_asignados = set()
         penalizacion = 0
         
+        peso_beneficio = 0.25
+        peso_coste = 0.25   
+        peso_fatiga = 0.5
+
         for tarea, humano in individual.items():
             if humano is not None and humanos[humano]['fatiga'] < 100:
                 if humano in humanos_asignados:
-                    penalizacion += 1000  # Penalización por humano asignado a múltiples tareas
+                    penalizacion += 10000000000 
+                    #penalizacion = np.inf  # Penalización por humano asignado a múltiples tareas, caso que no se puede dar
                 else:
                     humanos_asignados.add(humano)
                     total_beneficio += tareas[tarea]['beneficio']
                     total_coste += tareas[tarea]['coste_inicio'] + (humanos[humano]['coste_hora'] * tareas[tarea]['duracion'])
                     total_fatiga += humanos[humano]['fatiga']
-            else:
-                penalizacion += 1000
-        fitness = total_beneficio - total_coste - total_fatiga - penalizacion
+            
+        fitness =  (total_beneficio * peso_beneficio - total_coste * peso_coste - total_fatiga * peso_fatiga) - penalizacion 
         return fitness,
 
     # Estructura del individuo y la población
@@ -47,9 +52,6 @@ def genetic_algorithm_assignment(humanos, tareas, N_POP=100, CXPB=0.5, MUTPB=0.2
                 individual[tarea] = None
         return individual
 
-    toolbox.register("individual", tools.initIterate, creator.Individual, create_individual)
-    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-
     # Operadores genéticos personalizados
     def cxDictTwoPoint(ind1, ind2):
         ind1_keys = list(ind1.keys())
@@ -66,8 +68,6 @@ def genetic_algorithm_assignment(humanos, tareas, N_POP=100, CXPB=0.5, MUTPB=0.2
 
         return ind1, ind2
 
-    toolbox.register("mate", cxDictTwoPoint)
-
     def mutIndividual(individual):
         tarea_to_mutate = random.choice(list(individual.keys()))
         current_humano = individual[tarea_to_mutate]
@@ -76,14 +76,22 @@ def genetic_algorithm_assignment(humanos, tareas, N_POP=100, CXPB=0.5, MUTPB=0.2
         if current_humano in possible_humanos:
             possible_humanos.remove(current_humano)
         
-        new_humano = random.choice(possible_humanos + [None])
+        #Si no hay humanos que puedan realizar la tarea, entonces esta se queda ociosa
+        if not possible_humanos:
+            possible_humanos = [None]
+
+        new_humano = random.choice(possible_humanos)
         
         while new_humano in individual.values() and new_humano is not None:
-            new_humano = random.choice(possible_humanos + [None])
+            new_humano = random.choice(possible_humanos)
         
         individual[tarea_to_mutate] = new_humano
         return individual,
 
+    #Herramientas 
+    toolbox.register("individual", tools.initIterate, creator.Individual, create_individual)
+    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+    toolbox.register("mate", cxDictTwoPoint)
     toolbox.register("mutate", mutIndividual)
     toolbox.register("select", tools.selTournament, tournsize=3)
     toolbox.register("evaluate", calculate_fitness)
@@ -124,12 +132,14 @@ def genetic_algorithm_assignment(humanos, tareas, N_POP=100, CXPB=0.5, MUTPB=0.2
         offspring = toolbox.select(pop, len(pop))
         offspring = list(map(toolbox.clone, offspring))
 
+        #Operacion de crossover
         for child1, child2 in zip(offspring[::2], offspring[1::2]):
             if random.random() < CXPB:
                 toolbox.mate(child1, child2)
                 del child1.fitness.values
                 del child2.fitness.values
 
+        #Operacio de  mutacion
         for mutant in offspring:
             if random.random() < MUTPB:
                 toolbox.mutate(mutant)
@@ -156,7 +166,7 @@ def genetic_algorithm_assignment(humanos, tareas, N_POP=100, CXPB=0.5, MUTPB=0.2
     # Plot de estadísticas
     plt.figure(figsize=(10,8))
     front = np.array([(c['gen'], c['avg']) for c in stats_records])
-    plt.plot(front[:,0][1:], front[:,1][1:], "-bo", c="b")
+    plt.plot(front[:, 0][1:], front[:, 1][1:], marker='o', linestyle='-', color='b')    
     plt.axis("tight")
     plt.show()
 

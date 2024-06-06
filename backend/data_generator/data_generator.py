@@ -83,9 +83,9 @@ def generate_factories(num):
         fabrica = FabricaModel.add_fabrica(factory['nombre_fabrica'], user_id, factory['capital_inicial'], sectores[factory['sector']])
         print("Generamos Fabricas")
         try:
-            generate_trabajadores(20, fabrica[7], fabrica[0])
-            generate_maquinas(20, fabrica[7], fabrica[0])
-            generate_subtasks(20, fabrica[7], fabrica[0])
+            #generate_trabajadores(300, fabrica[7], fabrica[0])
+            generate_maquinas(100, fabrica[7], fabrica[0])
+            generate_subtasks(500, fabrica[7], fabrica[0])
             #generate_subtasks(300)
         except Exception as ex:
             return {'error': f'Error al generar datos de la fabrica'}
@@ -94,7 +94,9 @@ def generate_factories(num):
 def generate_data():
     try:
         print("Generamos datos")
-        generate_factories(20)
+        #generate_factories(1)
+       # generate_maquinas(100,'Servicio comunitario y social',147)
+        generate_subtasks(500, 'Servicio comunitario y social', 147)
         return {'mensaje': 'Datos generados y añadidos correctamente'}
     except Exception as ex:
         return {'error': f'Error al generar datos ficticios: {ex}'}

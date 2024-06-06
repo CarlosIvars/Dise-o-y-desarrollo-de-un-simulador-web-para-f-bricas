@@ -24,7 +24,7 @@ from metricas import plot_metrics
 #'Bearer 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'
 @app.route('/')
 def init():
-    #generate_data()
+    generate_data()
     #t =TareaModel.get_hard_skills('Apoyo sanitario')
     #print(t)
     skills_matching = {
@@ -105,13 +105,13 @@ def init():
     num_individuals = 50
 
     # Ejecutar el algoritmo genético
-    mejor_individuo = run_genetic_algorithm(skills_matching,dependencias, num_generations, num_individuals,k,beneficios, costes, fatigas)
+    #mejor_individuo = run_genetic_algorithm(skills_matching,dependencias, num_generations, num_individuals,k,beneficios, costes, fatigas)
     #print("valores mejor individuo:",evaluate_individual(mejor_individuo,beneficios,costes, fatigas,dependencias))
     #print("El mejor individuo encontrado es:", mejor_individuo)
 
     #soft_skills = TareaModel.get_soft_skills();
     #print(soft_skills)
-    return mejor_individuo
+    return jsonify({'error': 'Faltan lllllllllllllllllllllllllldatos necesarios para el registro'}), 200
 
 ############################################################################################
 # Pagina inicio sesion
