@@ -597,9 +597,18 @@ def algoritmo_genetico():
     print('#####################################################################################################################')
     print(subtareas)
     '''
+
     resultado,stats = genetic_algorithm_assignment(recursos, subtareas)
 
-    return jsonify(resultado), 200
+    mejor_individuo_list = list(resultado['mejor_individuo'].items())
+
+    # Crear la nueva respuesta con la lista de tuplas
+    nueva_respuesta = {
+        'puntuacion': resultado['puntuacion'],
+        'mejor_individuo': mejor_individuo_list
+    }
+    
+    return jsonify(nueva_respuesta), 200
 
 @app.route('/add_historial', methods = ['POST'])
 def añadir_historial():

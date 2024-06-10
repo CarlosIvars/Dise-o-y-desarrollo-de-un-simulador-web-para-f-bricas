@@ -231,6 +231,9 @@ export class ApiService {
 
   algoritmoGeneticoRL() {
     const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
       withCredentials: true
     };
     return this.http.get<any>(`${environment.apiUrlBase}/alg_genetico_RL`, httpOptions);
