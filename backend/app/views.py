@@ -598,13 +598,13 @@ def algoritmo_genetico():
     print(subtareas)
     '''
 
-    resultado,stats = genetic_algorithm_assignment(recursos, subtareas)
+    resultado, stats = genetic_algorithm_assignment(recursos, subtareas)
 
-    mejor_individuo_list = list(resultado['mejor_individuo'].items())
+    mejor_individuo_list = list(resultado.items())
 
     # Crear la nueva respuesta con la lista de tuplas
     nueva_respuesta = {
-        'puntuacion': resultado['puntuacion'],
+        'puntuacion': stats,
         'mejor_individuo': mejor_individuo_list
     }
     

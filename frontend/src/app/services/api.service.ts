@@ -87,7 +87,7 @@ export class ApiService {
 
   crearTrabajador(nombre: string, apellidos: string, fecha_nacimiento: string, fatiga: number, coste_h: number, preferencias: string, skills: number[]) {
     console.log({nombre, apellidos, fecha_nacimiento, fatiga, coste_h, preferencias, skills});
-    
+
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -231,9 +231,6 @@ export class ApiService {
 
   algoritmoGeneticoRL() {
     const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/json'
-      }),
       withCredentials: true
     };
     return this.http.get<any>(`${environment.apiUrlBase}/alg_genetico_RL`, httpOptions);
@@ -250,9 +247,9 @@ export class ApiService {
     const trabajadores_formated = [];
     for(const trabajador of trabajadores) {
       const trabajador_formated = {
-        id: trabajador.id, 
-        nombre: trabajador.nombre, 
-        apellidos: trabajador.apellidos, 
+        id: trabajador.id,
+        nombre: trabajador.nombre,
+        apellidos: trabajador.apellidos,
         fecha_nacimiento: trabajador.fecha_nacimiento,
         trabajos_apto: trabajador.trabajos_apto,
         fatiga: trabajador.fatiga,
@@ -269,7 +266,7 @@ export class ApiService {
     const maquinas_formated = [];
     for(const maquina of maquinas) {
       const maquina_formated = {
-        id: maquina.id.replace("M_", ""), 
+        id: maquina.id.replace("M_", ""),
         nombre: maquina.nombre,
         fatiga: maquina.fatiga,
         coste_h: maquina.coste_h,
@@ -295,7 +292,7 @@ export class ApiService {
         coste: tarea.coste,
         descripcion: tarea.descripcion,
         skills: tarea.skills,
-        factorFatiga: tarea.factorFatiga, 
+        factorFatiga: tarea.factorFatiga,
         factorDuracion: tarea.factorDuracion //Tener en cuenta que puede no ser el que se ha usado para calcular la duracion porque se ha cambiado a posteriori
       }
       subtasks_formated.push(tarea_formated);
