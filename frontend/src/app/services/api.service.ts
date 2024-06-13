@@ -236,7 +236,7 @@ export class ApiService {
     return this.http.get<any>(`${environment.apiUrlBase}/alg_genetico_RL`, httpOptions);
   }
 
-  addHistorial(costes: number, beneficios: number, capital: number, trabajadores: Trabajador[], maquinas: Maquina[], subtasks: Tarea[]) {
+  addHistorial(dia: number, hora: number, minutos: number, costes: number, beneficios: number, capital: number, trabajadores: Trabajador[], maquinas: Maquina[], subtasks: Tarea[]) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -310,8 +310,19 @@ export class ApiService {
       }
     }
 
-    console.log({costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones});
+    console.log(`Dia: ${dia}, hora: ${hora}, minutos: ${minutos}`);
+    //Calculamos la fecha a partir del 2024-01-01 y se suma los días, horas y minutos que han pasado
+    let fechaInicio = new Date(2024, 0, 1, 0, 0);
 
-    return this.http.post<any>(`${environment.apiUrlBase}/add_historial`, {costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones}, httpOptions);
+    let fechaFicticia = new Date(fechaInicio.getTime());
+    fechaFicticia.setDate(fechaFicticia.getDate() + (dia - 1)); // -1 porque empezamos en día 1
+    fechaFicticia.setHours(fechaFicticia.getHours() + hora);
+    fechaFicticia.setMinutes(fechaFicticia.getMinutes() + minutos + 1); // Para que el 00 coresponda con el dia 1
+
+    const fecha = fechaFicticia.toISOString();
+
+    console.log({fecha, costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones});
+
+    return this.http.post<any>(`${environment.apiUrlBase}/add_historial`, {fecha, costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones}, httpOptions);
   }
 }
