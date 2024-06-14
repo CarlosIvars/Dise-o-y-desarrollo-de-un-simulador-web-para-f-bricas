@@ -481,4 +481,88 @@ export class FabricaComponent {
   guardarHistorial() {
     this.historialService.guardar_historial();
   }
+
+  boton1() {
+    console.log("Realizando la funcion del boton1...");
+  
+    this.apiService.funcion1().pipe(
+      finalize(() => {
+        console.log("Fin de la funcion");
+      })
+    ).subscribe({
+      next: (response) => {
+        try{
+          console.log("Respuesta: ", response);
+        } catch (error: any) {
+          alert("Error al procesar la respuesta: " + error.message);
+        }
+      },
+      error: (error) => {
+        alert("Error: " + error); 
+      }
+    });
+  }
+
+  boton2() {
+    console.log("Realizando la funcion del boton2...");
+  
+    this.apiService.funcion1().pipe(
+      finalize(() => {
+        console.log("Fin de la funcion");
+      })
+    ).subscribe({
+      next: (response) => {
+        try{
+          console.log("Respuesta: ", response);
+        } catch (error: any) {
+          alert("Error al procesar la respuesta: " + error.message);
+        }
+      },
+      error: (error) => {
+        alert("Error: " + error); 
+      }
+    });
+  }
+
+  boton3() {
+    console.log("Realizando la funcion del boton3...");
+  
+    this.apiService.funcion1().pipe(
+      finalize(() => {
+        console.log("Fin de la funcion");
+      })
+    ).subscribe({
+      next: (response) => {
+        try{
+          console.log("Respuesta: ", response);
+        } catch (error: any) {
+          alert("Error al procesar la respuesta: " + error.message);
+        }
+      },
+      error: (error) => {
+        alert("Error: " + error); 
+      }
+    });
+  }
+
+  boton4() {
+    console.log("Realizando la funcion del boton4...");
+  
+    this.apiService.funcion1().pipe(
+      finalize(() => {
+        console.log("Fin de la funcion");
+      })
+    ).subscribe({
+      next: (response) => {
+        try{
+          console.log("Respuesta: ", response);
+        } catch (error: any) {
+          alert("Error al procesar la respuesta: " + error.message);
+        }
+      },
+      error: (error) => {
+        alert("Error: " + error); 
+      }
+    });
+  }
 }

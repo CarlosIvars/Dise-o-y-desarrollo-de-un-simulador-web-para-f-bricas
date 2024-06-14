@@ -325,4 +325,32 @@ export class ApiService {
 
     return this.http.post<any>(`${environment.apiUrlBase}/add_historial`, {fecha, costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones}, httpOptions);
   }
+
+  funcion1(): Observable<any> {
+    const httpOptions = {
+      withCredentials: true
+    };
+    return this.http.get<any>(`${environment.apiUrlBase}/fabricas`, httpOptions);
+  }
+
+  funcion2(): Observable<any> {
+    const httpOptions = {
+      withCredentials: true
+    };
+    return this.http.get<any>(`${environment.apiUrlBase}/fabricas`, httpOptions);
+  }
+
+  funcion3(): Observable<any> {
+    const httpOptions = {
+      withCredentials: true
+    };
+    return this.http.get<any>(`${environment.apiUrlBase}/fabricas`, httpOptions);
+  }
+
+  funcion4(): Observable<any> {
+    const httpOptions = {
+      withCredentials: true
+    };
+    return this.http.get<any>(`${environment.apiUrlBase}/fabricas`, httpOptions);
+  }
 }
