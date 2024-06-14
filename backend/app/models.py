@@ -267,7 +267,7 @@ class FabricaModel:
     def get_historial(fabrica_id):
         try: 
             cursor = get_db_connection().cursor()
-            sql = '''SELECT id, fecha, costes, beneficios, asignaciones FROM historial WHERE fabrica_id = %s'''
+            sql = '''SELECT id, fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones FROM historial WHERE fabrica_id = %s'''
             cursor.execute(sql, (fabrica_id,))
             lista_resultados = []
             resultados = cursor.fetchall()
@@ -277,11 +277,15 @@ class FabricaModel:
                     'fecha': str(resultado[1]),  # convertir fecha a string
                     'costes': resultado[2],
                     'beneficios': resultado[3],
-                    'asignaciones': json.loads(resultado[4])  # convertir JSON a lista
+                    'capital' : resultado[4],
+                    'trabajadores' : resultado[5],
+                    'maquinas' : resultado[6],
+                    'subtasks' : resultado[7],
+                    'asignaciones': resultado[8]  # convertir JSON a lista
                 }
                 lista_resultados.append(registro)
 
-            return json.dumps(lista_resultados)  # convertir la lista de diccionarios a JSON
+            return lista_resultados  # convertir la lista de diccionarios a JSON
         
         except Exception as ex:
             print(f"Error al obtener el historial: {ex}")

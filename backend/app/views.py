@@ -14,6 +14,8 @@ from config import config
 from data_generator.data_generator import *
 from ml_models.AG.genetic_algorithm import *
 from ml_models.AG.ag import *
+from ml_models.RegresionLineal.regresionLineal import *
+from ml_models.RegresionLineal.random_forest import *
 from datetime import date
 from bs4 import BeautifulSoup 
 from collections import Counter
@@ -25,92 +27,7 @@ from metricas import plot_metrics
 @app.route('/')
 def init():
     generate_data()
-    #t =TareaModel.get_hard_skills('Apoyo sanitario')
-    #print(t)
-    skills_matching = {
-    'Tarea1': ['Humano1', 'Humano2', 'Humano3', 'Humano4'],
-    'Tarea2': ['Humano1', 'Humano4', 'Humano5', 'Humano6'],
-    'Tarea3': ['Humano2', 'Humano3', 'Humano5', 'Humano7'],
-    'Tarea4': ['Humano8', 'Humano9', 'Humano10', 'Humano11'],
-    'Tarea5': ['Humano12', 'Humano13', 'Humano14', 'Humano3'],
-    'Tarea6': ['Humano1', 'Humano15', 'Humano16', 'Humano17'],
-    'Tarea7': ['Humano18', 'Humano19', 'Humano20', 'Humano21'],
-    'Tarea8': ['Humano22', 'Humano23', 'Humano24', 'Humano25'],
-    'Tarea9': ['Humano26', 'Humano27', 'Humano28', 'Humano29'],
-    'Tarea10': ['Humano30'],
-    'Tarea11': ['Humano30'],
-
-    }
-    beneficios= {
-        'Tarea1': 100,
-        'Tarea2': 150,
-        'Tarea3': 120,
-        'Tarea4': 130,
-        'Tarea5': 80,
-        'Tarea6': 200,
-        'Tarea7': 110,
-        'Tarea8': 90,
-        'Tarea9': 160,
-        'Tarea10': 140,
-        'Tarea11' : 5000,
-    }
-    costes_humanos = {
-        'Humano1': 50, 'Humano2': 45, 'Humano3': 55, 'Humano4': 40, 'Humano5': 60,
-        'Humano6': 50, 'Humano7': 65, 'Humano8': 40, 'Humano9': 55, 'Humano10': 45,
-        'Humano11': 60, 'Humano12': 50, 'Humano13': 55, 'Humano14': 65, 'Humano15': 40,
-        'Humano16': 45, 'Humano17': 50, 'Humano18': 60, 'Humano19': 40, 'Humano20': 55,
-        'Humano21': 65, 'Humano22': 45, 'Humano23': 50, 'Humano24': 55, 'Humano25': 40,
-        'Humano26': 60, 'Humano27': 65, 'Humano28': 45, 'Humano29': 55, 'Humano30': 50,
-        'Humano31': 40, 'Humano32': 60, 'Humano33': 65
-    }
     
-    costes_tareas= {
-        'Tarea1': 100,
-        'Tarea2': 150,
-        'Tarea3': 120,
-        'Tarea4': 130,
-        'Tarea5': 80,
-        'Tarea6': 200,
-        'Tarea7': 110,
-        'Tarea8': 90,
-        'Tarea9': 160,
-        'Tarea10': 140,
-        'Tarea11' : 5000,
-    }
-    fatigas = {
-        'Humano1': 10, 'Humano2': 15, 'Humano3': 20, 'Humano4': 10, 'Humano5': 25,
-        'Humano6': 5, 'Humano7': 30, 'Humano8': 10, 'Humano9': 20, 'Humano10': 15,
-        'Humano11': 5, 'Humano12': 10, 'Humano13': 25, 'Humano14': 30, 'Humano15': 20,
-        'Humano16': 15, 'Humano17': 10, 'Humano18': 5, 'Humano19': 25, 'Humano20': 20,
-        'Humano21': 15, 'Humano22': 30, 'Humano23': 5, 'Humano24': 10, 'Humano25': 25,
-        'Humano26': 20, 'Humano27': 15, 'Humano28': 10, 'Humano29': 5, 'Humano30': 10,
-        'Humano31': 25, 'Humano32': 20, 'Humano33': 15
-    }
-
-    dependencias = {
-        'Tarea11' : 'Tarea10',
-    }
-    '''
-    skills_matching = TareaModel.skills_matching(fabrica_id)
-    fatigas = RecursosModel.fatiga_recursos(fabrica_id)
-    costes = RecursosModel.coste_recursos(fabrica_id)
-    beneficios = TareaModel.beneficio_subtasks(fabrica_id)
-    dependencias = TareaModel.dependencias_subtasks(skills_matching)
-
-    '''
-    k= 50
-
-    # Parámetros para el algoritmo genético
-    num_generations = 2000
-    num_individuals = 50
-
-    # Ejecutar el algoritmo genético
-    #mejor_individuo = run_genetic_algorithm(skills_matching,dependencias, num_generations, num_individuals,k,beneficios, costes, fatigas)
-    #print("valores mejor individuo:",evaluate_individual(mejor_individuo,beneficios,costes, fatigas,dependencias))
-    #print("El mejor individuo encontrado es:", mejor_individuo)
-
-    #soft_skills = TareaModel.get_soft_skills();
-    #print(soft_skills)
     return jsonify({'error': 'Faltan lllllllllllllllllllllllllldatos necesarios para el registro'}), 200
 
 ############################################################################################
@@ -610,11 +527,26 @@ def algoritmo_genetico():
     
     return jsonify(nueva_respuesta), 200
 
+@app.route('/alg_genetico_RL', methods = ['GET'])
+def modelosPredictivos():
+    try:
+        fabrica_id = session.get('fabrica')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 404
+        
+        data = FabricaModel.get_historial(fabrica_id)
+        d = regresionLineal(data)
+        #d = randomForest(data)
+        return jsonify({'response': 124})
+    except Exception as ex:
+        app.logger.error(f'Error regresion lineal: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud regresion lineal'}), 500
+   
+
 @app.route('/add_historial', methods = ['POST'])
 def añadir_historial():
     try:
         fabrica_id = session.get('fabrica')
-        fabrica_id = 1
         if not fabrica_id:
             return jsonify({'error': 'Fabrica no encontrada'}), 401
         
@@ -624,7 +556,7 @@ def añadir_historial():
         
         current_time = datetime.now()
         
-        fecha = current_time.strftime('%Y-%m-%d %H:%M:%S')
+        fecha = data.get('timestamp')
         costes = data.get('costes')
         beneficios = data.get('beneficios')
         capital = data.get('capital')
@@ -651,22 +583,12 @@ def get_historial():
         
         resultados = FabricaModel.get_historial(fabrica_id)
         if resultados:
-            for resultado in resultados:
-                #para trabajar con los resultados si es necesario
-                id_registro = resultado[0]
-                fecha = resultado[1]
-                costes = resultado[2]
-                beneficios = resultado[3]
-                asignaciones_json = resultado[4]
-
-                #asignaciones = json.loads(asignaciones_json)
-
-            return resultados
+            return jsonify({'historial' : resultados[-1]}), 200
         else:
             return jsonify({'error': 'Error al procesar la solicitud'}), 401
     except Exception as ex:
-            app.logger.error(f'Error al obtener historial: {ex}')
-            return jsonify({'error': 'Error al procesar la solicitud'}), 500
+        app.logger.error(f'Error al obtener historial: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
 ############################################################################################
 # En proceso ¡¡¡No usar aun !!!
 ############################################################################################
