@@ -266,7 +266,7 @@ export class ApiService {
     const maquinas_formated = [];
     for(const maquina of maquinas) {
       const maquina_formated = {
-        id: maquina.id.replace("M_", ""),
+        id: maquina.id,
         nombre: maquina.nombre,
         fatiga: maquina.fatiga,
         coste_h: maquina.coste_h,
