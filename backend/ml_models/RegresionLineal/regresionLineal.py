@@ -24,7 +24,7 @@ def caracteristicas_trabajadores(trabajadores):
     total_skills = sum(skills.values())
     distribucion_skills = {k: v / total_skills for k, v in skills.items()}
     
-    return promedio_fatiga, promedio_coste_h, distribucion_skills
+    return promedio_fatiga, promedio_coste_h,  distribucion_skills
 
 def caracteristicas_maquinas(maquinas):
     activas = [m for m in maquinas if m['activo']]

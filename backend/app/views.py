@@ -16,6 +16,7 @@ from ml_models.AG.genetic_algorithm import *
 from ml_models.AG.ag import *
 from ml_models.RegresionLineal.regresionLineal import *
 from ml_models.RegresionLineal.random_forest import *
+from ml_models.Fatiga.preproceso_fatiga import*
 from datetime import date
 from bs4 import BeautifulSoup 
 from collections import Counter
@@ -535,7 +536,7 @@ def modelosPredictivos():
             return jsonify({'error': 'Fabrica no encontrada'}), 404
         
         data = FabricaModel.get_historial(fabrica_id)
-        d = regresionLineal(data)
+        d = preproceso_datos_fatiga(data)
         #d = randomForest(data)
         return jsonify({'response': 124})
     except Exception as ex:
