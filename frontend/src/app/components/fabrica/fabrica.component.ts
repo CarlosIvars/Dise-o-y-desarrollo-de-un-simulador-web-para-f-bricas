@@ -402,7 +402,6 @@ export class FabricaComponent {
       next: (response) => {
         try{
           console.log("Respuesta: ", response);
-          debugger;
           if(response.mejor_individuo != null && response.mejor_individuo != undefined) {
             for(const item of response.mejor_individuo) {
               const idTarea = item[0];
@@ -445,7 +444,6 @@ export class FabricaComponent {
       next: (response) => {
         try{
           console.log("Respuesta: ", response);
-          debugger;
           if(response.mejor_individuo != null && response.mejor_individuo != undefined) {
             for( const [idTarea, idAsignable] of Object.entries(response.mejor_individuo)) {
               const tarea = this.tareas.find(tarea => tarea.id === parseInt(idTarea));

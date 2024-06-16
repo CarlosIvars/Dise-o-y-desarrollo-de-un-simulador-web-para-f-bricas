@@ -174,6 +174,7 @@ export class TimerService {
           //Se comprueba si se ha fatigado el trabajador/maquina
           if(asignable.fatiga >= 100) {
             console.log(`Se ha fatigado el trabajador/maquina ${asignable.nombre}`);
+            asignable.fatiga = 100;
 
             //Variables de la fatiga
             asignable.fatiga_de_partida = asignable.fatiga + 4;
@@ -300,13 +301,13 @@ export class TimerService {
 
     let P = 0;
     if(this.trabajadoresService.isTrabajador(asignable)) {
-      if(Math.random()<= 0.05){
+      if(Math.random()<= (0.05 / 60)){    //60 porque queremos que se fatigue un 5% cada hora
         return fmax;
       }
       tau = 300;
       P = asignable.preferencias_trabajo == tarea.id ? 1 : 0;
     }else{
-      if(Math.random()<= 0.15){
+      if(Math.random()<= (0.15 / 60)){  //60 porque queremos que se fatigue un 15% cada hora
         return fmax;
       }
       tau = 500;

@@ -35,17 +35,17 @@ export class ArbolDeTareasComponent {
     this.tareasSub = this.tareasService.tareas$.subscribe(tareas => {
       this.tareas = tareas;
 
+      // Vaciar los arrays existentes
+      this.nodes.length = 0;
+      this.links.length = 0;
+
       //Cargamos los datos en el mapa
-      this.nodes = [];
-      this.links = [];
       for(let tarea of tareas) {
         this.nodes.push({id: "" + tarea.id, label: "tarea_" + tarea.id, tarea});
         if(tarea.tareaPadre != undefined) {
           this.links.push({id: "link_" + tarea.id, source: "" + tarea.tareaPadre.id, target: "" + tarea.id});
         }
       }
-      this.nodes = [...this.nodes];
-      this.links = [...this.links];
     });
   }
 
