@@ -477,7 +477,7 @@ export class FabricaComponent {
   }
 
   guardarHistorial() {
-    this.historialService.guardar_historial();
+    this.historialService.guardar_historial(8);
   }
 
   boton1() {

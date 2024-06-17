@@ -57,11 +57,16 @@ export class TimerService {
       this.fabrica.activa = true;
       this.fabricaService.actualizarFabrica(this.fabrica);
 
+      //Guardamos el historial
+      this.historialService.guardar_historial(1);
+
       //Mediante un timeout se ejecuta la logica cada x tiempo
       const execute = () => {
         this.scriptEjecucion();
         console.log('Script ejecutado');
-        this.timeoutId = setTimeout(execute, 1000 / this.velocidadEjecucion);
+        if(this.fabrica?.activa) {
+          this.timeoutId = setTimeout(execute, 1000 / this.velocidadEjecucion);
+        }
       };
       this.timeoutId = setTimeout(execute, 1000 / this.velocidadEjecucion);
     }
@@ -72,7 +77,7 @@ export class TimerService {
     if(this.fabrica != undefined){
       this.fabrica.activa = false;
       this.fabricaService.actualizarFabrica(this.fabrica);
-    
+
       //Limpiamos el timeout
       clearTimeout(this.timeoutId);
     }
@@ -159,7 +164,7 @@ export class TimerService {
             console.log(`Tarea ${tarea.nombre} procesada. (+${tarea.beneficio}€)`);
             
             //Hacemos captura
-            this.historialService.guardar_historial();
+            this.historialService.guardar_historial(4);
           }
 
           // Aumentamos la fatiga del trabajador/maquina y lo actualizamos
@@ -184,7 +189,7 @@ export class TimerService {
             this.tareasService.desasignarATarea(tarea, this.fabrica); // Se encarga de actualizar a los services
 
             console.log(`Trabajador/maquina ${asignable.nombre} fatigada`);
-            this.historialService.guardar_historial();
+            this.historialService.guardar_historial(7);
           }
         }
       }
@@ -274,7 +279,7 @@ export class TimerService {
       this.tareasService.actualizarTarea(tarea);
 
       //Hacemos captura
-      this.historialService.guardar_historial();
+      this.historialService.guardar_historial(3);
     }
   }
  
@@ -345,10 +350,11 @@ export class TimerService {
   }
 
   siguienteDia() {
-    alert("Día completado!");
+    this.pararEjecucion();
+    this.historialService.guardar_historial(2);
 
-    console.log("Día completado.")
-    this.historialService.guardar_historial();
+    alert("Día completado!");
+    console.log("Día completado.");
 
     for(const trabajador of this.trabajadores) {
       //trabajador.fatiga_de_partida -= this.reducirFatigaDia(trabajador);

@@ -236,7 +236,7 @@ export class ApiService {
     return this.http.get<any>(`${environment.apiUrlBase}/alg_genetico_RL`, httpOptions);
   }
 
-  addHistorial(dia: number, hora: number, minutos: number, costes: number, beneficios: number, capital: number, trabajadores: Trabajador[], maquinas: Maquina[], subtasks: Tarea[]) {
+  addHistorial(dia: number, hora: number, minutos: number, costes: number, beneficios: number, capital: number, trabajadores: Trabajador[], maquinas: Maquina[], subtasks: Tarea[], flag: number) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -321,9 +321,9 @@ export class ApiService {
 
     const fecha = fechaFicticia.toISOString();
 
-    console.log({fecha, costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones});
+    console.log({fecha, costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones, flag});
 
-    return this.http.post<any>(`${environment.apiUrlBase}/add_historial`, {fecha, costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones}, httpOptions);
+    return this.http.post<any>(`${environment.apiUrlBase}/add_historial`, {fecha, costes, beneficios, capital, trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones, flag}, httpOptions);
   }
 
   funcion1(): Observable<any> {
