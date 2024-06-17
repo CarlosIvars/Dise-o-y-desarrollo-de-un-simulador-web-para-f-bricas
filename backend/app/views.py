@@ -16,7 +16,7 @@ from ml_models.AG.genetic_algorithm import *
 from ml_models.AG.ag import *
 from ml_models.RegresionLineal.regresionLineal import *
 from ml_models.RegresionLineal.random_forest import *
-from ml_models.Fatiga.preproceso_fatiga import*
+from ml_models.Fatiga.modelosML import *
 from datetime import date
 from bs4 import BeautifulSoup 
 from collections import Counter
@@ -27,7 +27,8 @@ from metricas import plot_metrics
 #'Bearer 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'
 @app.route('/')
 def init():
-    generate_data()
+    print(FabricaModel.get_sectores())
+    #generate_data()
     
     return jsonify({'error': 'Faltan lllllllllllllllllllllllllldatos necesarios para el registro'}), 200
 
@@ -536,7 +537,7 @@ def modelosPredictivos():
             return jsonify({'error': 'Fabrica no encontrada'}), 404
         
         data = FabricaModel.get_historial(fabrica_id)
-        d = preproceso_datos_fatiga(data)
+        d = modelosML(data)
         #d = randomForest(data)
         return jsonify({'response': 124})
     except Exception as ex:
@@ -547,6 +548,7 @@ def modelosPredictivos():
 @app.route('/add_historial', methods = ['POST'])
 def añadir_historial():
     try:
+        
         fabrica_id = session.get('fabrica')
         if not fabrica_id:
             return jsonify({'error': 'Fabrica no encontrada'}), 401
@@ -554,10 +556,9 @@ def añadir_historial():
         data=request.json
         if not data:
             return jsonify({'error': 'No se proporcionó informacion para guardar en el historial'}), 400
-        
         current_time = datetime.now()
         
-        fecha = data.get('timestamp')
+        fecha = data.get('fecha')
         costes = data.get('costes')
         beneficios = data.get('beneficios')
         capital = data.get('capital')
@@ -566,11 +567,11 @@ def añadir_historial():
         subtasks = data.get('subtasks')
         asignaciones = data.get('asignaciones')
         tiempo_trabajado = data.get('tiempo_trabajado')
+        sector = session.get('sector')
 
-        result = FabricaModel.add_historial(fecha,costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id)
-
-       
+        result = FabricaModel.add_historial(fecha,costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id, sector)
         return jsonify({'mensaje': 'Historial actualizado' , 'historial' : result}), 200
+   
     except Exception as ex:
         app.logger.error(f'Error al actualizar historial: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500

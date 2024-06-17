@@ -238,7 +238,7 @@ class FabricaModel:
             return None
 
     @staticmethod
-    def add_historial(fecha,costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id):
+    def add_historial(fecha,costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id, sector):
         try: 
             cursor = get_db_connection().cursor()
 
@@ -248,10 +248,10 @@ class FabricaModel:
             asignaciones = json.dumps(asignaciones)
             tiempo_trabajado = json.dumps(tiempo_trabajado)
 
-            sql = '''INSERT INTO historial(fecha, costes, beneficios,capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id) VALUES(%s, %s, %s, %s, %s, %s,%s, %s, %s, %s)'''
-            cursor.execute(sql, (fecha, costes, beneficios,capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado,fabrica_id))
+            sql = '''INSERT INTO historial(fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id, sector) 
+                     VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'''
+            cursor.execute(sql, (fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id, sector))
             conexion.connection.commit()
-
             last_id = cursor.lastrowid
             sql_select = "SELECT * FROM historial WHERE id = %s"
             cursor.execute(sql_select, (last_id,))
@@ -267,7 +267,7 @@ class FabricaModel:
     def get_historial(fabrica_id):
         try: 
             cursor = get_db_connection().cursor()
-            sql = '''SELECT id, fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones FROM historial WHERE fabrica_id = %s'''
+            sql = '''SELECT id, fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, sector FROM historial WHERE fabrica_id = %s'''
             cursor.execute(sql, (fabrica_id,))
             lista_resultados = []
             resultados = cursor.fetchall()
@@ -281,7 +281,8 @@ class FabricaModel:
                     'trabajadores' : resultado[5],
                     'maquinas' : resultado[6],
                     'subtasks' : resultado[7],
-                    'asignaciones': resultado[8]  # convertir JSON a lista
+                    'asignaciones': resultado[8],  # convertir JSON a lista
+                    'sector': resultado[9]
                 }
                 lista_resultados.append(registro)
 
