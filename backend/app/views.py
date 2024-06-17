@@ -536,7 +536,7 @@ def modelosPredictivos():
         if not fabrica_id:
             return jsonify({'error': 'Fabrica no encontrada'}), 404
         
-        data = FabricaModel.get_historial(fabrica_id)
+        data = FabricaModel.get_historial(fabrica_id, 1)
         d = modelosML(data)
         #d = randomForest(data)
         return jsonify({'response': 124})
@@ -568,8 +568,9 @@ def añadir_historial():
         asignaciones = data.get('asignaciones')
         tiempo_trabajado = data.get('tiempo_trabajado')
         sector = session.get('sector')
+        flag = data.get('flag')
 
-        result = FabricaModel.add_historial(fecha,costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id, sector)
+        result = FabricaModel.add_historial(fecha,costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, fabrica_id, sector, flag)
         return jsonify({'mensaje': 'Historial actualizado' , 'historial' : result}), 200
    
     except Exception as ex:
