@@ -39,7 +39,7 @@ export class TareaCardComponent {
       const asignable: Asignable = JSON.parse(data);
       this.tareasService.asignarATarea(tarea, asignable, this.fabrica);
       console.log("Trabajador/maquina asignado.");
-      this.historialService.guardar_historial();
+      this.historialService.guardar_historial(5);
     }
   }
 
@@ -63,7 +63,7 @@ export class TareaCardComponent {
     if(confirm("Se desasignará el trabajador/maquina de esta tarea. ¿Quiere continuar?")) {
       this.tareasService.desasignarATarea(this.tarea, this.fabrica);
       console.log("Trabajador/máquina desasignado.")
-      this.historialService.guardar_historial();
+      this.historialService.guardar_historial(6);
     }
   }
 
