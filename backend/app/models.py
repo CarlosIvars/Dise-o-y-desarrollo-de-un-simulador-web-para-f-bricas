@@ -268,10 +268,10 @@ class FabricaModel:
         try: 
             cursor = get_db_connection().cursor()
             if flag : 
-                sql = '''SELECT id, fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, sector FROM historial WHERE fabrica_id = %s AND flag = %s'''
+                sql = '''SELECT id, fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, sector, flag FROM historial WHERE fabrica_id = %s AND flag = %s'''
                 cursor.execute(sql, (fabrica_id,flag))
             else:
-                sql = '''SELECT id, fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, sector FROM historial WHERE fabrica_id = %s'''
+                sql = '''SELECT id, fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, sector, flag FROM historial WHERE fabrica_id = %s'''
                 cursor.execute(sql, (fabrica_id,))
             lista_resultados = []
             resultados = cursor.fetchall()

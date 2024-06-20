@@ -130,7 +130,6 @@ def avg_fatiga(trabajadores, maquinas, asignaciones):
 def preproceso_datos_fatiga(data):
     df = pd.DataFrame(data)
     try:    
-        print('entramos')
         df['fecha'] = pd.to_datetime(df['fecha'])
         df['dia_semana'] = df['fecha'].dt.dayofweek
         df['hora_dia'] = df['fecha'].dt.hour
