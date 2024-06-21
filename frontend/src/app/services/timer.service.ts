@@ -26,13 +26,13 @@ export class TimerService {
 
   trabajadores: Trabajador[] = [];
   private trabajadoresSub?: Subscription;
-  
+
   maquinas: Maquina[] = [];
   private maquinasSub?: Subscription;
 
   //Iniciamos los observables
-  constructor(private fabricaService: FabricaService, private tareasService: TareasService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService, private historialService: HistorialService) { 
-    
+  constructor(private fabricaService: FabricaService, private tareasService: TareasService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService, private historialService: HistorialService) {
+
     this.fabricaSub = this.fabricaService.fabrica$.subscribe(fabrica => {
       this.fabrica = fabrica;
     });
@@ -93,7 +93,7 @@ export class TimerService {
   scriptEjecucion() {
     if(this.fabrica != undefined) {
       console.log("Ejecutando script...");
-      
+
       // Buscamos tareas ociosas para tratar de arrancarlas
       for (const tarea of this.tareas) {
 
@@ -101,7 +101,7 @@ export class TimerService {
         if(tarea.getAsignable() == undefined) {
           continue;
         }
-        
+
         // Si la tarea se encuentra ociosa tratamos de iniciarla
         if(!tarea.isWorking) {
 
@@ -112,7 +112,7 @@ export class TimerService {
             this.iniciarTarea(tarea);
           } else {
             const numero_cajas = tareaPadre.cantidad;
-            
+
             // Se comprueba que haya al menos una caja disponible...
             if (numero_cajas > 0) {
               const tareas_hijas_ociosas = tareaPadre.tareasHijas.filter(tarea => tarea.isWorking === false);
@@ -145,7 +145,7 @@ export class TimerService {
           //Añadimos el tiempo a la tarea (solo se suma uno porque el script se está ejecutando x veces más rapido)
           tarea.tiempoActual += 1;
 
-          // Comprobamos si ha terminado la tarea para proceder con la venta  
+          // Comprobamos si ha terminado la tarea para proceder con la venta
           if(tarea.tiempoActual >= tarea.duracion){
             //Restamos el salario del trabajador/maquina
             const salario = this.calcularSalario(tarea.tiempoBase, asignable.coste_h);
@@ -160,11 +160,11 @@ export class TimerService {
             tarea.cantidad += 1;
             tarea.tiempoActual = 0;
             tarea.isWorking = false;
-            
+
             console.log(`Tarea ${tarea.nombre} procesada. (+${tarea.beneficio}€)`);
-            
+
             //Hacemos captura
-            this.historialService.guardar_historial(4);
+            //this.historialService.guardar_historial(4);
           }
 
           // Aumentamos la fatiga del trabajador/maquina y lo actualizamos
@@ -189,7 +189,7 @@ export class TimerService {
             this.tareasService.desasignarATarea(tarea, this.fabrica); // Se encarga de actualizar a los services
 
             console.log(`Trabajador/maquina ${asignable.nombre} fatigada`);
-            this.historialService.guardar_historial(7);
+            //this.historialService.guardar_historial(7);
           }
         }
       }
@@ -243,14 +243,14 @@ export class TimerService {
   asignacionAleatoriaTareas(tareas: Tarea[], X: number): Tarea[] {
     const tareasAleatorias = [];
     const tareasCopia = [...tareas]; // Creamos una copia del array original
-    
+
     // Obtener 'X' posiciones aleatorias del array original sin repetir
     for (let i = 0; i < X; i++) {
       const posicionAleatoria = Math.floor(Math.random() * tareasCopia.length);
       tareasAleatorias.push(tareasCopia[posicionAleatoria]);
       tareasCopia.splice(posicionAleatoria, 1); // Eliminamos el elemento seleccionado
     }
-    
+
     return tareasAleatorias;
   }
 
@@ -261,7 +261,7 @@ export class TimerService {
       if(tareaPadre != undefined) {
         tareaPadre.cantidad--;
       }
-      
+
       //Volvemos a calcular la duracion
       const asignable = tarea.getAsignable();
       if(asignable != undefined) {
@@ -279,10 +279,10 @@ export class TimerService {
       this.tareasService.actualizarTarea(tarea);
 
       //Hacemos captura
-      this.historialService.guardar_historial(3);
+      //this.historialService.guardar_historial(3);
     }
   }
- 
+
   calcularSalario(duracion: number, coste_h: number) {
     const horas = duracion / 60;
     const coste = horas * coste_h;

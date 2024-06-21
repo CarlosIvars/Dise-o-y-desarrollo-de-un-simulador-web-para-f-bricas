@@ -8,8 +8,8 @@ from .preproceso_fatiga import *
 
 # Supongamos que df_modelo es el DataFrame preprocesado
 # Cargar tus datos preprocesados
-def modelosML(data):
-    df_modelo = preproceso_datos_fatiga(data)  # Asegúrate de que data esté definida
+def modelosML(data, data_fin):
+    df_modelo = preproceso_datos_fatiga(data, data_fin)  # Asegúrate de que data esté definida
     df_modelo.to_csv('./df_modelo.csv', index=False)
     # Dividir los datos en características (X) y objetivo (y)
     X = df_modelo.drop('clase_fatiga', axis=1)

@@ -287,7 +287,7 @@ class FabricaModel:
                     'subtasks' : resultado[7],
                     'asignaciones': resultado[8],  # convertir JSON a lista
                     'sector': resultado[9],
-                    'flag' : resultado[10]
+                    'flag' : flag
                 }
                 lista_resultados.append(registro)
 
@@ -296,6 +296,38 @@ class FabricaModel:
         except Exception as ex:
             print(f"Error al obtener el historial: {ex}")
             return None
+
+    @staticmethod
+    def get_historial_entero(flag):
+        try: 
+            cursor = get_db_connection().cursor()
+            if flag : 
+                sql = '''SELECT id, fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, sector, flag FROM historial WHERE flag = %s'''
+                cursor.execute(sql, (flag,))
+            lista_resultados = []
+            resultados = cursor.fetchall()
+            for resultado in resultados:
+                registro = {
+                    'id': resultado[0],
+                    'fecha': str(resultado[1]),  # convertir fecha a string
+                    'costes': resultado[2],
+                    'beneficios': resultado[3],
+                    'capital' : resultado[4],
+                    'trabajadores' : resultado[5],
+                    'maquinas' : resultado[6],
+                    'subtasks' : resultado[7],
+                    'asignaciones': resultado[8],  # convertir JSON a lista
+                    'sector': resultado[9],
+                    'flag' : flag
+                }
+                lista_resultados.append(registro)
+
+            return lista_resultados  # convertir la lista de diccionarios a JSON
+        
+        except Exception as ex:
+            print(f"Error al obtener el historial: {ex}")
+            return None
+
 
     @staticmethod
     def get_sectores():

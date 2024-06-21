@@ -536,8 +536,9 @@ def modelosPredictivos():
         if not fabrica_id:
             return jsonify({'error': 'Fabrica no encontrada'}), 404
         
-        data = FabricaModel.get_historial(fabrica_id, 1)
-        d = modelosML(data)
+        data = FabricaModel.get_historial_entero(1)
+        dataR = FabricaModel.get_historial_entero(2)
+        d = modelosML(data, dataR)
         #d = randomForest(data)
         return jsonify({'response': 124})
     except Exception as ex:

@@ -11,7 +11,7 @@ def afinidad_trabajadores(trabajadores, subtasks, asignaciones):
             n += 1
             t_skills = next((trabajador['skills'] for trabajador in trabajadores if trabajador['id'] == t), None)
             s_skills = next((subtask['skills'] for subtask in subtasks if subtask['id'] == s), None)
-            afinidad += (len(set(t_skills) & set(s_skills))) / len(s_skills)   
+            afinidad += (len(set(t_skills) & set(s_skills))) / len(s_skills) if len(s_skills)>1 else 0   
     return afinidad / n if n > 0 else 0
 
 def afinidad_maquinas(maquinas, subtasks, asignaciones):
@@ -24,7 +24,7 @@ def afinidad_maquinas(maquinas, subtasks, asignaciones):
             n += 1
             m_skills = next((maquina['skills'] for maquina in maquinas if maquina['id'] == m), None)
             s_skills = next((subtask['skills'] for subtask in subtasks if subtask['id'] == s), None)
-            afinidad += (len(set(m_skills) & set(s_skills))) / len(s_skills)
+            afinidad += (len(set(m_skills) & set(s_skills))) / len(s_skills) if len(s_skills)>1 else 0
     return afinidad / n if n > 0 else 0
 
 def t_minimo(subtasks, asignaciones):
@@ -91,30 +91,39 @@ def  maquinas_skills(maquinas, asignaciones):
                 skills[index] += 1   
     return skills
 
+def  subtareas_skills(subtasks, asignaciones):
+    skills = [0] * 20
+    for a in asignaciones:
+        m = a['asignable_id'] 
+        s = a['tarea_id']
+        s_skills = next((subtask['skills'] for subtask in subtasks if subtask['id'] == s), None)
+        for skill in s_skills:
+            if 1 <= skill <= 10:
+                index = skill - 1  # Para índices de 0 a 9
+            else:
+                index = (skill % 10) + 10  # Para índices de 10 a 19
+            skills[index] += 1   
+    return skills
+
 def avg_fatiga(trabajadores, maquinas, asignaciones):
     fatigas = []
-    '''
-    for a in asignaciones:
-        asignable_id = a['asignable_id']
-        
-        if asignable_id.startswith('M'):
-            for maquina in maquinas:
-                if maquina['id'] == asignable_id:
-                    fatigas.append(maquina['fatiga'])
-                    break
-        elif asignable_id.startswith('H'):
-            for trabajador in trabajadores:
-                if trabajador['id'] == asignable_id:
-                    fatigas.append(trabajador['fatiga'])
-                    break
-    '''
     for maquina in maquinas:
-        fatigas.append(maquina['fatiga'])
+        fatiga = maquina['fatiga']
+        if fatiga is None:
+            fatiga = 0
+        fatigas.append(fatiga)
+        
     for trabajador in trabajadores:
-        fatigas.append(trabajador['fatiga'])
-  
-    avg_fatiga = sum(fatigas) / len(fatigas) 
+        fatiga = trabajador['fatiga']
+        if fatiga is None:
+            fatiga = 0
+        fatigas.append(fatiga)
+    
+    return sum(fatigas) / len([f for f in fatigas if f != 0]) 
 
+def clase_fatiga(fatiga_ini, fatiga_fin):
+    avg_fatiga = fatiga_fin - fatiga_ini 
+    print(avg_fatiga)
     if avg_fatiga <= 20:
         return 0
     elif avg_fatiga <= 40:
@@ -127,8 +136,9 @@ def avg_fatiga(trabajadores, maquinas, asignaciones):
         return 4
 
 
-def preproceso_datos_fatiga(data):
+def preproceso_datos_fatiga(data, data_fin):
     df = pd.DataFrame(data)
+    df_fin = preproceso_datos_fatiga_clase(data_fin)
     try:    
         df['fecha'] = pd.to_datetime(df['fecha'])
         df['dia_semana'] = df['fecha'].dt.dayofweek
@@ -141,10 +151,11 @@ def preproceso_datos_fatiga(data):
 
         #DATOS a utilizar
         df['sector'] = df.apply(lambda x: sector_fabrica(x['sector']),axis = 1)
-
         #skills
         df['t_skills'] = df.apply(lambda x: trabajadores_skills(x['trabajadores'],x['asignaciones']), axis = 1)
         df['m_skills'] = df.apply(lambda x: maquinas_skills(x['maquinas'],x['asignaciones']), axis = 1)
+        df['s_skills'] = df.apply(lambda x: subtareas_skills(x['subtasks'],x['asignaciones']), axis = 1)
+        
         #tareas activas
         df['s_activas'] = df.apply(lambda x: n_subtareas(x['asignaciones']), axis = 1)
 
@@ -156,9 +167,10 @@ def preproceso_datos_fatiga(data):
         df['t_min'] = df.apply(lambda x : t_minimo(x['subtasks'], x['asignaciones']), axis = 1)
         df['t_max'] = df.apply(lambda x : t_maximo(x['subtasks'], x['asignaciones']), axis = 1)
         df['t_avg'] = df.apply(lambda x : avg_tiempo(x['subtasks'], x['asignaciones']), axis = 1)
-
         #fatiga a predecir
-        df['clase_fatiga'] = df.apply(lambda x: avg_fatiga(x['trabajadores'], x['maquinas'], x['asignaciones']), axis=1)
+        df['fatiga_ini'] = df.apply(lambda x: avg_fatiga(x['trabajadores'], x['maquinas'], x['asignaciones']), axis=1)
+        df['fatiga_fin'] = df_fin['fatiga']
+        df['clase_fatiga'] = df.apply(lambda x: clase_fatiga(x['fatiga_ini'], x['fatiga_fin']), axis=1)
 
         caracteristicas = [
             'sector', 't_skills', 'm_skills', 's_activas',
@@ -167,6 +179,27 @@ def preproceso_datos_fatiga(data):
         ]
         objetivos = ['clase_fatiga']
         df_modelo = df[caracteristicas + objetivos]
+        pd.set_option('display.max_rows', None)
+        pd.set_option('display.max_columns', None)
+        return df_modelo
+    except Exception as ex:
+        print(ex)
+
+def preproceso_datos_fatiga_clase(data):
+    df = pd.DataFrame(data)
+    try:
+        df['fecha'] = pd.to_datetime(df['fecha'])
+        df['dia_semana'] = df['fecha'].dt.dayofweek
+        df['hora_dia'] = df['fecha'].dt.hour
+        
+        df['trabajadores'] = df['trabajadores'].apply(lambda x: json.loads(x.replace("'", "\"")))
+        df['asignaciones'] = df['asignaciones'].apply(lambda x: json.loads(x.replace("'", "\"")))
+        df['maquinas'] = df['maquinas'].apply(lambda x: json.loads(x.replace("'", "\"")))
+        df['subtasks'] = df['subtasks'].apply(lambda x: json.loads(x.replace("'", "\"")))
+        # Fatiga a predecir
+        df['fatiga'] = df.apply(lambda x: avg_fatiga(x['trabajadores'], x['maquinas'], x['asignaciones']), axis=1)
+        objetivos = ['fatiga']
+        df_modelo = df[ objetivos]
         pd.set_option('display.max_rows', None)
         pd.set_option('display.max_columns', None)
         return df_modelo
