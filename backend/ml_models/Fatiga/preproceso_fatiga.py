@@ -105,32 +105,21 @@ def  subtareas_skills(subtasks, asignaciones):
             skills[index] += 1   
     return skills
 
-def avg_fatiga(trabajadores, maquinas, asignaciones):
-    fatigas = []
-    for maquina in maquinas:
-        fatiga = maquina['fatiga']
-        if fatiga is None:
-            fatiga = 0
-        fatigas.append(fatiga)
-        
-    for trabajador in trabajadores:
-        fatiga = trabajador['fatiga']
-        if fatiga is None:
-            fatiga = 0
-        fatigas.append(fatiga)
-    
-    return sum(fatigas) / len([f for f in fatigas if f != 0]) 
+def avg_fatiga(trabajadores):
+       # Asegurarse de que trabajadores es una lista de diccionarios
+    if isinstance(trabajadores, str):
+        trabajadores = json.loads(trabajadores.replace("'", "\""))
+    fatigas = [trabajador['fatiga'] for trabajador in trabajadores if trabajador.get('fatiga') is not None]
+    return sum(fatigas) / len([fatiga for fatiga in fatigas if fatiga != 0]) 
 
-def clase_fatiga(fatiga_ini, fatiga_fin):
-    avg_fatiga = fatiga_fin - fatiga_ini 
-    print(avg_fatiga)
-    if avg_fatiga <= 20:
+def clase_fatiga(fatiga_fin):
+    if fatiga_fin <= 20:
         return 0
-    elif avg_fatiga <= 40:
+    elif fatiga_fin <= 40:
         return 1
-    elif avg_fatiga <= 60:
+    elif fatiga_fin <= 60:
         return 2
-    elif avg_fatiga <= 80:
+    elif fatiga_fin <= 80:
         return 3
     else:
         return 4
@@ -138,7 +127,7 @@ def clase_fatiga(fatiga_ini, fatiga_fin):
 
 def preproceso_datos_fatiga(data, data_fin):
     df = pd.DataFrame(data)
-    df_fin = preproceso_datos_fatiga_clase(data_fin)
+    df_fin = pd.DataFrame(data_fin)
     try:    
         df['fecha'] = pd.to_datetime(df['fecha'])
         df['dia_semana'] = df['fecha'].dt.dayofweek
@@ -168,38 +157,19 @@ def preproceso_datos_fatiga(data, data_fin):
         df['t_max'] = df.apply(lambda x : t_maximo(x['subtasks'], x['asignaciones']), axis = 1)
         df['t_avg'] = df.apply(lambda x : avg_tiempo(x['subtasks'], x['asignaciones']), axis = 1)
         #fatiga a predecir
-        df['fatiga_ini'] = df.apply(lambda x: avg_fatiga(x['trabajadores'], x['maquinas'], x['asignaciones']), axis=1)
-        df['fatiga_fin'] = df_fin['fatiga']
-        df['clase_fatiga'] = df.apply(lambda x: clase_fatiga(x['fatiga_ini'], x['fatiga_fin']), axis=1)
-
+  
+        df_fin['fatiga_fin'] = df_fin.apply(lambda x: avg_fatiga(x['trabajadores']), axis=1)
+        df_fin['clase_fatiga'] = df_fin.apply(lambda x: clase_fatiga(x['fatiga_fin']), axis=1)
+        # Añadir las columnas de fatiga y clase al df_ini
+        df['fatiga_fin'] = df_fin['fatiga_fin']
+        df['clase_fatiga'] = df_fin['clase_fatiga']
         caracteristicas = [
-            'sector', 't_skills', 'm_skills', 's_activas',
+            'sector', 't_skills', 'm_skills', 's_skills', 's_activas',
             'afinidad_t', 'afinidad_m', 't_min', 't_max', 
             't_avg'
         ]
         objetivos = ['clase_fatiga']
         df_modelo = df[caracteristicas + objetivos]
-        pd.set_option('display.max_rows', None)
-        pd.set_option('display.max_columns', None)
-        return df_modelo
-    except Exception as ex:
-        print(ex)
-
-def preproceso_datos_fatiga_clase(data):
-    df = pd.DataFrame(data)
-    try:
-        df['fecha'] = pd.to_datetime(df['fecha'])
-        df['dia_semana'] = df['fecha'].dt.dayofweek
-        df['hora_dia'] = df['fecha'].dt.hour
-        
-        df['trabajadores'] = df['trabajadores'].apply(lambda x: json.loads(x.replace("'", "\"")))
-        df['asignaciones'] = df['asignaciones'].apply(lambda x: json.loads(x.replace("'", "\"")))
-        df['maquinas'] = df['maquinas'].apply(lambda x: json.loads(x.replace("'", "\"")))
-        df['subtasks'] = df['subtasks'].apply(lambda x: json.loads(x.replace("'", "\"")))
-        # Fatiga a predecir
-        df['fatiga'] = df.apply(lambda x: avg_fatiga(x['trabajadores'], x['maquinas'], x['asignaciones']), axis=1)
-        objetivos = ['fatiga']
-        df_modelo = df[ objetivos]
         pd.set_option('display.max_rows', None)
         pd.set_option('display.max_columns', None)
         return df_modelo

@@ -302,7 +302,7 @@ class FabricaModel:
         try: 
             cursor = get_db_connection().cursor()
             if flag : 
-                sql = '''SELECT id, fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, sector, flag FROM historial WHERE flag = %s'''
+                sql = '''SELECT id, fecha, costes, beneficios, capital, trabajadores, maquinas, subtasks, asignaciones, sector, fabrica_id, flag FROM historial WHERE flag = %s'''
                 cursor.execute(sql, (flag,))
             lista_resultados = []
             resultados = cursor.fetchall()
@@ -318,7 +318,8 @@ class FabricaModel:
                     'subtasks' : resultado[7],
                     'asignaciones': resultado[8],  # convertir JSON a lista
                     'sector': resultado[9],
-                    'flag' : flag
+                    'flag' : flag,
+                    'fabrica_id' : resultado[10]
                 }
                 lista_resultados.append(registro)
 
