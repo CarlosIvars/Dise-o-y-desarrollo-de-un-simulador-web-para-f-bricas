@@ -1,0 +1,180 @@
+rbf
+[RESULTS] AccuracyTrain: 0.95
+[RESULTS] Accuracy: 0.77
+[RESULTS] Precision: 0.77
+[RESULTS] Recall: 0.77
+[RESULTS] F1: 0.77
+poly
+[RESULTS] AccuracyTrain: 0.96
+[RESULTS] Accuracy: 0.71
+[RESULTS] Precision: 0.72
+[RESULTS] Recall: 0.71
+[RESULTS] F1: 0.69
+linear
+[RESULTS] AccuracyTrain: 0.82
+[RESULTS] Accuracy: 0.76
+[RESULTS] Precision: 0.76
+[RESULTS] Recall: 0.76
+[RESULTS] F1: 0.76
+SIGMOID
+[RESULTS] AccuracyTrain: 0.62
+[RESULTS] Accuracy: 0.76
+[RESULTS] Precision: 0.76
+[RESULTS] Recall: 0.76
+[RESULTS] F1: 0.76
+
+
+RANDOM FOREST
+1
+[INFO] Training Accuracy: 0.81
+[RESULTS] Accuracy: 0.47
+[RESULTS] Precision: 0.48
+[RESULTS] Recall: 0.47
+[RESULTS] F1: 0.47
+
+5
+[INFO] Training Accuracy: 0.97
+[RESULTS] Accuracy: 0.65
+[RESULTS] Precision: 0.67
+[RESULTS] Recall: 0.65
+[RESULTS] F1: 0.65
+
+10
+[INFO] Training Accuracy: 0.99
+[RESULTS] Accuracy: 0.70
+[RESULTS] Precision: 0.71
+[RESULTS] Recall: 0.70
+[RESULTS] F1: 0.70
+
+15
+[INFO] Training Accuracy: 1.00
+[RESULTS] Accuracy: 0.75
+[RESULTS] Precision: 0.76
+[RESULTS] Recall: 0.75
+[RESULTS] F1: 0.75
+
+20
+[INFO] Training Accuracy: 1.00
+[RESULTS] Accuracy: 0.78
+[RESULTS] Precision: 0.79
+[RESULTS] Recall: 0.78
+[RESULTS] F1: 0.78
+
+25
+[INFO] Training Accuracy: 1.00
+[RESULTS] Accuracy: 0.77
+[RESULTS] Precision: 0.78
+[RESULTS] Recall: 0.77
+[RESULTS] F1: 0.77
+
+30
+[INFO] Training Accuracy: 1.00
+[RESULTS] Accuracy: 0.80
+[RESULTS] Precision: 0.81
+[RESULTS] Recall: 0.80
+[RESULTS] F1: 0.81
+
+35
+[INFO] Training Accuracy: 1.00
+[RESULTS] Accuracy: 0.82
+[RESULTS] Precision: 0.83
+[RESULTS] Recall: 0.82
+[RESULTS] F1: 0.82
+
+
+XGBOOST
+
+10
+[INFO] Training Accuracy: 0.91
+[RESULTS] Accuracy: 0.75
+[RESULTS] Precision: 0.80
+[RESULTS] Recall: 0.75
+[RESULTS] F1: 0.77
+30
+[INFO] Training Accuracy: 0.94
+[RESULTS] Accuracy: 0.82
+[RESULTS] Precision: 0.87
+[RESULTS] Recall: 0.78
+[RESULTS] F1: 0.82
+50
+[INFO] Training Accuracy: 0.99
+[RESULTS] Accuracy: 0.83
+[RESULTS] Precision: 0.84
+[RESULTS] Recall: 0.82
+[RESULTS] F1: 0.83
+70
+[INFO] Training Accuracy: 0.99
+[RESULTS] Accuracy: 0.82
+[RESULTS] Precision: 0.83
+[RESULTS] Recall: 0.82
+[RESULTS] F1: 0.83
+100
+[INFO] Training Accuracy: 1.00
+[RESULTS] Accuracy: 0.82
+[RESULTS] Precision: 0.84
+[RESULTS] Recall: 0.83
+[RESULTS] F1: 0.84
+150
+[INFO] Training Accuracy: 1.00
+[RESULTS] Accuracy: 0.84
+[RESULTS] Precision: 0.83
+[RESULTS] Recall: 0.85
+[RESULTS] F1: 0.84
+200
+[INFO] Training Accuracy: 1.00
+[RESULTS] Accuracy: 0.84
+[RESULTS] Precision: 0.83
+[RESULTS] Recall: 0.85
+[RESULTS] F1: 0.84
+
+A
+64-32-64-32
+[INFO] Training Accuracy: 0.97
+[RESULTS] Accuracy: 0.74
+[RESULTS] Precision: 0.74
+[RESULTS] Recall: 0.74
+[RESULTS] F1: 0.74
+B
+64-32-16-18
+[INFO] Training Accuracy: 0.97
+[RESULTS] Accuracy: 0.75
+[RESULTS] Precision: 0.75
+[RESULTS] Recall: 0.75
+[RESULTS] F1: 0.75
+C
+16-32-16-32
+[INFO] Training Accuracy: 0.91
+[RESULTS] Accuracy: 0.72
+[RESULTS] Precision: 0.73
+[RESULTS] Recall: 0.72
+[RESULTS] F1: 0.73
+D
+32-32-32-32
+[INFO] Training Accuracy: 0.96
+[RESULTS] Accuracy: 0.75
+[RESULTS] Precision: 0.75
+[RESULTS] Recall: 0.75
+[RESULTS] F1: 0.75
+E
+16
+[INFO] Training Accuracy: 0.78
+[RESULTS] Accuracy: 0.64
+[RESULTS] Precision: 0.64
+[RESULTS] Recall: 0.64
+[RESULTS] F1: 0.64
+F
+32
+[INFO] Training Accuracy: 0.87
+[RESULTS] Accuracy: 0.68
+[RESULTS] Precision: 0.67
+[RESULTS] Recall: 0.68
+[RESULTS] F1: 0.67
+
+G
+64
+[INFO] Training Accuracy: 0.95
+[RESULTS] Accuracy: 0.74
+[RESULTS] Precision: 0.74
+[RESULTS] Recall: 0.74
+[RESULTS] F1: 0.74
+

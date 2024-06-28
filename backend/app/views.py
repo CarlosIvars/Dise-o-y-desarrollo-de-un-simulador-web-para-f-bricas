@@ -538,7 +538,7 @@ def modelosPredictivos():
         
         data = FabricaModel.get_historial_entero(1)
         dataR = FabricaModel.get_historial_entero(2)
-        d = modelosML(data, dataR)
+        d = modelosML()
         #d = randomForest(data)
         return jsonify({'response': 124})
     except Exception as ex:

@@ -168,6 +168,6 @@ def genetic_algorithm_assignment(humanos, tareas, N_POP=100, CXPB=0.5, MUTPB=0.2
     front = np.array([(c['gen'], c['avg']) for c in stats_records])
     plt.plot(front[:, 0][1:], front[:, 1][1:], marker='o', linestyle='-', color='b')    
     plt.axis("tight")
-    #plt.show()
+    plt.show()
 
     return best_ind, stats_records
