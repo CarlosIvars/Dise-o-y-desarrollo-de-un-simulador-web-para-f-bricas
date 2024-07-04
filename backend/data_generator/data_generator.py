@@ -10,6 +10,7 @@ def select_random_skills(skills,n ):
     return fake.random_elements(elements=skills, length=n, unique=True)
 
 def generate_trabajadores(num,sector,fabrica_id):
+    trabajadores = []
     print("generamos trabajadores")
     soft_skills = [skill[1] for skill in TareaModel.get_soft_skills()]
     skills =[skill[1] for skill in TareaModel.get_hard_skills(sector)] 
@@ -26,11 +27,14 @@ def generate_trabajadores(num,sector,fabrica_id):
             'preferencias': 0,
             'skills': combined_skills
         }
-        RecursosModel.add_trabajador(fabrica_id, trabajador['nombre'], trabajador['apellidos'],
+        trabajadores.append(RecursosModel.add_trabajador(fabrica_id, trabajador['nombre'], trabajador['apellidos'],
                                      trabajador['fecha_nacimiento'], trabajador['fatiga'], trabajador['coste_h'],
-                                     trabajador['preferencias'], trabajador['skills'])
+                                     trabajador['preferencias'], trabajador['skills']))
+    return trabajadores
+
 
 def generate_maquinas(num, sector, fabrica_id):
+    maquinas = []
     print("generamos máquinas")
     skills =[skill[1] for skill in TareaModel.get_hard_skills(sector)] 
     for _ in range(num):
@@ -41,9 +45,11 @@ def generate_maquinas(num, sector, fabrica_id):
             'coste_h': fake.random_number(digits=2),
             'skills': selected_hard_skills
         }
-        RecursosModel.add_maquina(fabrica_id, maquina['nombre'], maquina['fatiga'], maquina['coste_h'], maquina['skills'])
+        maquinas.append(RecursosModel.add_maquina(fabrica_id, maquina['nombre'], maquina['fatiga'], maquina['coste_h'], maquina['skills']))
+    return maquinas
 
 def generate_subtasks(num, sector, fabrica_id):
+    subtareas = []
     csv_path = './onet/onet_tasks_data.csv'
     df = pd.read_csv(csv_path)
     tasks = df[df['Cluster'] == sector]
@@ -61,6 +67,7 @@ def generate_subtasks(num, sector, fabrica_id):
             }
             t =TareaModel.add_subtask(subtask['nombre'], subtask['duracion'], subtask['beneficio'], subtask['coste'], 
                                 subtask['descripcion'], fabrica_id, sector)
+            subtareas.append(t)
             if existing_subtasks and rnd.choices([True, False], weights=[60, 40])[0]: 
                 parent_subtask_id = rnd.choice(existing_subtasks)
                 TareaModel.add_dependencias_subtasks(t[0], parent_subtask_id)
@@ -69,6 +76,7 @@ def generate_subtasks(num, sector, fabrica_id):
             existing_subtasks.append(t[0])
         except Exception as e:
             print('Error pero seguimos', e)
+    return subtareas
 
 def generate_factories(num):
     factories = []
@@ -90,6 +98,23 @@ def generate_factories(num):
         except Exception as ex:
             return {'error': f'Error al generar datos de la fabrica'}
     return factories
+
+def generar_fabrica(n_humanos, n_maquinas, n_tareas, user_id):
+    sectores = FabricaModel.get_sectores()
+    factory = {
+            'nombre_fabrica': fake.company(),
+            'capital_inicial': fake.random_number(digits=7),
+            'sector': fake.random_int(min=0, max = 26)
+        }
+    fabrica = FabricaModel.add_fabrica(factory['nombre_fabrica'], user_id, factory['capital_inicial'], sectores[factory['sector']])
+    print("Generamos Fabricas")
+    try:
+        generate_trabajadores(n_humanos, fabrica[7], fabrica[0])
+        generate_maquinas(n_maquinas, fabrica[7], fabrica[0])
+        generate_subtasks(n_tareas, fabrica[7], fabrica[0])
+    except Exception as ex:
+        return {'error': f'Error al generar datos de la fabrica'}
+    return fabrica
 
 def generate_data():
     try:

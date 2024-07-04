@@ -593,6 +593,77 @@ def get_historial():
     except Exception as ex:
         app.logger.error(f'Error al obtener historial: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud'}), 500
+    
+@app.route('/generar_fabrica', methods = ['POST'])
+def generate_fabrica():
+    try:
+        user_id = session.get('usuario')
+        if not user_id:
+            return jsonify({'error': 'Usuario no autenticado'}), 404
+        if not data:
+            return jsonify({'error': 'No se proporcionaron datos'}), 400
+        data = request.json
+        n_humanos = data.get('n_trabajadores')
+        n_maquinas = data.get('n_maquinas')
+        n_subtareas = data.get('n_subtasks')
+        fabrica = generar_fabrica(n_humanos, n_maquinas, n_subtareas, user_id)
+        return jsonify({'fabrica' : fabrica}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al generar fabrica: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
+@app.route('/generar_trabajadores', methods = ['POST'])
+def generar_trabajadores():
+    try:
+        fabrica_id = session.get('fabrica')
+        sector = session.get('sector')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 404
+        if not data:
+            return jsonify({'error': 'No se proporcionaron datos'}), 400
+        data = request.json
+        n_humanos = data.get('n_trabajadores')
+        trabajadores = generate_trabajadores(n_humanos,sector,fabrica_id)
+        return jsonify({'trabajadores' : trabajadores}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al generar trabajador: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
+@app.route('/generar_maquinas', methods = ['POST'])
+def generar_maquinas():
+    try:
+        fabrica_id = session.get('fabrica')
+        sector = session.get('sector')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 404
+        if not data:
+            return jsonify({'error': 'No se proporcionaron datos'}), 400
+        data = request.json
+        n_maquinas = data.get('n_maquinas')
+        maquinas = generate_maquinas(n_maquinas,sector,fabrica_id)
+        return jsonify({'maquinas' : maquinas}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al generar maquinas: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
+@app.route('/generar_subtareas', methods = ['POST'])
+def generar_subtareas():
+    try:
+        fabrica_id = session.get('fabrica')
+        sector = session.get('sector')
+        if not fabrica_id:
+            return jsonify({'error': 'Fabrica no encontrada'}), 404
+        if not data:
+            return jsonify({'error': 'No se proporcionaron datos'}), 400
+        data = request.json
+        n_subtareas = data.get('n_subtareas')
+        subtasks = generate_subtasks(n_subtareas,sector,fabrica_id)
+        return jsonify({'subtareas' : subtasks}), 200
+    except Exception as ex:
+        app.logger.error(f'Error al generar subtareas: {ex}')
+        return jsonify({'error': 'Error al procesar la solicitud'}), 500
+
+
 ############################################################################################
 # En proceso ¡¡¡No usar aun !!!
 ############################################################################################
@@ -648,13 +719,3 @@ def actualizar_hard_skills():
     
     return "Habilidades duras actualizadas correctamente.", 200
 
-@app.route('/<usuario>/<fabrica>/skill_matching')
-def obtener_habilidades(fabrica_id):
-    habilidades_maquinas = RecursosModel.obtener_habilidades_maquinas(fabrica_id)
-    habilidades_trabajadores = RecursosModel.obtener_habilidades_trabajadores(fabrica_id)
-    
-    # Combinar los diccionarios de habilidades de máquinas y trabajadores en uno solo
-    habilidades_totales = habilidades_maquinas.copy()
-    habilidades_totales.update(habilidades_trabajadores)
-    
-    return habilidades_totales

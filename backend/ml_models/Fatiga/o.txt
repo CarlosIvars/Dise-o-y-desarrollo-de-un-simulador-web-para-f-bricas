@@ -127,42 +127,15 @@ XGBOOST
 [RESULTS] Recall: 0.85
 [RESULTS] F1: 0.84
 
+
 A
-64-32-64-32
-[INFO] Training Accuracy: 0.97
-[RESULTS] Accuracy: 0.74
-[RESULTS] Precision: 0.74
-[RESULTS] Recall: 0.74
-[RESULTS] F1: 0.74
-B
-64-32-16-18
-[INFO] Training Accuracy: 0.97
-[RESULTS] Accuracy: 0.75
-[RESULTS] Precision: 0.75
-[RESULTS] Recall: 0.75
-[RESULTS] F1: 0.75
-C
-16-32-16-32
-[INFO] Training Accuracy: 0.91
-[RESULTS] Accuracy: 0.72
-[RESULTS] Precision: 0.73
-[RESULTS] Recall: 0.72
-[RESULTS] F1: 0.73
-D
-32-32-32-32
-[INFO] Training Accuracy: 0.96
-[RESULTS] Accuracy: 0.75
-[RESULTS] Precision: 0.75
-[RESULTS] Recall: 0.75
-[RESULTS] F1: 0.75
-E
 16
 [INFO] Training Accuracy: 0.78
 [RESULTS] Accuracy: 0.64
-[RESULTS] Precision: 0.64
-[RESULTS] Recall: 0.64
-[RESULTS] F1: 0.64
-F
+[RESULTS] Precision: 0.63
+[RESULTS] Recall: 0.62
+[RESULTS] F1: 0.63
+B
 32
 [INFO] Training Accuracy: 0.87
 [RESULTS] Accuracy: 0.68
@@ -170,11 +143,40 @@ F
 [RESULTS] Recall: 0.68
 [RESULTS] F1: 0.67
 
-G
+C
 64
 [INFO] Training Accuracy: 0.95
+[RESULTS] Accuracy: 0.72
+[RESULTS] Precision: 0.72
+[RESULTS] Recall: 0.73
+[RESULTS] F1: 0.73
+
+D
+64-32-64-32
+[INFO] Training Accuracy: 0.97
 [RESULTS] Accuracy: 0.74
 [RESULTS] Precision: 0.74
-[RESULTS] Recall: 0.74
+[RESULTS] Recall: 0.73
 [RESULTS] F1: 0.74
+E
+64-32-16-18
+[INFO] Training Accuracy: 0.97
+[RESULTS] Accuracy: 0.77
+[RESULTS] Precision: 0.75
+[RESULTS] Recall: 0.76
+[RESULTS] F1: 0.75
+F
+16-32-16-32
+[INFO] Training Accuracy: 0.91
+[RESULTS] Accuracy: 0.72
+[RESULTS] Precision: 0.73
+[RESULTS] Recall: 0.72
+[RESULTS] F1: 0.73
+G
+32-32-32-32
+[INFO] Training Accuracy: 0.96
+[RESULTS] Accuracy: 0.75
+[RESULTS] Precision: 0.76
+[RESULTS] Recall: 0.75
+[RESULTS] F1: 0.75
 
