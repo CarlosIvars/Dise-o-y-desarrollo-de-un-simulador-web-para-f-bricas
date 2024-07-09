@@ -1,19 +1,9 @@
 <div *ngIf="cargando">Cargando la fabrica...</div>
 <ng-container *ngIf="!cargando && fabrica != undefined">
-    <header>
-        <div id="cabeceraIzq">
-            {{fabrica.nombre}}
-        </div>
-        <div id="cabeceraCentro">
-            <div>Dinero: {{fabrica.capital}}€ Beneficio: {{fabrica.beneficio}}€ Coste: {{fabrica.coste}}</div>
-            <div>Día: {{fabrica.dia}} Hora: {{fabrica.hora}}:{{formatearMinutos(fabrica.minutos)}}</div>
-            <div (click)="toggleFabricaEjecucion()">{{ fabrica.activa ? 'Pause' : 'Play' }} (x{{velocidadEjecucion}})</div>
-            <input type="range" [(ngModel)]="velocidadEjecucion" (change)="cambiarVelocidadEjecucion()" min="1" max="100" step="10">
-        </div>
-        <div id="cabeceraDer" (click)="cerrarSesion()">
-            {{userName}}
-        </div>
-    </header>
+    <div class="panelCentral">
+        <div id="fabricaTitulo">{{fabrica.nombre}}</div>
+        <button class="botonAnyadirTarea" (click)="abrirTareasForm()">Añadir tarea</button>
+    </div>
     <div *ngIf="!cargando" id="content">
         <div class="barra-lateral" id="bl-izquierda">
             <div class="seccion" id="sc-trabajadores">
@@ -36,20 +26,50 @@
             </div>
         </div>
         <div id="seccion-principal">
-            <button (click)="abrirTareasForm()" style="position: absolute; right: 0px; margin: 5px;" >Añadir tarea</button>
             <app-arbol-de-tareas style="display: block; height: 100%;" (editarTareaForm)="abrirEditTareasForm($event)"></app-arbol-de-tareas>
-            <!--app-tarea-card *ngFor="let tarea of tareas" [tarea]="tarea" (editarTareaForm)="abrirEditTareasForm($event)"></app-tarea-card-->
         </div>
         <div class="barra-lateral" id="bl-derecha">
-            <p>Barra lateral derecha.</p>
-            <button (click)="skillMatching()">Skills matching</button>
-            <button (click)="algoritmoGenetico()">Algoritmo genético</button>
-            <button (click)="algoritmoGeneticoRL()">Algoritmo genético RL</button>
-            <button (click)="guardarHistorial()">Guardar historial</button>
-            <button (click)="boton1()">Botón extra 1</button>
-            <button (click)="boton2()">Botón extra 2</button>
-            <button (click)="boton3()">Botón extra 3</button>
-            <button (click)="boton4()">Botón extra 4</button>
+            <div class="usuario">
+                <div class="boton-flotante" (click)="cerrarSesion()" [title]="userName">X</div>
+            </div>
+            <div class="panel">
+                <div class="botonera">
+                    <!--button (click)="skillMatching()">Skills matching</button-->
+                    <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
+                    <!--button (click)="algoritmoGeneticoRL()">Algoritmo genético RL</button-->
+                    <!--button (click)="guardarHistorial()">Guardar historial</button-->
+                    <!--button (click)="boton1()">Botón extra 1</button-->
+                    <!--button (click)="boton2()">Botón extra 2</button-->
+                    <!--button (click)="boton3()">Botón extra 3</button-->
+                    <!--button (click)="boton4()">Botón extra 4</button-->
+                    <button class="boton" (click)="algoritmoGenetico()">Prueba1</button>
+                    <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
+                    <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
+                    <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
+                </div>
+
+                <div class="capital">
+                    <div id="costes" class="capital-gruop">
+                        <div class="money">{{fabrica.coste}}€</div>
+                        <div class="title">Costes totales</div>
+                    </div>
+                    <div id="beneficios" class="capital-gruop">
+                        <div class="money">{{fabrica.beneficio}}€</div>
+                        <div class="title">Beneficios totales</div>
+                    </div>
+                    <div id="cap-total" class="capital-gruop">
+                        <div class="money">{{fabrica.capital}}€</div>
+                        <div class="title">Capital total</div>
+                    </div>
+                </div>
+            </div>
+           
+            <!--div id="cabeceraCentro">
+                <div>Dinero: {{fabrica.capital}}€ Beneficio: {{fabrica.beneficio}}€ Coste: {{fabrica.coste}}</div>
+                <div>Día: {{fabrica.dia}} Hora: {{fabrica.hora}}:{{formatearMinutos(fabrica.minutos)}}</div>
+                <div (click)="toggleFabricaEjecucion()">{{ fabrica.activa ? 'Pause' : 'Play' }} (x{{velocidadEjecucion}})</div>
+                <input type="range" [(ngModel)]="velocidadEjecucion" (change)="cambiarVelocidadEjecucion()" min="1" max="100" step="10">
+            </div-->
         </div>
     </div>
     

@@ -1,10 +1,34 @@
+.panelCentral{
+    position: absolute;
+    background-color: var(--background-color);
+    z-index: 100;
+    border-radius: 20px;
+    left: 50%;
+    top: 20px;
+    transform: translate(-50%, 0%);
+    padding: 20px; /*TODO:*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.panelCentral #fabricaTitulo{
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.panelCentral .botonAnyadirTarea{
+    /*TODO:*/
+}
+
 #cabeceraCentro {
     display: flex;
     gap: 15px;
 }
 
 #content {
-    height: calc(100% - 50px);
+    height: 100%;
     display: flex;
 }
 #content > div{
@@ -12,56 +36,130 @@
 }
 
 #seccion-principal {
-    background-color: #F5F5F5;
     width: 100%;
     position: relative;
     overflow: hidden;
 }
 
 .barra-lateral {
-    width: 22%;
+    background-color: var(--lateral-card-color);
+    width: 30%;
 }
 
-.barra-lateral{
-    border-right: 1px solid lightgray;
+.barra-lateral#bl-izquierda{
     display: flex;
     flex-direction: column;
+    gap: 18px;
+    
+    /*TODO: cambiar el padding*/
+    padding: 18px;
+    padding-top: 10%;
+
 }
-.barra-lateral > div{
-    flex: 0 0 50%;
+
+.barra-lateral#bl-izquierda > div{
+    flex: 0 0 calc(50% - 9px);  /*18 = gap del flex / 2*/
 }
 
 .seccion {
+    background-color: var(--outer-card-color);
     display: flex;
     flex-direction: column;
     overflow-y: hidden;
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 10px 6px 18.8px 0px rgba(25, 25, 25, 0.8);
 }
 
 .sc-header {
-    font-size: 20px;
+    font-size: 16px;
     margin: 10px;
+    margin-top: 0px;
     display: flex;
     justify-content: space-between;
+    font-weight: 500;
 }
 .lista-card {
-    border-bottom: 1px solid lightgray;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
     flex-grow: 1;
     padding: 0 5px 5px 5px;
     overflow: auto;
 }
 
-.lista-card::-webkit-scrollbar {
-    width: 26px; /* Ancho de la barra de desplazamiento */
-}
-.lista-card::-webkit-scrollbar-thumb {
-    background-color: #888; /* Color del thumb (barra de desplazamiento) */
-    border-radius: 20px; /* Radio de borde del thumb */
-    border: 8px solid white;
+.barra-lateral#bl-derecha{    
+    /*TODO: cambiar el padding*/
+    padding: 30px;
+
 }
 
-#bl-derecha{
-    border-left: 1px solid lightgray;
+#bl-derecha .panel{
+    background-color: var(--outer-card-color);
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+    border-radius: 20px;
+    padding: 20px;
+    gap: 10px;
+    box-shadow: 10px 6px 18.8px 0px rgba(25, 25, 25, 0.8);
+}
+
+.usuario {
+    display: flex;
+    flex-direction: row-reverse;
+    margin: 30px 0;
+}
+
+#bl-derecha .panel .botonera{
+    display: flex;
+    flex-direction: column;
+    gap: 15px
+}
+
+.boton {
+    background-color: var(--inner-card-color);
+    color: var(--font-color);
+    height: 35px;
+    border: none;
+    border-radius: 10px;
+}
+
+#bl-derecha .panel .capital{
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 15px;
+    text-align: end;
+}
+
+
+.capital #costes .money{
+    font-weight: 500;
+}
+.capital #costes .title{
+    font-weight: 400;
+}
+
+
+.capital #costes .money{
+    font-size: 17px;
+}
+.capital #costes .title{
+    font-size: 12px;
+}
+
+.capital #beneficios .money{
+    font-size: 24px;
+}
+.capital #beneficios .title{
+    font-size: 15px;
+}
+
+.capital #cap-total .money{
+    font-size: 32px;
+}
+.capital #cap-total .title{
+    font-size: 20px;
 }

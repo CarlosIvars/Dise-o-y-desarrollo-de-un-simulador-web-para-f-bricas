@@ -1,92 +1,25 @@
-/* Fuentes (con licencia de roboto) */
-
+/* Importamos las fuentes */
 @font-face {
-    font-family: 'Roboto';
-    src: url('./assets/fonts/Roboto/Roboto-Black.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-BlackItalic.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-Bold.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-BoldItalic.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-Italic.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-Light.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-LightItalic.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-Medium.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-MediumItalic.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-Regular.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-Thin.ttf') format('ttf'),
-         url('./assets/fonts/Roboto/Roboto-ThinItalic.ttf') format('ttf');
+    font-family: "Manrope";
+    src: url('./assets/fonts/Manrope-VariableFont_wght.ttf') format('truetype');
 }
 
-.roboto-thin {
-    font-family: "Roboto", sans-serif;
-    font-weight: 100;
-    font-style: normal;
-}
+/* Añadimos las variables del color*/
+:root {
+    --background-color: #2D2D2D;
 
-.roboto-light {
-    font-family: "Roboto", sans-serif;
-    font-weight: 300;
-    font-style: normal;
-}
+    --lateral-card-color: #3F3F3F;
+    --outer-card-color: #555555;
+    --inner-card-color: #898989;
 
-.roboto-regular {
-    font-family: "Roboto", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-}
+    --tarea-card-color: #F5F5F5;
+    --tarea-font-color: #5C5C5C;
 
-.roboto-medium {
-    font-family: "Roboto", sans-serif;
-    font-weight: 500;
-    font-style: normal;
-}
+    --font-color: #F5F5F5;
 
-.roboto-bold {
-    font-family: "Roboto", sans-serif;
-    font-weight: 700;
-    font-style: normal;
+    --boton-flotante-color: #F5F5F5;
+    --boton-flotante-font-color: #555555;
 }
-
-.roboto-black {
-    font-family: "Roboto", sans-serif;
-    font-weight: 900;
-    font-style: normal;
-}
-
-.roboto-thin-italic {
-    font-family: "Roboto", sans-serif;
-    font-weight: 100;
-    font-style: italic;
-}
-
-.roboto-light-italic {
-    font-family: "Roboto", sans-serif;
-    font-weight: 300;
-    font-style: italic;
-}
-
-.roboto-regular-italic {
-    font-family: "Roboto", sans-serif;
-    font-weight: 400;
-    font-style: italic;
-}
-
-.roboto-medium-italic {
-    font-family: "Roboto", sans-serif;
-    font-weight: 500;
-    font-style: italic;
-}
-
-.roboto-bold-italic {
-    font-family: "Roboto", sans-serif;
-    font-weight: 700;
-    font-style: italic;
-}
-
-.roboto-black-italic {
-    font-family: "Roboto", sans-serif;
-    font-weight: 900;
-    font-style: italic;
-}  
 
 /* Estilos globales de la aplicación */
 * {
@@ -97,7 +30,9 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: "Roboto", sans-serif;
+    font-family: "Manrope";
+    background-color: var(--background-color);
+    color: var(--font-color);
 }
 
 body {
@@ -204,6 +139,8 @@ header{
     border-radius: 4px;
     border-style: groove;
     padding-left: 4px;
+    width: 100%;
+    margin: 0;
 }
 
 .input-container {
@@ -229,4 +166,19 @@ header{
 
 .slider-container p {
     margin: 0px 0px 0px 5px;
+}
+
+
+
+/* Boton flotante */
+
+.boton-flotante {
+    height: 40px;
+    width: 40px;
+    background-color: var(--boton-flotante-color);
+    color: var(--boton-flotante-font-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
 }

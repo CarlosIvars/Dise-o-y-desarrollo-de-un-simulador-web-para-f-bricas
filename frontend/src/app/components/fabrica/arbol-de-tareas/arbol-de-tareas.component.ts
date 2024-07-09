@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { Tarea } from '../../../interfaces/interfaces';
 import { Subject, Subscription } from 'rxjs';
 import { TareasService } from '../../../services/tareas.service';
-import { stepRound } from '../../../utilities/customStepCurved';
+import { stepRoundAfter, stepRound, stepRoundBefore } from '../../../utilities/customStepCurvedGPT';
 import * as shape from 'd3-shape';
 import { MiniMapPosition, NgxGraphZoomOptions } from '@swimlane/ngx-graph';
 
@@ -23,7 +23,10 @@ export class ArbolDeTareasComponent {
   layoutSettings = {
     orientation: 'TB'
   }
-  //curve = shape.curveBasis; //curve = stepRound;
+
+  curve = shape.curveBasis; 
+  //curve = stepRoundBefore;
+  
   minimapPosition = MiniMapPosition.UpperLeft;
 
   center$: Subject<boolean> = new Subject();

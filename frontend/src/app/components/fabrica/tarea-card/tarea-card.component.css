@@ -1,11 +1,14 @@
 .tarea {
-    border: 1px solid lightgray;
     width: 300px;
-    height: 120px;
-    background-color: white;
-    border-radius: 7px;
-    padding: 5px;
+    height: 150px;
+    background-color: var(--tarea-card-color);
+    border-radius: 15px;
+    padding: 12px 16px;
     position: relative;
+    color: var(--tarea-font-color);
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
 }
 
 .tarea.activa {
@@ -16,45 +19,58 @@
 .tarea .parte-superior {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
 }
 
-.tarea .titulo {
+.parte-superior .titulo {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    font-size: 18px;
+    font-weight: 500;
 }
 
-.tarea .tiempo{
+.parte-superior .coste,  .parte-superior .beneficio{
     white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 500;
 }
 
-.tarea .asignado{
-    width: 30px;
-    height: 40px;
-    border: 1px solid lightgray;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 3px;
-}
-
-.tarea .cantidad{
-    position: absolute;
-    top: 45px;
-    right: 5px;
-    font-weight: bold;
+.parte-superior .cantidad{
+    font-size: 20px;
+    font-weight: 700;
 }
 
 .tarea .editar{
     position: absolute;
-    top: 45px;
-    left: 40px;
+    top: 15px;
+    right: 15px;
 }
 
-.tarea .fatiga{
-    position: absolute;
-    top: 35px;
-    left: 70px;
+.tarea .parte-central {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.parte-central .asignable{
+    display: flex;
+}
+
+.parte-central .asignado{
+    width: 30px;
+}
+
+.parte-central .tiempo{
+    white-space: nowrap;
+}
+
+
+.tarea .parte-inferior {
+    display: flex;
+    justify-content: space-between;
 }
 
 .tarea:hover .editar:hover {

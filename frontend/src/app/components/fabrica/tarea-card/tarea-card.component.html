@@ -1,36 +1,46 @@
 <div class="tarea" [ngClass]="{ 'activa': tarea.isWorking }">
     <div class="parte-superior">
-        <div class="titulo" [title]="tarea.nombre">{{tarea.nombre}} => {{tarea.beneficio}}€</div>
-        <div class="tiempo">{{formatearDecimales(tarea.tiempoActual)}} / {{tarea.duracion}}</div>
-    </div>
-    <div class="asignado">
-        <ng-container *ngIf="tarea.getAsignable() as asignable">
-            <i *ngIf="isTrabajador()" class="bi bi-person-standing" [title]="asignable.nombre" (click)="desasignarATarea()"></i>
-            <i *ngIf="!isTrabajador() && isMaquina()" class="bi bi-motherboard-fill" [title]="asignable.nombre" (click)="desasignarATarea()"></i>
-        </ng-container>
-    </div>
-    <div class="cantidad">{{tarea.cantidad}}</div>
-    <div *ngIf="tarea.getAsignable() as asignable" class="fatiga">Fatiga: {{formatearDigitos(asignable.fatiga, 2)}}%</div>
-
-    <div class="editar" (click)="editarTarea()">
-        <i class="bi bi-three-dots"></i>
+        <div class="titulo" [title]="tarea.nombre">{{tarea.nombre}}</div>
+        <div class="coste">-{{tarea.coste}}€</div>
+        <div class="beneficio">+{{tarea.beneficio}}€</div>
+        <div class="cantidad">{{tarea.cantidad}}</div>
+        <div class="editar" (click)="editarTarea()">
+            <i class="bi bi-three-dots"></i>
+        </div>
     </div>
 
-    <div style="display: flex;">
-        <div class="form-group" style="margin-top: 5px; width: fit-content;">
-            <label class="form-label">Factor de fatiga: x{{tarea.factorFatiga}}</label>
-            <div class="slider-container">
-                <input type="range" min="0.5" max="2" step="0.1" [(ngModel)]="tarea.factorFatiga" (mousedown)="$event.stopPropagation()">
-            </div>    
+    <div class="parte-central">
+        <div class="asignable">
+            <ng-container *ngIf="tarea.getAsignable() as asignable">
+                <i *ngIf="isTrabajador()" class="bi bi-person-standing asignado" [title]="asignable.nombre" (click)="desasignarATarea()"></i>
+                <i *ngIf="!isTrabajador() && isMaquina()" class="bi bi-motherboard-fill asignado" [title]="asignable.nombre" (click)="desasignarATarea()"></i>
+            </ng-container>
+            <div *ngIf="!tarea.getAsignable() as asignable" class="sin-asignar"></div>
+
+            <div *ngIf="tarea.getAsignable() as asignable" class="fatiga">Fatiga: {{formatearDigitos(asignable.fatiga, 2)}}%</div>
+            <div *ngIf="!tarea.getAsignable() as asignable" class="fatiga">Fatiga: 0%</div>
         </div>
-    
-        <div class="form-group" style="margin-top: 5px; width: fit-content;">
-            <label class="form-label">Factor duración: x{{tarea.factorDuracion}}</label>
-            <div class="slider-container">
-                <input type="range" min="0.5" max="2" step="0.1" [(ngModel)]="tarea.factorDuracion" (change)="cambiarDuracion(tarea)" (mousedown)="$event.stopPropagation()">
-            </div>    
+        <div class="duracion">
+            <div class="tiempo">Duración: {{formatearDecimales(tarea.tiempoActual)}} / {{tarea.duracion}}</div>
         </div>
-    </div>    
+
+        <div class="factor-fatiga">
+            <div class="form-group" style="margin: 0px;">
+                <label class="form-label">F. Fatiga: x{{tarea.factorFatiga}}</label>
+                <div class="slider-container">
+                    <input type="range" min="0.5" max="2" step="0.1" [(ngModel)]="tarea.factorFatiga" (mousedown)="$event.stopPropagation()">
+                </div>    
+            </div>
+        </div>
+        <div class="factor-duracion">
+            <div class="form-group" style="margin: 0px;">
+                <label class="form-label">F. Duración: x{{tarea.factorDuracion}}</label>
+                <div class="slider-container">
+                    <input type="range" min="0.5" max="2" step="0.1" [(ngModel)]="tarea.factorDuracion" (change)="cambiarDuracion(tarea)" (mousedown)="$event.stopPropagation()">
+                </div>    
+            </div>
+        </div>
+    </div>
 
     <div *ngIf="tarea.isDragging && tarea.skillsMatched > 0" class="drag-activated" (drop)="drop($event, tarea)" (dragover)="allowDrop($event)">
         {{tarea.skillsMatched}}/{{tarea.skills.length}} skills

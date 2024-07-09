@@ -1,36 +1,23 @@
 .trabajador-card {
-    border: 1px solid lightgray;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
+    background-color: var(--inner-card-color);
+    border-radius: 8px;
     position: relative;
     cursor: pointer;
-    justify-content: space-between;
+    padding: 10px;
 }
 
 .trabajador-card.activo {
     background-color: gray;
 }
 
-.trabajador-card .left-side{
+.trabajador-card #superior{
     display: flex;
-    align-items: center;
+    justify-content: space-between;
 }
 
-.trabajador-card .right-side{
-    padding: 7px;
-}
-
-.trabajador-card .img {
-    font-size: 28px;
-    padding: 5px 4px;
-}
-
-.trabajador-card .info .nombre {
-    font-size: 16px;
-}
-.trabajador-card .info .puesto {
-    font-size: 12px;
+.trabajador-card #inferior{
+    display: flex;
+    align-items: baseline;
 }
 
 .trabajador-card .editar {
@@ -40,6 +27,7 @@
     cursor: pointer;
     display: none;
     border-radius: 4px;
+    background-color: var(--inner-card-color);
 }
 
 .trabajador-card:hover .editar {
