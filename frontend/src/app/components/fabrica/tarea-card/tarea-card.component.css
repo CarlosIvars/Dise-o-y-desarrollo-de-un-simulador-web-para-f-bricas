@@ -20,21 +20,20 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    gap: 5px;
+    flex: 0 1 auto;
 }
 
 .parte-superior .titulo {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
 }
 
 .parte-superior .coste,  .parte-superior .beneficio{
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 500;
 }
 
@@ -47,30 +46,61 @@
     position: absolute;
     top: 15px;
     right: 15px;
+    cursor: pointer;
+    display: none;
+    border-radius: 4px;
 }
 
 .tarea .parte-central {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 1fr 1.5fr;
+    flex: 1 1 auto;
+    gap: 3px;
+    margin-top: 5px;
 }
 
 .parte-central .asignable{
     display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
 }
 
 .parte-central .asignado{
-    width: 30px;
+    width: 14px;
+    margin-top: -4px;
 }
 
-.parte-central .tiempo{
+
+
+.parte-central .duracion{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+.parte-central .duracion .clock{
+    width: 16px;
+}
+.parte-central .duracion .text{
     white-space: nowrap;
 }
 
+.parte-central .factor-fatiga, .parte-central .factor-duracion {
+    font-size: 14px;
+}
+.parte-central .factor-fatiga .text, .parte-central .factor-duracion .text{
+    margin-top: 5px;
+    margin-bottom: 12px;
+}
+.parte-central .factor-fatiga input[type=range], .parte-central .factor-duracion input[type=range]{
+    width: 70%;
+}
 
-.tarea .parte-inferior {
-    display: flex;
-    justify-content: space-between;
+
+.tarea:hover .editar {
+    display: block;
 }
 
 .tarea:hover .editar:hover {

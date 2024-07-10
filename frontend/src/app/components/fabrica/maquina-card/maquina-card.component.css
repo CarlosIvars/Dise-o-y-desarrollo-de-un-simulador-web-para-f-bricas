@@ -1,36 +1,43 @@
 .maquina-card {
     background-color: var(--inner-card-color);
-    border: 1px solid lightgray;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
+    border-radius: 6px;
     position: relative;
     cursor: pointer;
-    justify-content: space-between;
+    padding: 10px;
+    user-select: none;
 }
 
 .maquina-card.activo {
     background-color: gray;
 }
 
-.maquina-card .img {
-    padding: 10px;
-}
-
-.maquina-card .left-side{
+.maquina-card #superior{
     display: flex;
-    align-items: center;
-}
-
-.maquina-card .right-side{
-    padding: 7px;
-}
-
-.maquina-card .info .nombre {
-    font-size: 16px;
-}
-.maquina-card .info .puesto {
+    justify-content: space-between;
     font-size: 12px;
+    font-weight: 300;
+    margin-bottom: 4px;
+}
+
+.maquina-card .nombre {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.maquina-card #inferior{
+    display: flex;
+    align-items: baseline;
+    font-size: 10px;
+    gap: 10%;
+}
+
+.maquina-card #inferior .fatiga{
+    flex: 0 1 auto;
+}
+
+.maquina-card #inferior .custom-slider{
+    flex: 1 1 auto;
 }
 
 .maquina-card .editar {
@@ -39,6 +46,8 @@
     right: 5px;
     cursor: pointer;
     display: none;
+    border-radius: 4px;
+    background-color: var(--inner-card-color);
 }
 
 .maquina-card:hover .editar {

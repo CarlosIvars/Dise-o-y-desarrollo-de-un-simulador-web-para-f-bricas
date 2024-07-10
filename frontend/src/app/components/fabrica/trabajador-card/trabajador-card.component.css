@@ -1,6 +1,6 @@
 .trabajador-card {
     background-color: var(--inner-card-color);
-    border-radius: 8px;
+    border-radius: 6px;
     position: relative;
     cursor: pointer;
     padding: 10px;
@@ -14,11 +14,30 @@
 .trabajador-card #superior{
     display: flex;
     justify-content: space-between;
+    font-size: 12px;
+    font-weight: 300;
+    margin-bottom: 4px;
+}
+
+.trabajador-card .nombre {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .trabajador-card #inferior{
     display: flex;
     align-items: baseline;
+    font-size: 10px;
+    gap: 10%;
+}
+
+.trabajador-card #inferior .fatiga{
+    flex: 0 1 auto;
+}
+
+.trabajador-card #inferior .custom-slider{
+    flex: 1 1 auto;
 }
 
 .trabajador-card .editar {

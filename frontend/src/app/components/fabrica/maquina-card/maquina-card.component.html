@@ -1,16 +1,14 @@
-<div class="maquina-card" [ngClass]="{ 'activo': maquina.activo }">
-    <div class="left-side">
-        <div class="img" draggable="true" (dragstart)="drag($event, maquina)" (dragend)="dragEnd($event)"><i class="bi bi-motherboard-fill"></i></div>
-        <div class="info">
-            <div class="nombre">{{maquina.nombre}}</div>
+<div class="maquina-card" [ngClass]="{ 'activo': maquina.activo }" draggable="true" (dragstart)="drag($event, maquina)" (dragend)="dragEnd($event)">
+    <div id="superior">
+        <div class="nombre">{{maquina.nombre}}</div>
+        <div class="salario">{{maquina.coste_h}}€/h</div>
+        <div class="editar" (click)="editarMaquina()">
+            <i class="bi bi-three-dots"></i>
         </div>
     </div>
-
-    <div class="right-side">
-        Fatiga: {{formatearDigitos(maquina.fatiga, 2)}}%
+    <div id="inferior" [title]="'Fatiga:' + formatearDigitos(maquina.fatiga, 2) + '%'">
+        <div class="fatiga">Fatiga</div>
+        <input class="custom-slider gradient" disabled="disabled" type="range" min="0" max="100" [value]="maquina.fatiga">
     </div>
-
-    <div class="editar" (click)="editarMaquina()">
-        <i class="bi bi-three-dots"></i>
-    </div>
+    
 </div>

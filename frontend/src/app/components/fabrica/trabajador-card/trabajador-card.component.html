@@ -6,20 +6,9 @@
             <i class="bi bi-three-dots"></i>
         </div>
     </div>
-    <div id="inferior">
-        Fatiga: 
-        <input type="range">
+    <div id="inferior" [title]="'Fatiga:' + formatearDigitos(trabajador.fatiga, 2) + '%'">
+        <div class="fatiga">Fatiga</div>
+        <input class="custom-slider gradient" disabled="disabled" type="range" min="0" max="100" [value]="trabajador.fatiga">
     </div>
-
-    <!--div class="left-side">
-        <div class="img" ><i class="bi bi-person-standing"></i></div>
-        <div class="info">
-        </div>
-    </div>
-    
-    <div class="right-side">
-        Fatiga: {{formatearDigitos(trabajador.fatiga, 2)}}%
-    </div-->
-
     
 </div>

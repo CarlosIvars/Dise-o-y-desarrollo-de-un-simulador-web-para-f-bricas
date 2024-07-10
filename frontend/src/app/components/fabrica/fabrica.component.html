@@ -2,7 +2,7 @@
 <ng-container *ngIf="!cargando && fabrica != undefined">
     <div class="panelCentral">
         <div id="fabricaTitulo">{{fabrica.nombre}}</div>
-        <button class="botonAnyadirTarea" (click)="abrirTareasForm()">Añadir tarea</button>
+        <button class="botonAnyadirTarea boton-borde" (click)="abrirTareasForm()">Añadir tarea</button>
     </div>
     <div *ngIf="!cargando" id="content">
         <div class="barra-lateral" id="bl-izquierda">
@@ -24,19 +24,25 @@
                 </div>
                 <div class="seccion" id="sc-trabajadores">
                     <div class="sc-header">
-                        <div>Trabajadores</div>
-                        <button (click)="abrirTrabajadoresForm()">Añadir</button>
+                        <div class="left-group">
+                            <img class="icon" src="./../../../assets/icons/Trabajador-light.svg">
+                            <div class="text">Trabajadores</div>
+                        </div>
+                        <img class="add" (click)="abrirTrabajadoresForm()" src="./../../../assets/icons/Plus.svg">
                     </div>
-                    <div class="lista-card">
+                    <div class="lista-card custom-scrollbar">
                         <app-trabajador-card *ngFor="let trabajador of trabajadores" [trabajador]="trabajador" (editarTrabajadorForm)="abrirEditTrabajadoresForm($event)"></app-trabajador-card>
                     </div>
                 </div>
                 <div class="seccion" id="sc-maquinas">
                     <div class="sc-header">
-                        <div>Máquinas</div>
-                        <button (click)="abrirMaquinasForm()">Añadir</button>
+                        <div class="left-group">
+                            <img class="icon" src="./../../../assets/icons/Maquina.svg">
+                            <div class="text">Maquinaria</div>
+                        </div>
+                        <img class="add" (click)="abrirMaquinasForm()" src="./../../../assets/icons/Plus.svg">
                     </div>
-                    <div class="lista-card">
+                    <div class="lista-card custom-scrollbar">
                         <app-maquina-card *ngFor="let maquina of maquinas" [maquina]="maquina" (editarMaquinaForm)="abrirEditMaquinasForm($event)"></app-maquina-card>
                     </div>
                 </div>
@@ -49,7 +55,7 @@
             <div class="box">
                 <div class="usuario">
                     <div class="boton-flotante" (click)="cerrarSesion()" [title]="userName">
-                        <img class="icon" src="./../../../assets/icons/Trabajador.svg" alt="User">
+                        <img class="icon" src="./../../../assets/icons/Trabajador-dark.svg" alt="User">
                     </div>
                 </div>
                 <div class="panel">

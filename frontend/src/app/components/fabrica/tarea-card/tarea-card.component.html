@@ -12,8 +12,11 @@
     <div class="parte-central">
         <div class="asignable">
             <ng-container *ngIf="tarea.getAsignable() as asignable">
-                <i *ngIf="isTrabajador()" class="bi bi-person-standing asignado" [title]="asignable.nombre" (click)="desasignarATarea()"></i>
-                <i *ngIf="!isTrabajador() && isMaquina()" class="bi bi-motherboard-fill asignado" [title]="asignable.nombre" (click)="desasignarATarea()"></i>
+                <img *ngIf="isTrabajador()" class="asignado" style="cursor: pointer;" src="./../../../../assets/icons/Trabajador-dark.svg" alt="Trab" [title]="asignable.nombre" (click)="desasignarATarea()">
+                <img *ngIf="!isTrabajador() && isMaquina()" class="asignado" style="cursor: pointer;" src="./../../../../assets/icons/Maquina-dark.svg" alt="Maq" [title]="asignable.nombre" (click)="desasignarATarea()">
+            </ng-container>
+            <ng-container *ngIf="!tarea.getAsignable() as asignable">
+                <div class="asignado"></div>             
             </ng-container>
             <div *ngIf="!tarea.getAsignable() as asignable" class="sin-asignar"></div>
 
@@ -21,24 +24,21 @@
             <div *ngIf="!tarea.getAsignable() as asignable" class="fatiga">Fatiga: 0%</div>
         </div>
         <div class="duracion">
-            <div class="tiempo">Duración: {{formatearDecimales(tarea.tiempoActual)}} / {{tarea.duracion}}</div>
+            <img class="clock" src="./../../../../assets/icons/Clock.svg">
+            <div class="text">Duración: {{formatearDecimales(tarea.tiempoActual)}} / {{tarea.duracion}}</div>
         </div>
 
         <div class="factor-fatiga">
-            <div class="form-group" style="margin: 0px;">
-                <label class="form-label">F. Fatiga: x{{tarea.factorFatiga}}</label>
-                <div class="slider-container">
-                    <input type="range" min="0.5" max="2" step="0.1" [(ngModel)]="tarea.factorFatiga" (mousedown)="$event.stopPropagation()">
-                </div>    
-            </div>
+            <div class="text">F. Fatiga: x{{tarea.factorFatiga}}</div>
+            <div class="slider-container">
+                <input type="range" class="custom-slider solid" style="border-style: none;" min="0.5" max="2" step="0.1" [(ngModel)]="tarea.factorFatiga" (mousedown)="$event.stopPropagation()">
+            </div>    
         </div>
         <div class="factor-duracion">
-            <div class="form-group" style="margin: 0px;">
-                <label class="form-label">F. Duración: x{{tarea.factorDuracion}}</label>
-                <div class="slider-container">
-                    <input type="range" min="0.5" max="2" step="0.1" [(ngModel)]="tarea.factorDuracion" (change)="cambiarDuracion(tarea)" (mousedown)="$event.stopPropagation()">
-                </div>    
-            </div>
+            <div class="text">F. Duración: x{{tarea.factorDuracion}}</div>
+            <div class="slider-container">
+                <input type="range" class="custom-slider solid" style="border-style: none;" min="0.5" max="2" step="0.1" [(ngModel)]="tarea.factorDuracion" (change)="cambiarDuracion(tarea)" (mousedown)="$event.stopPropagation()">
+            </div>   
         </div>
     </div>
 

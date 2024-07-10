@@ -23,6 +23,8 @@
     --modal-background-color: #3F3F3F;
     --modal-input-color: #898989;
     --modal-input-font-color: #2D2D2D;
+
+    --slider-background-color: #D9D9D9;
 }
 
 /* Estilos globales de la aplicación */
@@ -66,14 +68,16 @@ header{
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(45, 45, 45, 0.95);
     z-index: 9998;
     backdrop-filter: blur(5px);
+    box-shadow: 10px 6px 18.8px 0px rgba(25, 25, 25, 0.8);
 }
 
 .modal-container {
     min-width: 400px;
     min-height: 400px;
+    max-height: 95vh;
     background-color: var(--modal-background-color);
     position: fixed;
     top: 50%;
@@ -83,6 +87,7 @@ header{
     border-radius: 10px;
     display: flex;
     flex-direction: column;
+    padding: 0 45px;
 }
 
 .modal-header{
@@ -90,14 +95,20 @@ header{
     display: flex;
     align-items: center;
     height: 30px;
-    padding: 20px;
-    padding-top: 23px;
+    margin-top: 30px;
+    margin-bottom: 20px;
 }
 
 .modal-header .modal-title {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 30px;
+    font-weight: 500;
     flex-grow: 1;
+}
+
+.modal-header .modal-cross {
+    width: 20px;
+    height: 20px;
+    margin-right: -14px;
 }
 
 .modal-header .header-close-icon {
@@ -115,12 +126,22 @@ header{
 
 .modal-footer {
     flex-grow: 0;
-    padding: 15px;
+    padding: 15px 0px;
     display: flex;
     justify-content: right;
     gap: 10px;
 }
-.modal-body input{
+
+.modal-footer button{
+    border-radius: 1000px;
+    padding: 6px 20px;
+    background-color: transparent;
+    color: var(--font-color);
+    border: 1px solid var(--font-color);
+    cursor: pointer;
+}
+
+.modal-body input, .modal-body select, .modal-body textarea{
     border: 0;
     background-color: var(--modal-input-color);
     color: var(--modal-input-font-color);
@@ -202,4 +223,121 @@ header{
 .boton-flotante .icon {
     width: 50%;
     height: 50%;
+}
+
+/********** Range Input Styles **********/
+/*Range Reset*/
+.custom-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* Removes default focus */
+.custom-slider:focus {
+    outline: none;
+}
+
+/***** Chrome, Safari, Opera and Edge Chromium styles *****/
+/* slider track */
+.custom-slider::-webkit-slider-runnable-track {
+    border-radius: 4px;
+    height: 4px;
+}
+
+.custom-slider.gradient::-webkit-slider-runnable-track {
+    background-image: linear-gradient(to right, #4DFF4A, #F0FF4A, #FF8A00, #FF0000);
+}
+
+.custom-slider.solid::-webkit-slider-runnable-track {
+    background-color: var(--slider-background-color);
+}
+
+/* slider thumb */
+.custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    margin-top: -2px; /* Centers thumb on the track */
+
+    /*custom styles*/
+    background-color: #FFFFFF;
+    height: 7px;
+    width: 7px;
+    border-radius: 1rem;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.custom-slider.solid::-webkit-slider-thumb{
+    background-color: #4F4F4F;
+}
+
+/*
+input[type="range"]:focus::-webkit-slider-thumb {   
+    border: 1px solid #053a5f;
+    outline: 3px solid #053a5f;
+    outline-offset: 0.125rem; 
+}
+*/
+
+/******** Firefox styles ********/
+/* slider track */
+.custom-slider::-moz-range-track {
+    background-color: #053a5f;
+    border-radius: 0.5rem;
+    height: 0.5rem;
+}
+
+.custom-slider::-moz-range-thumb {
+    border: none; /*Removes extra border that FF applies*/
+    border-radius: 0; /*Removes default border-radius that FF applies*/
+
+    /*custom styles*/
+    background-color: #5cd5eb;
+    height: 2rem;
+    width: 1rem;
+}
+
+/*Scrollbars*/
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background-color: #2D2D2D;
+    border-radius: 100vh;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #FFFFFF;
+    border-radius: 100vh;
+    width: 4px;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background-color: #2D2D2D;
+    border-radius: 100vh;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: #FFFFFF;
+    border-radius: 100vh;
+    width: 4px;
+}
+
+
+/*Boton vacio*/
+.boton-borde{
+    border-radius: 1000px;
+    padding: 6px 40px;
+    background-color: transparent;
+    color: var(--font-color);
+    border: 1px solid var(--font-color);
+    cursor: pointer;
 }

@@ -1,24 +1,20 @@
-<header>
-    <div id="cabeceraIzq">
-        Fábricas
-    </div>
 
-    <div id="cabeceraDer" (click)="cerrarSesion()">{{userName}}</div>
-</header>
+<div class="usuario">
+    <div class="boton-flotante" (click)="cerrarSesion()" [title]="userName">
+        <img class="icon" src="./../../../assets/icons/Trabajador-dark.svg" alt="User">
+    </div>
+</div>
 <div id="content">
     <div id="content-header">
-        <h2>Tus fábricas:</h2>
-        <div>
-            <button (click)="abrirCrearFabrica()">Nueva fábrica</button>
-        </div>
+        <div class="title">Estas son tus fábricas</div>
+        <button class="boton-borde" (click)="abrirCrearFabrica()">Nueva fábrica</button>
     </div>
-    <div *ngIf="!cargando" id="fabricasGrid">
+    <div *ngIf="!cargando" id="fabricasGrid" class="custom-scrollbar">
         <div *ngFor="let fabrica of fabricas" class="fabrica" (click)="abrirFabrica(fabrica.id)">
             <div class="cuerpo">
                 <div class="nombreFabrica">{{fabrica.nombre}}</div>
-                <div class="sector">Sector: {{fabrica.sector}}</div>
-                <div class="dinero"><i class="bi bi-cash-stack"></i>{{fabrica.capital}}</div>
-                <div class="beneficio"><i class="bi bi-graph-up"></i>{{fabrica.beneficio}}</div>
+                <div class="dinero"><img class="icon" src="./../../../assets/icons/Money.svg" alt="User">{{fabrica.capital}}</div>
+                <div class="sector">{{fabrica.sector}}</div>
             </div>
             <div class="editar"(click)="abrirEditFabricaForm(fabrica); $event.stopPropagation();">
                 <i class="bi bi-three-dots"></i>
