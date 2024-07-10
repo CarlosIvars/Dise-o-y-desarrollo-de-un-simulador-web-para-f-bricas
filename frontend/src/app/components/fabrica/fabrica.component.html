@@ -6,22 +6,39 @@
     </div>
     <div *ngIf="!cargando" id="content">
         <div class="barra-lateral" id="bl-izquierda">
-            <div class="seccion" id="sc-trabajadores">
-                <div class="sc-header">
-                    <div>Trabajadores</div>
-                    <button (click)="abrirTrabajadoresForm()">Añadir</button>
+            <div class="box">
+                <div class="seccion" id="sc-controles">
+                    <div class="boton-flotante" (click)="toggleFabricaEjecucion()">
+                        <!--div (click)="toggleFabricaEjecucion()">{{ fabrica.activa ? 'Pause' : 'Play' }}</div-->
+                        <img *ngIf="!fabrica.activa" class="icon" src="./../../../assets/icons/Play.svg" alt="Play" title="Play" style="margin-left: 2px;">
+                        <img *ngIf="fabrica.activa" class="icon" src="./../../../assets/icons/Pause.svg" alt="Pause" title="Pause" style="margin-left: -1px;">
+                    </div>
+                    <div class="text">
+                        Velocidad x{{velocidadEjecucion}}
+                    </div>
+                    <div class="botones">
+                        <img src="./../../../assets/icons/Controller-up.svg">
+                        <img src="./../../../assets/icons/Controller-down.svg">
+                    </div>
+                    <!--input type="range" [(ngModel)]="velocidadEjecucion" (change)="cambiarVelocidadEjecucion()" min="1" max="100" step="10"-->
                 </div>
-                <div class="lista-card">
-                    <app-trabajador-card *ngFor="let trabajador of trabajadores" [trabajador]="trabajador" (editarTrabajadorForm)="abrirEditTrabajadoresForm($event)"></app-trabajador-card>
+                <div class="seccion" id="sc-trabajadores">
+                    <div class="sc-header">
+                        <div>Trabajadores</div>
+                        <button (click)="abrirTrabajadoresForm()">Añadir</button>
+                    </div>
+                    <div class="lista-card">
+                        <app-trabajador-card *ngFor="let trabajador of trabajadores" [trabajador]="trabajador" (editarTrabajadorForm)="abrirEditTrabajadoresForm($event)"></app-trabajador-card>
+                    </div>
                 </div>
-            </div>
-            <div class="seccion" id="sc-maquinas">
-                <div class="sc-header">
-                    <div>Máquinas</div>
-                    <button (click)="abrirMaquinasForm()">Añadir</button>
-                </div>
-                <div class="lista-card">
-                    <app-maquina-card *ngFor="let maquina of maquinas" [maquina]="maquina" (editarMaquinaForm)="abrirEditMaquinasForm($event)"></app-maquina-card>
+                <div class="seccion" id="sc-maquinas">
+                    <div class="sc-header">
+                        <div>Máquinas</div>
+                        <button (click)="abrirMaquinasForm()">Añadir</button>
+                    </div>
+                    <div class="lista-card">
+                        <app-maquina-card *ngFor="let maquina of maquinas" [maquina]="maquina" (editarMaquinaForm)="abrirEditMaquinasForm($event)"></app-maquina-card>
+                    </div>
                 </div>
             </div>
         </div>
@@ -29,46 +46,47 @@
             <app-arbol-de-tareas style="display: block; height: 100%;" (editarTareaForm)="abrirEditTareasForm($event)"></app-arbol-de-tareas>
         </div>
         <div class="barra-lateral" id="bl-derecha">
-            <div class="usuario">
-                <div class="boton-flotante" (click)="cerrarSesion()" [title]="userName">X</div>
-            </div>
-            <div class="panel">
-                <div class="botonera">
-                    <!--button (click)="skillMatching()">Skills matching</button-->
-                    <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
-                    <!--button (click)="algoritmoGeneticoRL()">Algoritmo genético RL</button-->
-                    <!--button (click)="guardarHistorial()">Guardar historial</button-->
-                    <!--button (click)="boton1()">Botón extra 1</button-->
-                    <!--button (click)="boton2()">Botón extra 2</button-->
-                    <!--button (click)="boton3()">Botón extra 3</button-->
-                    <!--button (click)="boton4()">Botón extra 4</button-->
-                    <button class="boton" (click)="algoritmoGenetico()">Prueba1</button>
-                    <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
-                    <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
-                    <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
+            <div class="box">
+                <div class="usuario">
+                    <div class="boton-flotante" (click)="cerrarSesion()" [title]="userName">
+                        <img class="icon" src="./../../../assets/icons/Trabajador.svg" alt="User">
+                    </div>
                 </div>
-
-                <div class="capital">
-                    <div id="costes" class="capital-gruop">
-                        <div class="money">{{fabrica.coste}}€</div>
-                        <div class="title">Costes totales</div>
+                <div class="panel">
+                    <div class="botonera">
+                        <!--button (click)="skillMatching()">Skills matching</button-->
+                        <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
+                        <!--button (click)="algoritmoGeneticoRL()">Algoritmo genético RL</button-->
+                        <!--button (click)="guardarHistorial()">Guardar historial</button-->
+                        <!--button (click)="boton1()">Botón extra 1</button-->
+                        <!--button (click)="boton2()">Botón extra 2</button-->
+                        <!--button (click)="boton3()">Botón extra 3</button-->
+                        <!--button (click)="boton4()">Botón extra 4</button-->
+                        <button class="boton" (click)="algoritmoGenetico()">Prueba1</button>
+                        <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
+                        <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
+                        <button class="boton" (click)="algoritmoGenetico()">Algoritmo genético</button>
                     </div>
-                    <div id="beneficios" class="capital-gruop">
-                        <div class="money">{{fabrica.beneficio}}€</div>
-                        <div class="title">Beneficios totales</div>
-                    </div>
-                    <div id="cap-total" class="capital-gruop">
-                        <div class="money">{{fabrica.capital}}€</div>
-                        <div class="title">Capital total</div>
+    
+                    <div class="capital">
+                        <div id="costes" class="capital-gruop">
+                            <div class="money">{{fabrica.coste}}€</div>
+                            <div class="title">Costes totales</div>
+                        </div>
+                        <div id="beneficios" class="capital-gruop">
+                            <div class="money">{{fabrica.beneficio}}€</div>
+                            <div class="title">Beneficios totales</div>
+                        </div>
+                        <div id="cap-total" class="capital-gruop">
+                            <div class="money">{{fabrica.capital}}€</div>
+                            <div class="title">Capital total</div>
+                        </div>
                     </div>
                 </div>
             </div>
            
             <!--div id="cabeceraCentro">
-                <div>Dinero: {{fabrica.capital}}€ Beneficio: {{fabrica.beneficio}}€ Coste: {{fabrica.coste}}</div>
                 <div>Día: {{fabrica.dia}} Hora: {{fabrica.hora}}:{{formatearMinutos(fabrica.minutos)}}</div>
-                <div (click)="toggleFabricaEjecucion()">{{ fabrica.activa ? 'Pause' : 'Play' }} (x{{velocidadEjecucion}})</div>
-                <input type="range" [(ngModel)]="velocidadEjecucion" (change)="cambiarVelocidadEjecucion()" min="1" max="100" step="10">
             </div-->
         </div>
     </div>

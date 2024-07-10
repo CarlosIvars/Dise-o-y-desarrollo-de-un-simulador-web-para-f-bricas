@@ -1,4 +1,4 @@
-<div class="trabajador-card" [ngClass]="{ 'activo': trabajador.activo }">
+<div class="trabajador-card" [ngClass]="{ 'activo': trabajador.activo }" draggable="true" (dragstart)="drag($event, trabajador)" (dragend)="dragEnd($event)">
     <div id="superior">
         <div class="nombre">{{trabajador.nombre}} {{trabajador.apellidos}}</div>
         <div class="salario">{{trabajador.coste_h}}€/h</div>
@@ -12,7 +12,7 @@
     </div>
 
     <!--div class="left-side">
-        <div class="img" draggable="true" (dragstart)="drag($event, trabajador)" (dragend)="dragEnd($event)"><i class="bi bi-person-standing"></i></div>
+        <div class="img" ><i class="bi bi-person-standing"></i></div>
         <div class="info">
         </div>
     </div>

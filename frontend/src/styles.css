@@ -19,6 +19,10 @@
 
     --boton-flotante-color: #F5F5F5;
     --boton-flotante-font-color: #555555;
+
+    --modal-background-color: #3F3F3F;
+    --modal-input-color: #898989;
+    --modal-input-font-color: #2D2D2D;
 }
 
 /* Estilos globales de la aplicación */
@@ -70,7 +74,7 @@ header{
 .modal-container {
     min-width: 400px;
     min-height: 400px;
-    background-color: white;
+    background-color: var(--modal-background-color);
     position: fixed;
     top: 50%;
     left: 50%;
@@ -116,6 +120,17 @@ header{
     justify-content: right;
     gap: 10px;
 }
+.modal-body input{
+    border: 0;
+    background-color: var(--modal-input-color);
+    color: var(--modal-input-font-color);
+}
+
+.modal-body input::placeholder{
+    color: var(--modal-input-font-color);
+}
+
+/*TODO: compatibilidad placeholder con navegadores*/
 
 /*Formularios*/
 .form-group {
@@ -173,12 +188,18 @@ header{
 /* Boton flotante */
 
 .boton-flotante {
-    height: 40px;
-    width: 40px;
+    height: 42px;
+    width: 42px;
     background-color: var(--boton-flotante-color);
     color: var(--boton-flotante-font-color);
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
+    cursor: pointer;
+}
+
+.boton-flotante .icon {
+    width: 50%;
+    height: 50%;
 }
