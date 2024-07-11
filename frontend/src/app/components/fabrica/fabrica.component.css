@@ -190,6 +190,11 @@
     font-size: 14px;
 }
 
+.boton.bloqued{
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
 #bl-derecha .panel .capital{
     display: flex;
     flex-direction: column;

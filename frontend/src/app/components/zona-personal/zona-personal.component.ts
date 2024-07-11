@@ -19,6 +19,8 @@ export class ZonaPersonalComponent {
   cargando: boolean = true;
 
   mostrarCrearFabrica: boolean = false;
+  mostrarCrearFabricaAleatoria: boolean = false;
+
 
   editarFabricaForm: boolean = false;
   fabricaEditar!: Fabrica;
@@ -80,6 +82,14 @@ export class ZonaPersonalComponent {
   }
   cerrarCrearFabrica() {
     this.mostrarCrearFabrica = false;
+  }
+
+  //Modal para crear fabricas aleatorias
+  abrirCrearFabricaAleatoria() {
+    this.mostrarCrearFabricaAleatoria = true;
+  }
+  cerrarCrearFabricaAleatoria() {
+    this.mostrarCrearFabricaAleatoria = false;
   }
 
   //EditMaquinasForm

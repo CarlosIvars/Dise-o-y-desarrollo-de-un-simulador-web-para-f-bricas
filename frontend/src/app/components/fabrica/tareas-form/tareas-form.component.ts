@@ -99,4 +99,61 @@ export class TareasFormComponent {
       });
     }
   }
+
+  crearTareaAleatoria(): void {
+    if(!this.cargando){
+      console.log("Creando tarea aleatoria...");
+      this.cargando = true;
+
+      this.apiService.crearTareaAleatoria(1).pipe(
+        finalize(() => {
+          this.cargando = false; 
+          this.cerrarModal();
+          console.log("Fin de crear tarea aleatoria.");
+        })
+      ).subscribe({
+        next: (response) => {
+          console.log("Respuesta: ", response);
+
+          /*
+          if(response.subtask != null && response.subtask != undefined) {
+            const id = response.subtask[0];
+            const nombre = response.subtask[1];
+            const duracion = response.subtask[2];
+            const beneficio = response.subtask[3];
+            const descripcion = response.subtask[4];
+            //const fabrica_id = response.tarea[5];
+            const coste = response.subtask[6];
+            const skills = response.subtask[7];
+
+            //Si tenemos todos los datos añadimos la tarea
+            if(id != undefined && nombre != undefined && duracion != undefined && beneficio != undefined && descripcion != undefined && coste != undefined && skills != undefined) {
+              const tareaHija = new TareaImpl(id, nombre, 0, duracion, beneficio, coste, 0, descripcion, skills);
+              this.tareasService.anyadirTarea(tareaHija);
+
+              if(response.dependencia != null && response.dependencia != undefined) {
+                const tareaPadre = this.tareas.find(tarea => tarea.id == response.dependencia);
+              
+                if (tareaHija && tareaPadre) {
+                  tareaHija.tareaPadre = tareaPadre;
+                  tareaPadre.tareasHijas.push(tareaHija);
+                  this.tareasService.actualizarTarea(tareaHija);
+                  this.tareasService.actualizarTarea(tareaPadre);
+                }
+              }
+            } else {
+              console.log("Datos recibidos insuficientes para crear el trabajador...");
+            }
+
+          } else {
+            console.error("No se ha recibido los datos esperados...")
+          }
+            */
+        },
+        error: (error) => {
+          alert("Error: " + error); 
+        }
+      });
+    }
+  }
 }

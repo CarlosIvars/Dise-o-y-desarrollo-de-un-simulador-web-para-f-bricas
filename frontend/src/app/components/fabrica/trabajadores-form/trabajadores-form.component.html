@@ -56,6 +56,7 @@
             </form>
         </div>
         <div class="modal-footer">
+            <button (click)="crearTrabajadorAleatorio()" [disabled]="cargando">Aleatorio</button>
             <button (click)="crearTrabajador()" [disabled]="cargando">Crear trabajador</button>
             <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
         </div>

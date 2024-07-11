@@ -8,7 +8,7 @@
 }
 
 .maquina-card.activo {
-    background-color: gray;
+    opacity: 0.4;
 }
 
 .maquina-card #superior{

@@ -22,6 +22,11 @@
     font-weight: 500;
 }
 
+#content #content-header .botones{
+    display: flex;
+    gap: 16px;
+}
+
 #fabricasGrid {
     height: 62vh;
     overflow-y: auto;

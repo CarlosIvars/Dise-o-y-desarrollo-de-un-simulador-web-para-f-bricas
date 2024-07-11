@@ -36,6 +36,7 @@
             </form>
         </div>
         <div class="modal-footer">
+            <button (click)="crearTareaAleatoria()" [disabled]="cargando">Aleatoria</button>
             <button (click)="crearTarea()" [disabled]="cargando">Crear tarea</button>
             <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
         </div>

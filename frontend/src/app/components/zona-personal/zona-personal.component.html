@@ -7,7 +7,10 @@
 <div id="content">
     <div id="content-header">
         <div class="title">Estas son tus fábricas</div>
-        <button class="boton-borde" (click)="abrirCrearFabrica()">Nueva fábrica</button>
+        <div class="botones">
+            <button class="boton-borde" (click)="abrirCrearFabrica()">Nueva fábrica</button>
+            <button class="boton-borde" (click)="abrirCrearFabricaAleatoria()">Fábrica aleatoria</button>
+        </div>
     </div>
     <div *ngIf="!cargando" id="fabricasGrid" class="custom-scrollbar">
         <div *ngFor="let fabrica of fabricas" class="fabrica" (click)="abrirFabrica(fabrica.id)">
@@ -27,4 +30,5 @@
     </div>
 </div>
 <app-crear-fabrica-form *ngIf="mostrarCrearFabrica" [sectores]="sectores" (close)="cerrarCrearFabrica()" (fabricaCreada)="crearFabrica($event)"></app-crear-fabrica-form>
+<app-fabrica-aleatoria-form *ngIf="mostrarCrearFabricaAleatoria" (close)="cerrarCrearFabricaAleatoria()" (fabricaCreada)="crearFabrica($event)"></app-fabrica-aleatoria-form>
 <app-edit-fabrica-form *ngIf="editarFabricaForm" [sectores]="sectores" [fabrica]="fabricaEditar" (close)="cerrarEditFabricaForm()" (fabricaModificada)="modificarFabrica($event)" (deleteFabrica)="borrarFabrica($event)"></app-edit-fabrica-form>

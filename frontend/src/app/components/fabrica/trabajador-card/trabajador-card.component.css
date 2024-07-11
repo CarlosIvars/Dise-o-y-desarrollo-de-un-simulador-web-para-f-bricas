@@ -8,7 +8,7 @@
 }
 
 .trabajador-card.activo {
-    background-color: gray;
+    opacity: 0.4;
 }
 
 .trabajador-card #superior{

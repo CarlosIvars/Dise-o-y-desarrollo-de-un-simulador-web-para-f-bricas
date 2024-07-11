@@ -1,4 +1,7 @@
-<button style="position: absolute;" (click)="centerGraph()">Centrar vista</button>
+<div class="reiniciarMapa boton-flotante" (click)="centerGraph()" title="Reiniciar mapa">
+  <img class="icon" src="./../../../../assets/icons/Reset.svg" alt="User">
+</div>
+
 <ngx-graph style="display: block; height: 100%;" class="chart-container" [nodes]="nodes" [links]="links" [curve]="curve" [center$]="center$" [zoomToFit$]="zoomToFit$" [layoutSettings]="layoutSettings" layout="dagreCluster">
   <ng-template #defsTemplate>
     <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">

@@ -32,6 +32,7 @@
             </form>
         </div>
         <div class="modal-footer">
+            <button (click)="crearMaquinaAleatoria()" [disabled]="cargando">Aleatoria</button>
             <button (click)="crearMaquina()" [disabled]="cargando">Crear máquina</button>
             <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
         </div>

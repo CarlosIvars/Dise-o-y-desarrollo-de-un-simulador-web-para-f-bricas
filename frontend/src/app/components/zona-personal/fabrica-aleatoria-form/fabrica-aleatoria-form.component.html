@@ -1,0 +1,28 @@
+<div class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-title">Crear fábrica aleatoria</div>
+            <div class="header-close-icon" (click)="cerrarModal()">X</div>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Número de trabajadores:</label>
+                    <input type="number" [(ngModel)]="n_trabajadores" name="n_trabajadores" placeholder="Número de trabajadores">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Número de máquinas:</label>
+                    <input type="number" [(ngModel)]="n_maquinas" name="n_maquinas" placeholder="Número de máquinas">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Número de tareas:</label>
+                    <input type="number" [(ngModel)]="n_subtasks" name="n_subtasks" placeholder="Número de tareas">
+                </div>    
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button (click)="crearFabricaAleatoria()" [disabled]="cargando">Crear Fábrica</button>
+            <button (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
+        </div>
+    </div>
+</div>

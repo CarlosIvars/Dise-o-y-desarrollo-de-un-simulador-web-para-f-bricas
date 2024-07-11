@@ -1,0 +1,6 @@
+.boton-flotante.reiniciarMapa {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translate(-42px, 0px);
+}

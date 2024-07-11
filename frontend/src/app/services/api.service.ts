@@ -62,6 +62,17 @@ export class ApiService {
     return this.http.post<any>(`${environment.apiUrlBase}/fabricas`, {nombre_fabrica, capital_inicial, sector}, httpOptions);
   }
 
+  crearFabricaAleatoria(n_trabajadores: number, n_maquinas: number, n_subtasks: number): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true
+    };
+
+    return this.http.post<any>(`${environment.apiUrlBase}/generar_fabrica`, {n_trabajadores, n_maquinas, n_subtasks}, httpOptions);
+  }
+
   modificarNombreFabrica(id: number, nombre_fabrica: string): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -97,6 +108,17 @@ export class ApiService {
     };
 
     return this.http.post<any>(`${environment.apiUrlBase}/add_trabajador`, {nombre, apellidos, fecha_nacimiento, fatiga, coste_h, preferencias, skills}, httpOptions);
+  }
+
+  crearTrabajadorAleatorio( numeroTrabajadores: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true
+    };
+
+    return this.http.post<any>(`${environment.apiUrlBase}/generar_trabajadores`, {n_trabajadores: numeroTrabajadores}, httpOptions);
   }
 
   modificarTrabajador(trabajador_id: string, nombre: string, apellidos: string, fecha_nacimiento: string, fatiga: number, coste_h: number, preferencias_trabajo: number, trabajos_apto: number, nuevas_habilidades: number[]) {
@@ -138,6 +160,17 @@ export class ApiService {
     return this.http.post<any>(`${environment.apiUrlBase}/add_maquina`, {nombre, fatiga, coste_h, skills}, httpOptions);
   }
 
+  crearMaquinaAleatoria( numeroMaquinas: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true
+    };
+
+    return this.http.post<any>(`${environment.apiUrlBase}/generar_maquinas`, {n_maquinas: numeroMaquinas}, httpOptions);
+  }
+
   modificarMaquina(id: string, nombre: string, coste_h: number, fatiga: number, nuevas_habilidades: number[]) {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -174,6 +207,17 @@ export class ApiService {
     console.log({nombre, duracion, beneficio, coste, descripcion, subtask_dependencia});
 
     return this.http.post<any>(`${environment.apiUrlBase}/add_subtask`, {nombre, duracion, beneficio, coste, descripcion, subtask_dependencia}, httpOptions);
+  }
+
+  crearTareaAleatoria( numeroTareas: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true
+    };
+
+    return this.http.post<any>(`${environment.apiUrlBase}/generar_subtareas`, {n_subtareas: numeroTareas}, httpOptions);
   }
 
   modificarTarea(id: number, nombre: string, duracion: number, beneficio: number, coste: number, descripcion: string, skills: number[]) {

@@ -23,7 +23,8 @@ import { HistorialService } from '../../services/historial.service';
 export class FabricaComponent {
   fabrica_id?: number;
 
-  velocidadEjecucion: number = 1;
+  velocidades: number[] = [1,2,5,10,20,35,50,75,100];
+  velocidadSeleccionada: number = 0;
 
   userName: string = "Usuario";
 
@@ -88,7 +89,7 @@ export class FabricaComponent {
 
     this.iniciarFabrica(this.fabrica_id);
 
-    this.cambiarVelocidadEjecucion();
+    this.cambiarVelocidadEjecucion(this.velocidades[this.velocidadSeleccionada]);
   }
 
   ngOnDestroy(): void {
@@ -119,8 +120,22 @@ export class FabricaComponent {
     }
   }
 
-  cambiarVelocidadEjecucion() {
-    this.timerService.cambiarVelocidadEjecucion(this.velocidadEjecucion);
+  cambiarVelocidadEjecucion(velocidad: number) {
+    this.timerService.cambiarVelocidadEjecucion(velocidad);
+  }
+
+  subirVelocidadEjecucion() {
+    if((this.velocidadSeleccionada + 1) < this.velocidades.length) {
+      this.velocidadSeleccionada++;
+    }
+    this.cambiarVelocidadEjecucion(this.velocidades[this.velocidadSeleccionada]);
+  }
+
+  bajarVelocidadEjecucion() {
+    if((this.velocidadSeleccionada - 1) >= 0) {
+      this.velocidadSeleccionada--;
+    }
+    this.cambiarVelocidadEjecucion(this.velocidades[this.velocidadSeleccionada]);
   }
 
   formatearMinutos(numero: number | undefined) {
@@ -473,7 +488,7 @@ export class FabricaComponent {
   }
 
   cerrarSesion() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/zona-personal']);
   }
 
   guardarHistorial() {

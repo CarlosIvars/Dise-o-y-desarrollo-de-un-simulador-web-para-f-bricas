@@ -66,6 +66,44 @@ export class MaquinasFormComponent {
     }
   }
 
+  crearMaquinaAleatoria(): void {
+    if(!this.cargando){
+      console.log("Creando maquina aleatoria...");
+      this.cargando = true;
+
+      this.apiService.crearMaquinaAleatoria(1).pipe(
+        finalize(() => {
+          this.cargando = false; 
+          this.cerrarModal();
+          console.log("Fin de crear maquina aleatoria.");
+        })
+      ).subscribe({
+        next: (response) => {
+          console.log("Respuesta: ", response);
+          /*
+            if(response.maquina != undefined) {
+              //const numeric_id = response.maquina[0];
+              const alfanumeric_id = response.maquina[1];
+              const nombre = response.maquina[2];
+              const fatiga = response.maquina[3];
+              const coste_h = response.maquina[4];
+              //const fabrica_id = response.maquina[5];
+              //const trabajo_id = response.maquina[6];
+              const skills = response.maquina[7];
+
+              if(alfanumeric_id != undefined && nombre != undefined && fatiga != undefined && coste_h != undefined && skills != undefined) {
+                this.maquinasService.anyadirMaquina(new MaquinaImpl(alfanumeric_id, nombre,fatiga, coste_h, skills));
+              }
+            }
+          */
+        },
+        error: (error) => {
+          alert("Error: " + error); 
+        }
+      });
+    }
+  }
+
   checkSkill(id: number) {
     const index = this.skills.indexOf(id);
     if (index !== -1) {
