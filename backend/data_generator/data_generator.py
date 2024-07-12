@@ -104,9 +104,10 @@ def generar_fabrica(n_humanos, n_maquinas, n_tareas, user_id):
     factory = {
             'nombre_fabrica': fake.company(),
             'capital_inicial': fake.random_number(digits=7),
-            'sector': fake.random_int(min=0, max = 26)
+            'sector': fake.random_int(min=5, max = 26)
         }
-    fabrica = FabricaModel.add_fabrica(factory['nombre_fabrica'], user_id, factory['capital_inicial'], sectores[factory['sector']])
+    id_usuario = UserModel.get_user(user_id)
+    fabrica = FabricaModel.add_fabrica(factory['nombre_fabrica'], id_usuario['id'], factory['capital_inicial'], sectores[factory['sector']])
     print("Generamos Fabricas")
     try:
         generate_trabajadores(n_humanos, fabrica[7], fabrica[0])

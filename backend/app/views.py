@@ -600,9 +600,9 @@ def generate_fabrica():
         user_id = session.get('usuario')
         if not user_id:
             return jsonify({'error': 'Usuario no autenticado'}), 404
+        data = request.json
         if not data:
             return jsonify({'error': 'No se proporcionaron datos'}), 400
-        data = request.json
         n_humanos = data.get('n_trabajadores')
         n_maquinas = data.get('n_maquinas')
         n_subtareas = data.get('n_subtasks')
@@ -619,9 +619,9 @@ def generar_trabajadores():
         sector = session.get('sector')
         if not fabrica_id:
             return jsonify({'error': 'Fabrica no encontrada'}), 404
+        data = request.json
         if not data:
             return jsonify({'error': 'No se proporcionaron datos'}), 400
-        data = request.json
         n_humanos = data.get('n_trabajadores')
         trabajadores = generate_trabajadores(n_humanos,sector,fabrica_id)
         return jsonify({'trabajadores' : trabajadores}), 200
@@ -636,9 +636,9 @@ def generar_maquinas():
         sector = session.get('sector')
         if not fabrica_id:
             return jsonify({'error': 'Fabrica no encontrada'}), 404
+        data = request.json
         if not data:
             return jsonify({'error': 'No se proporcionaron datos'}), 400
-        data = request.json
         n_maquinas = data.get('n_maquinas')
         maquinas = generate_maquinas(n_maquinas,sector,fabrica_id)
         return jsonify({'maquinas' : maquinas}), 200
@@ -653,9 +653,9 @@ def generar_subtareas():
         sector = session.get('sector')
         if not fabrica_id:
             return jsonify({'error': 'Fabrica no encontrada'}), 404
+        data = request.json
         if not data:
             return jsonify({'error': 'No se proporcionaron datos'}), 400
-        data = request.json
         n_subtareas = data.get('n_subtareas')
         subtasks = generate_subtasks(n_subtareas,sector,fabrica_id)
         return jsonify({'subtareas' : subtasks}), 200
