@@ -124,6 +124,44 @@ def clase_fatiga(fatiga_fin):
     else:
         return 4
 
+def preproceso_datos_fatiga_simulador(data):
+    df = pd.DataFrame(data)
+    try:    
+        df['trabajadores'] = df['trabajadores'].apply(lambda x: json.loads(x.replace("'", "\"")))
+        df['asignaciones'] = df['asignaciones'].apply(lambda x: json.loads(x.replace("'", "\"")))
+        df['maquinas'] = df['maquinas'].apply(lambda x: json.loads(x.replace("'", "\"")))
+        df['subtasks'] = df['subtasks'].apply(lambda x: json.loads(x.replace("'", "\"")))
+        
+        #DATOS a utilizar
+        df['sector'] = df.apply(lambda x: sector_fabrica(x['sector']),axis = 1)
+
+        #skills
+        df['t_skills'] = df.apply(lambda x: trabajadores_skills(x['trabajadores'],x['asignaciones']), axis = 1)
+        df['m_skills'] = df.apply(lambda x: maquinas_skills(x['maquinas'],x['asignaciones']), axis = 1)
+        df['s_skills'] = df.apply(lambda x: subtareas_skills(x['subtasks'],x['asignaciones']), axis = 1)
+        
+        #Tareas activas
+        df['s_activas'] = df.apply(lambda x: n_subtareas(x['asignaciones']), axis = 1)
+
+        #afinidad 
+        df['afinidad_t'] = df.apply(lambda x: afinidad_trabajadores(x['trabajadores'], x['subtasks'], x['asignaciones']), axis=1)
+        df['afinidad_m'] = df.apply(lambda x: afinidad_maquinas(x['maquinas'], x['subtasks'], x['asignaciones']), axis=1)
+
+        #duracion tarea
+        df['t_min'] = df.apply(lambda x : t_minimo(x['subtasks'], x['asignaciones']), axis = 1)
+        df['t_max'] = df.apply(lambda x : t_maximo(x['subtasks'], x['asignaciones']), axis = 1)
+        df['t_avg'] = df.apply(lambda x : avg_tiempo(x['subtasks'], x['asignaciones']), axis = 1)
+      
+
+        caracteristicas = [
+            'sector', 't_skills', 'm_skills', 's_skills', 's_activas',
+            'afinidad_t', 'afinidad_m', 't_min', 't_max', 
+            't_avg'
+        ]
+        df_modelo = df[caracteristicas]
+        return df_modelo
+    except Exception as ex:
+        print(ex)
 
 def preproceso_datos_fatiga(data, data_fin):
     df = pd.DataFrame(data)

@@ -12,6 +12,7 @@ import json
 import ast
 from config import config
 from data_generator.data_generator import *
+from ml_models.Fatiga.tfg import *
 from ml_models.AG.genetic_algorithm import *
 from ml_models.AG.ag import *
 from ml_models.RegresionLineal.regresionLineal import *
@@ -529,18 +530,140 @@ def algoritmo_genetico():
     
     return jsonify(nueva_respuesta), 200
 
-@app.route('/alg_genetico_RL', methods = ['GET'])
+@app.route('/predecir_fatiga', methods = ['POST'])
 def modelosPredictivos():
     try:
         fabrica_id = session.get('fabrica')
         if not fabrica_id:
             return jsonify({'error': 'Fabrica no encontrada'}), 404
         
-        data = FabricaModel.get_historial_entero(1)
-        dataR = FabricaModel.get_historial_entero(2)
-        d = modelosML()
-        #d = randomForest(data)
-        return jsonify({'response': 124})
+        data=request.json
+        data = {
+    "trabajadores": [
+        {
+            "id": "H_901",
+            "activo": True,
+            "fatiga": 63,
+            "nombre": "Alejandra",
+            "skills": [161, 168, 1],
+            "coste_h": 28,
+            "fatigado": 0,
+            "apellidos": "Gomis",
+            "trabajos_apto": 0,
+            "tiempo_fatigado": 0,
+            "fecha_nacimiento": "1965-10-30T00:00:00Z",
+            "preferencias_trabajo": 0
+        },
+        {
+            "id": "H_902",
+            "activo": False,
+            "fatiga": 74.42,
+            "nombre": "Carmelo",
+            "skills": [170, 163, 164, 2, 3, 10, 4, 7],
+            "coste_h": 63,
+            "fatigado": 0,
+            "apellidos": "Landa",
+            "trabajos_apto": 0,
+            "tiempo_fatigado": 6,
+            "fecha_nacimiento": "1993-12-26T00:00:00Z",
+            "preferencias_trabajo": 0
+        }
+    ],
+    "maquinas": [
+        {
+            "id": "M_55",
+            "activo": True,
+            "fatiga": 19,
+            "nombre": "voluptates",
+            "skills": [168, 169, 161, 163],
+            "coste_h": 40,
+            "fatigado": 0,
+            "tiempo_fatigado": 0
+        },
+        {
+            "id": "M_56",
+            "activo": False,
+            "fatiga": 93.91,
+            "nombre": "ipsa",
+            "skills": [168, 164],
+            "coste_h": 89,
+            "fatigado": 0,
+            "tiempo_fatigado": 6
+        }
+    ],
+    "subtasks": [
+        {
+            "id": 199,
+            "coste": 67,
+            "nombre": "Cree carteles para anunciar productos o eventos de la tienda.",
+            "skills": [5, 6, 164],
+            "cantidad": 0,
+            "duracion": 90,
+            "beneficio": 774,
+            "isWorking": True,
+            "tiempoBase": 54,
+            "descripcion": "Cree carteles para anunciar productos o eventos de la tienda.",
+            "factorFatiga": 1,
+            "tiempoActual": 6,
+            "factorDuracion": 1
+        },
+        {
+            "id": 200,
+            "coste": 87,
+            "nombre": "Organice botellas y vasos para crear exhibiciones atractivas.",
+            "skills": [5, 2, 6],
+            "cantidad": 0,
+            "duracion": 179,
+            "beneficio": 671,
+            "isWorking": True,
+            "tiempoBase": 88,
+            "descripcion": "Organice botellas y vasos para crear exhibiciones atractivas.",
+            "factorFatiga": 1,
+            "tiempoActual": 6,
+            "factorDuracion": 1
+        }
+    ],
+    "asignaciones": [
+        {"tarea_id": 199, "asignable_id": "H_901"},
+        {"tarea_id": 200, "asignable_id": "H_902"},
+        {"tarea_id": 199, "asignable_id": "M_55"},
+        {"tarea_id": 200, "asignable_id": "M_56"},
+     
+    ],
+    "tiempo_trabajado": 50,
+    "sector": "Relacionados con la preparación y el servicio de alimentos"
+}
+        if not data:
+            return jsonify({'error': 'No se proporcionó toda la informacion'}), 400
+        
+        trabajadores = data.get('trabajadores')
+        maquinas = data.get('maquinas')
+        subtasks = data.get('subtasks')
+        asignaciones = data.get('asignaciones')
+        tiempo_trabajado = data.get('tiempo_trabajado')
+        sector = session.get('sector')
+
+        if not all([trabajadores, maquinas, subtasks, asignaciones, tiempo_trabajado, sector]):
+            return jsonify({'error': 'Faltan datos en la solicitud'}), 400
+        
+        datos = {
+            'trabajadores': [json.dumps(trabajadores)],
+            'maquinas': [json.dumps(maquinas)],
+            'subtasks': [json.dumps(subtasks)],
+            'asignaciones': [json.dumps(asignaciones)],
+            'tiempo_trabajado': [tiempo_trabajado],
+            'sector': [sector]
+        }
+
+        # Llamar a la función del modelo
+        resultado = modelo1(datos)
+
+        # Formatear la respuesta
+        response = {
+            'resultado': int(resultado)  
+        }
+        print(response)
+        return jsonify(response)
     except Exception as ex:
         app.logger.error(f'Error regresion lineal: {ex}')
         return jsonify({'error': 'Error al procesar la solicitud regresion lineal'}), 500

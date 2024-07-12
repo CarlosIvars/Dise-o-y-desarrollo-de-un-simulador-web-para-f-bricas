@@ -69,12 +69,12 @@
                         <!--button (click)="boton2()">Botón extra 2</button-->
                         <!--button (click)="boton3()">Botón extra 3</button-->
                         <!--button (click)="boton4()">Botón extra 4</button-->
-                        <button class="boton" (click)="algoritmoGenetico()">Predecir fatiga</button>
+                        <button class="boton" (click)="algoritmoGeneticoRL()">Predecir fatiga</button>
                         <button class="boton bloqued" title="No disponible.">Predicción económica</button>
                         <button class="boton bloqued" title="No disponible.">Predicción duración</button>
                         <button class="boton bloqued" title="No disponible.">Recomendaciones</button>
                     </div>
-    
+
                     <div class="capital">
                         <div id="costes" class="capital-gruop">
                             <div class="money">{{fabrica.coste}}€</div>
@@ -93,13 +93,13 @@
             </div>
         </div>
     </div>
-    
+
     <app-trabajadores-form [hard_skills]="hard_skills" [soft_skills]="soft_skills" *ngIf="trabajadoresForm" (close)="cerrarTrabajadoresForm()"></app-trabajadores-form>
     <app-edit-trabajadores-form [hard_skills]="hard_skills" [soft_skills]="soft_skills" *ngIf="editTrabajadoresForm" [trabajador]="trabajadorEditando" (close)="cerrarEditTrabajadoresForm()"></app-edit-trabajadores-form>
-    
+
     <app-maquinas-form [hard_skills]="hard_skills" *ngIf="maquinasForm" (close)="cerrarMaquinasForm()"></app-maquinas-form>
     <app-edit-maquinas-form [hard_skills]="hard_skills" *ngIf="editMaquinasForm" [maquina]="maquinaEditando" (close)="cerrarEditMaquinasForm()"></app-edit-maquinas-form>
-    
+
     <app-tareas-form *ngIf="tareasForm" (close)="cerrarTareasForm()"></app-tareas-form>
-    <app-edit-tareas-form [hard_skills]="hard_skills" [soft_skills]="soft_skills" *ngIf="editTareasForm" [tarea]="tareaEditando" (close)="cerrarEditTareasForm()"></app-edit-tareas-form>    
+    <app-edit-tareas-form [hard_skills]="hard_skills" [soft_skills]="soft_skills" *ngIf="editTareasForm" [tarea]="tareaEditando" (close)="cerrarEditTareasForm()"></app-edit-tareas-form>
 </ng-container>
