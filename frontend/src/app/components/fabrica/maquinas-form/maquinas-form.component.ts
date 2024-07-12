@@ -80,22 +80,20 @@ export class MaquinasFormComponent {
       ).subscribe({
         next: (response) => {
           console.log("Respuesta: ", response);
-          /*
-            if(response.maquina != undefined) {
-              //const numeric_id = response.maquina[0];
-              const alfanumeric_id = response.maquina[1];
-              const nombre = response.maquina[2];
-              const fatiga = response.maquina[3];
-              const coste_h = response.maquina[4];
-              //const fabrica_id = response.maquina[5];
-              //const trabajo_id = response.maquina[6];
-              const skills = response.maquina[7];
+            if(response.maquinas != undefined && response.maquinas[0] != undefined) {
+              //const numeric_id = response.maquinas[0][0];
+              const alfanumeric_id = response.maquinas[0][1];
+              const nombre = response.maquinas[0][2];
+              const fatiga = response.maquinas[0][3];
+              const coste_h = response.maquinas[0][4];
+              //const fabrica_id = response.maquinas[0][5];
+              //const trabajo_id = response.maquinas[0][6];
+              const skills = response.maquinas[0][7];
 
               if(alfanumeric_id != undefined && nombre != undefined && fatiga != undefined && coste_h != undefined && skills != undefined) {
                 this.maquinasService.anyadirMaquina(new MaquinaImpl(alfanumeric_id, nombre,fatiga, coste_h, skills));
               }
             }
-          */
         },
         error: (error) => {
           alert("Error: " + error); 

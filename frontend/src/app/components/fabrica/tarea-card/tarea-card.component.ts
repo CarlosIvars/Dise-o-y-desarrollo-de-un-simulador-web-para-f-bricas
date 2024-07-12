@@ -48,7 +48,7 @@ export class TareaCardComponent {
   }
 
   formatearDecimales(numero: number) {
-    return numero.toFixed(1);
+    return numero.toFixed(0);
   }
 
   isTrabajador(): boolean {

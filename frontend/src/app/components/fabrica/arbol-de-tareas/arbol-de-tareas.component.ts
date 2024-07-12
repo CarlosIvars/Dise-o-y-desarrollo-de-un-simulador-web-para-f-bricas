@@ -24,6 +24,9 @@ export class ArbolDeTareasComponent {
     orientation: 'TB'
   }
 
+  autoCenter = true;
+  autoZoom = true;
+
   curve = shape.curveBasis; 
   //curve = stepRoundBefore;
   
@@ -36,11 +39,17 @@ export class ArbolDeTareasComponent {
 
   ngOnInit(): void {
     this.tareasSub = this.tareasService.tareas$.subscribe(tareas => {
-      this.tareas = tareas;
+      if(this.tareas.length == tareas.length) {
+        // Vaciar sin romper la referencia para evitar actualizar el mapa
+        this.nodes.length = 0;
+        this.links.length = 0;
+      } else {
+        // Vaciar rompiendo la referencia para actualizar el mapa
+        this.nodes = [];
+        this.links = [];
+      }
 
-      // Vaciar los arrays existentes
-      this.nodes.length = 0;
-      this.links.length = 0;
+      this.tareas =  [...tareas];
 
       //Cargamos los datos en el mapa
       for(let tarea of tareas) {

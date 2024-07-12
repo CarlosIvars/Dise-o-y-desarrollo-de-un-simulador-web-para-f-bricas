@@ -105,26 +105,24 @@ export class TrabajadoresFormComponent {
         next: (response) => {
           console.log("Respuesta: ", response);
 
-          /*
-          if(response.trabajador != null && response.trabajador != undefined) {
-            //const numeric_id = response.trabajador[0];
-            const alfanumeric_id = response.trabajador[1];
-            const nombre = response.trabajador[2];
-            const apellidos = response.trabajador[3];
-            const fecha_nacimiento = response.trabajador[4];
-            const trabajados_apto = response.trabajador[5];
-            const fatiga = response.trabajador[6];
-            const coste_h = response.trabajador[7];
-            const preferencias_trabajo = response.trabajador[8];
-            //const fabrica_id = response.trabajador[9];
-            //const trabajo_id = response.trabajador[10];
-            const skills = response.trabajador[11];
+          if(response.trabajadores != null && response.trabajadores != undefined && response.trabajadores[0] != null && response.trabajadores[0] != undefined) {
+            //const numeric_id = response.trabajadores[0][0];
+            const alfanumeric_id = response.trabajadores[0][1];
+            const nombre = response.trabajadores[0][2];
+            const apellidos = response.trabajadores[0][3];
+            const fecha_nacimiento = response.trabajadores[0][4];
+            const trabajados_apto = response.trabajadores[0][5];
+            const fatiga = response.trabajadores[0][6];
+            const coste_h = response.trabajadores[0][7];
+            const preferencias_trabajo = response.trabajadores[0][8];
+            //const fabrica_id = response.trabajadores[0][9];
+            //const trabajo_id = response.trabajadores[0][10];
+            const skills = response.trabajadores[0][11];
 
             if(alfanumeric_id != undefined && nombre != undefined && apellidos != undefined && trabajados_apto != undefined && fatiga != undefined && coste_h != undefined && preferencias_trabajo != undefined && skills != undefined) {
               this.trabajadoresService.anyadirTrabajador(new TrabajadorImpl(alfanumeric_id, nombre, apellidos, fecha_nacimiento, trabajados_apto, fatiga, coste_h, preferencias_trabajo, skills));
             }
           }
-            */
         },
         error: (error) => {
           alert("Error: " + error); 

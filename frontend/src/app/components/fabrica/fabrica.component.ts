@@ -60,6 +60,10 @@ export class FabricaComponent {
   editTareasForm: boolean = false;
   tareaEditando!: Tarea;
 
+  //Forms para la fatiga
+  fatigaForm: boolean = false;
+  nivelFatiga!: number;
+
   constructor(private fabricaService: FabricaService, private trabajadoresService: TrabajadoresService, private maquinasService: MaquinasService, private tareasService: TareasService, private timerService: TimerService, private route: ActivatedRoute, private apiService: ApiService, private router: Router, private historialService: HistorialService) {}
 
   ngOnInit(): void {
@@ -438,6 +442,43 @@ export class FabricaComponent {
               }
             };
           }
+        } catch (error: any) {
+          alert("Error al procesar la respuesta: " + error.message);
+        }
+      },
+      error: (error) => {
+        alert("Error: " + error); 
+      }
+    });
+  }
+
+  //FatigaForm
+  abrirFatigaForm(): void {
+    this.fatigaForm = true;
+  }
+  cerrarFatigaForm(): void {
+    this.fatigaForm = false;
+  }
+
+  predecirFatiga() {
+    if(this.fabrica == undefined) {
+      console.log("No se ha podido recuperar los datos de la fabrica seleccionada.");
+      return ;
+    }
+
+    console.log("Realizando la predicción de fatiga...");
+
+    this.apiService.predecirFatiga(this.trabajadores, this.maquinas, this.tareas, this.fabrica?.sector, this.fabrica?.dia).pipe(
+      finalize(() => {
+        console.log("Fin de la predicción de fatiga.");
+      })
+    ).subscribe({
+      next: (response) => {
+        try{
+          console.log("Respuesta: ", response);
+
+          this.nivelFatiga = response.resultado;
+          this.abrirFatigaForm();
         } catch (error: any) {
           alert("Error al procesar la respuesta: " + error.message);
         }

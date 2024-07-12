@@ -38,6 +38,7 @@
 
 .maquina-card #inferior .custom-slider{
     flex: 1 1 auto;
+    width: 100%;
 }
 
 .maquina-card .editar {

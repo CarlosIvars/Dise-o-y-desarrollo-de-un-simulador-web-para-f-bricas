@@ -69,7 +69,7 @@
                         <!--button (click)="boton2()">Botón extra 2</button-->
                         <!--button (click)="boton3()">Botón extra 3</button-->
                         <!--button (click)="boton4()">Botón extra 4</button-->
-                        <button class="boton" (click)="algoritmoGeneticoRL()">Predecir fatiga</button>
+                        <button class="boton" (click)="predecirFatiga()">Predecir fatiga</button>
                         <button class="boton bloqued" title="No disponible.">Predicción económica</button>
                         <button class="boton bloqued" title="No disponible.">Predicción duración</button>
                         <button class="boton bloqued" title="No disponible.">Recomendaciones</button>
@@ -102,4 +102,6 @@
 
     <app-tareas-form *ngIf="tareasForm" (close)="cerrarTareasForm()"></app-tareas-form>
     <app-edit-tareas-form [hard_skills]="hard_skills" [soft_skills]="soft_skills" *ngIf="editTareasForm" [tarea]="tareaEditando" (close)="cerrarEditTareasForm()"></app-edit-tareas-form>
+
+    <app-nivel-fatiga-form *ngIf="fatigaForm" [nivelFatiga]="nivelFatiga" (close)="cerrarFatigaForm()"></app-nivel-fatiga-form>
 </ng-container>

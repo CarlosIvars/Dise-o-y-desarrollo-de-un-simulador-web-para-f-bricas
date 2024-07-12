@@ -397,4 +397,86 @@ export class ApiService {
     };
     return this.http.get<any>(`${environment.apiUrlBase}/fabricas`, httpOptions);
   }
+
+  predecirFatiga(trabajadores: Trabajador[], maquinas: Maquina[], subtasks: Tarea[], sector: string, tiempo_trabajado: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      }),
+      withCredentials: true
+    };
+
+    const trabajadores_formated = [];
+    for(const trabajador of trabajadores) {
+      const trabajador_formated = {
+        id: trabajador.id,
+        activo: trabajador.activo,
+        fatiga: trabajador.fatiga,
+        nombre: trabajador.nombre,
+        skills: trabajador.skills,
+        coste_h: trabajador.coste_h,
+        fatigado: trabajador.fatigado,
+        apellidos: trabajador.apellidos,
+        trabajos_apto: trabajador.trabajos_apto,
+        tiempo_fatigado: trabajador.tiempo_fatigado,
+        fecha_nacimiento: trabajador.fecha_nacimiento,
+        preferencias_trabajo: trabajador.preferencias_trabajo
+      };
+      trabajadores_formated.push(trabajador_formated);
+    }
+
+    const maquinas_formated = [];
+    for(const maquina of maquinas) {
+      const maquina_formated = {
+        id: maquina.id,
+        activo: maquina.activo,
+        fatiga: maquina.fatiga,
+        nombre: maquina.nombre,
+        skills: maquina.skills,
+        coste_h: maquina.coste_h,
+        fatigado: maquina.fatigado,
+        tiempo_fatigado: maquina.tiempo_fatigado
+      }
+      maquinas_formated.push(maquina_formated);
+    }
+
+    const subtasks_formated = [];
+    for(const tarea of subtasks) {
+      const tarea_formated = {
+        id: tarea.id,
+        coste: tarea.coste,
+        nombre: tarea.nombre,
+        skills: tarea.skills,
+        cantidad: tarea.cantidad, //Numero de "cajas"
+        duracion: tarea.duracion, //Duracion calculada mediante la formula
+        beneficio: tarea.beneficio,
+        isWorking: tarea.isWorking,
+        tiempoBase: tarea.tiempoBase,        
+        descripcion: tarea.descripcion,
+        factorFatiga: tarea.factorFatiga,
+        tiempoActual: tarea.tiempoActual, // Tiempo que ya se ha procesado en la tarea
+        factorDuracion: tarea.factorDuracion //Tener en cuenta que puede no ser el que se ha usado para calcular la duracion porque se ha cambiado a posteriori
+      }
+      subtasks_formated.push(tarea_formated);
+    }
+
+    const asignaciones = [];
+    for(const tarea of subtasks) {
+      const asignable = tarea.getAsignable();
+      if(asignable != undefined) {
+        const asignacion = {
+          tarea_id: tarea.id,
+          asignable_id: asignable.id
+        }
+        asignaciones.push(asignacion);
+      }
+    }
+
+    console.log({trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones, tiempo_trabajado, sector});
+
+    return this.http.post<any>(`${environment.apiUrlBase}/predecir_fatiga`, {trabajadores: trabajadores_formated, maquinas: maquinas_formated, subtasks: subtasks_formated, asignaciones, tiempo_trabajado, sector}, httpOptions);
+  }
+
+
+
 }

@@ -4,3 +4,11 @@
     left: 50%;
     transform: translate(-42px, 0px);
 }
+
+.line{
+    stroke: var(--inner-card-color);
+}
+
+.arrow-head{
+    fill: var(--boton-flotante-font-color);
+}

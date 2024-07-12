@@ -27,6 +27,7 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ArbolDeTareasComponent } from './components/fabrica/arbol-de-tareas/arbol-de-tareas.component';
 import { FabricaAleatoriaFormComponent } from './components/zona-personal/fabrica-aleatoria-form/fabrica-aleatoria-form.component';
+import { NivelFatigaFormComponent } from './components/fabrica/nivel-fatiga-form/nivel-fatiga-form.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { FabricaAleatoriaFormComponent } from './components/zona-personal/fabric
     EditTareasFormComponent,
     EditFabricaFormComponent,
     ArbolDeTareasComponent,
-    FabricaAleatoriaFormComponent
+    FabricaAleatoriaFormComponent,
+    NivelFatigaFormComponent
   ],
   imports: [
     BrowserModule,

@@ -42,7 +42,6 @@ export class FabricaAleatoriaFormComponent {
         next: (response) => {
           console.log("Respuesta: ", response);
 
-          /*
           try{
             if(response.fabrica != null && response.fabrica != undefined) {
               const fabrica_id = response.fabrica[0];
@@ -65,7 +64,6 @@ export class FabricaAleatoriaFormComponent {
             console.error(error);
             alert("Error al procesar la respuesta: " + error.message);
           }
-            */
         },
         error: (error) => {
           alert("Error: " + error); 

@@ -1,0 +1,55 @@
+<div class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-title">Predecir fatiga</div>
+            <div class="header-close-icon" (click)="cerrarModal()">X</div>
+        </div>
+        <div class="modal-body">
+            <svg xmlns="http://www.w3.org/2000/svg">
+                <!-- Carita triste -->
+                <g *ngIf="nivelFatiga == 1" transform="translate(10, 10)">
+                  <circle cx="40" cy="40" r="40" fill="red" />
+                  <circle cx="25" cy="30" r="5" fill="black" />
+                  <circle cx="55" cy="30" r="5" fill="black" />
+                  <path d="M 25 55 Q 40 45 55 55" stroke="black" stroke-width="3" fill="none" />
+                </g>
+                
+                <!-- Carita ligeramente triste -->
+                <g *ngIf="nivelFatiga == 2" transform="translate(110, 10)">
+                  <circle cx="40" cy="40" r="40" fill="orange" />
+                  <circle cx="25" cy="30" r="5" fill="black" />
+                  <circle cx="55" cy="30" r="5" fill="black" />
+                  <path d="M 30 55 Q 40 50 50 55" stroke="black" stroke-width="3" fill="none" />
+                </g>
+                
+                <!-- Carita neutral -->
+                <g *ngIf="nivelFatiga == 3" transform="translate(210, 10)">
+                  <circle cx="40" cy="40" r="40" fill="yellow" />
+                  <circle cx="25" cy="30" r="5" fill="black" />
+                  <circle cx="55" cy="30" r="5" fill="black" />
+                  <line x1="25" y1="55" x2="55" y2="55" stroke="black" stroke-width="3" />
+                </g>
+                
+                <!-- Carita ligeramente feliz -->
+                <g *ngIf="nivelFatiga == 4" transform="translate(310, 10)">
+                  <circle cx="40" cy="40" r="40" fill="lightgreen" />
+                  <circle cx="25" cy="30" r="5" fill="black" />
+                  <circle cx="55" cy="30" r="5" fill="black" />
+                  <path d="M 30 55 Q 40 60 50 55" stroke="black" stroke-width="3" fill="none" />
+                </g>
+                
+                <!-- Carita feliz -->
+                <g *ngIf="nivelFatiga == 5" transform="translate(410, 10)">
+                  <circle cx="40" cy="40" r="40" fill="green" />
+                  <circle cx="25" cy="30" r="5" fill="black" />
+                  <circle cx="55" cy="30" r="5" fill="black" />
+                  <path d="M 25 55 Q 40 65 55 55" stroke="black" stroke-width="3" fill="none" />
+                </g>
+            </svg>
+            <div style="font-size: 20px; text-align: center;">Tu nivel de fatiga es {{nivelFatiga}} sobre 5</div>
+        </div>
+        <div class="modal-footer">
+            <button (click)="cerrarModal()">Aceptar</button>
+        </div>
+    </div>
+</div>
