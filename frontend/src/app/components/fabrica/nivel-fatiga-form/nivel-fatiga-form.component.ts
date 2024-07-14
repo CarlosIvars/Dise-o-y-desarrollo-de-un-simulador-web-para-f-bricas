@@ -10,6 +10,8 @@ export class NivelFatigaFormComponent {
 
   @Output() close = new EventEmitter();
 
+  calificaciones = ["muy buena", "buena", "aceptable", "mala", "muy mala"];
+
   cerrarModal(): void {
     this.close.emit();
   }

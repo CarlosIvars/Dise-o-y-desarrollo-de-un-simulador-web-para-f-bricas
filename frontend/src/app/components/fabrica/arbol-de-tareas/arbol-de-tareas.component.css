@@ -10,5 +10,5 @@
 }
 
 .arrow-head{
-    fill: var(--boton-flotante-font-color);
+    fill: var(--inner-card-color);
 }

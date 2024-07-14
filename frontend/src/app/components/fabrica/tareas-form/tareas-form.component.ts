@@ -115,16 +115,16 @@ export class TareasFormComponent {
         next: (response) => {
           console.log("Respuesta: ", response);
 
-          /*
-          if(response.subtask != null && response.subtask != undefined) {
-            const id = response.subtask[0];
-            const nombre = response.subtask[1];
-            const duracion = response.subtask[2];
-            const beneficio = response.subtask[3];
-            const descripcion = response.subtask[4];
-            //const fabrica_id = response.tarea[5];
-            const coste = response.subtask[6];
-            const skills = response.subtask[7];
+          debugger;
+          if(response.subtareas != null && response.subtareas != undefined) {
+            const id = response.subtareas[0][0];
+            const nombre = response.subtareas[0][1];
+            const duracion = response.subtareas[0][2];
+            const beneficio = response.subtareas[0][3];
+            const descripcion = response.subtareas[0][4];
+            //const fabrica_id = response.subtareas[0][5];
+            const coste = response.subtareas[0][6];
+            const skills = response.subtareas[0][7];
 
             //Si tenemos todos los datos añadimos la tarea
             if(id != undefined && nombre != undefined && duracion != undefined && beneficio != undefined && descripcion != undefined && coste != undefined && skills != undefined) {
@@ -142,13 +142,12 @@ export class TareasFormComponent {
                 }
               }
             } else {
-              console.log("Datos recibidos insuficientes para crear el trabajador...");
+              console.log("Datos recibidos insuficientes para crear la tarea aleatoria...");
             }
 
           } else {
-            console.error("No se ha recibido los datos esperados...")
+            console.error("No se ha recibido los datos esperados...");
           }
-            */
         },
         error: (error) => {
           alert("Error: " + error); 
