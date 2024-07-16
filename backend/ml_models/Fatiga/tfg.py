@@ -15,7 +15,7 @@ def expand_list_columns(df, column_name):
 def modelo1(data):
 
     try:
-        file_name = './ml_models/Fatiga/RF35.pkl'
+        file_name = './ml_models/Fatiga/XGBoost150.pkl'
 
         # Verifica si el archivo existe en el directorio actual
         if os.path.isfile(file_name):
@@ -29,7 +29,6 @@ def modelo1(data):
         t_skills_expanded = expand_list_columns(nuevos_datos, 't_skills')
         m_skills_expanded = expand_list_columns(nuevos_datos, 'm_skills')
         s_skills_expanded = expand_list_columns(nuevos_datos, 's_skills')
-        print('DAtos provsafaelkajhfaj')
 
         t_skills_expanded = expand_list_columns(nuevos_datos, 't_skills')
         m_skills_expanded = expand_list_columns(nuevos_datos, 'm_skills')

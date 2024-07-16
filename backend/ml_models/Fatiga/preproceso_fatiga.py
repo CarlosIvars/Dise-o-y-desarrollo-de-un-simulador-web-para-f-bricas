@@ -159,6 +159,7 @@ def preproceso_datos_fatiga_simulador(data):
             't_avg'
         ]
         df_modelo = df[caracteristicas]
+        print(df_modelo)
         return df_modelo
     except Exception as ex:
         print(ex)

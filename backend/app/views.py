@@ -538,101 +538,7 @@ def modelosPredictivos():
             return jsonify({'error': 'Fabrica no encontrada'}), 404
         
         data=request.json
-        data = {
-    "trabajadores": [
-        {
-            "id": "H_901",
-            "activo": True,
-            "fatiga": 63,
-            "nombre": "Alejandra",
-            "skills": [161, 168, 1],
-            "coste_h": 28,
-            "fatigado": 0,
-            "apellidos": "Gomis",
-            "trabajos_apto": 0,
-            "tiempo_fatigado": 0,
-            "fecha_nacimiento": "1965-10-30T00:00:00Z",
-            "preferencias_trabajo": 0
-        },
-        {
-            "id": "H_902",
-            "activo": False,
-            "fatiga": 74.42,
-            "nombre": "Carmelo",
-            "skills": [170, 163, 164, 2, 3, 10, 4, 7],
-            "coste_h": 63,
-            "fatigado": 0,
-            "apellidos": "Landa",
-            "trabajos_apto": 0,
-            "tiempo_fatigado": 6,
-            "fecha_nacimiento": "1993-12-26T00:00:00Z",
-            "preferencias_trabajo": 0
-        }
-    ],
-    "maquinas": [
-        {
-            "id": "M_55",
-            "activo": True,
-            "fatiga": 19,
-            "nombre": "voluptates",
-            "skills": [168, 169, 161, 163],
-            "coste_h": 40,
-            "fatigado": 0,
-            "tiempo_fatigado": 0
-        },
-        {
-            "id": "M_56",
-            "activo": False,
-            "fatiga": 93.91,
-            "nombre": "ipsa",
-            "skills": [168, 164],
-            "coste_h": 89,
-            "fatigado": 0,
-            "tiempo_fatigado": 6
-        }
-    ],
-    "subtasks": [
-        {
-            "id": 199,
-            "coste": 67,
-            "nombre": "Cree carteles para anunciar productos o eventos de la tienda.",
-            "skills": [5, 6, 164],
-            "cantidad": 0,
-            "duracion": 90,
-            "beneficio": 774,
-            "isWorking": True,
-            "tiempoBase": 54,
-            "descripcion": "Cree carteles para anunciar productos o eventos de la tienda.",
-            "factorFatiga": 1,
-            "tiempoActual": 6,
-            "factorDuracion": 1
-        },
-        {
-            "id": 200,
-            "coste": 87,
-            "nombre": "Organice botellas y vasos para crear exhibiciones atractivas.",
-            "skills": [5, 2, 6],
-            "cantidad": 0,
-            "duracion": 179,
-            "beneficio": 671,
-            "isWorking": True,
-            "tiempoBase": 88,
-            "descripcion": "Organice botellas y vasos para crear exhibiciones atractivas.",
-            "factorFatiga": 1,
-            "tiempoActual": 6,
-            "factorDuracion": 1
-        }
-    ],
-    "asignaciones": [
-        {"tarea_id": 199, "asignable_id": "H_901"},
-        {"tarea_id": 200, "asignable_id": "H_902"},
-        {"tarea_id": 199, "asignable_id": "M_55"},
-        {"tarea_id": 200, "asignable_id": "M_56"},
-     
-    ],
-    "tiempo_trabajado": 50,
-    "sector": "Relacionados con la preparación y el servicio de alimentos"
-}
+       
         if not data:
             return jsonify({'error': 'No se proporcionó toda la informacion'}), 400
         
@@ -660,9 +566,10 @@ def modelosPredictivos():
 
         # Formatear la respuesta
         response = {
-            'resultado': int(resultado)  
-        }
+            'resultado': int(resultado) 
+        } 
         print(response)
+
         return jsonify(response)
     except Exception as ex:
         app.logger.error(f'Error regresion lineal: {ex}')
